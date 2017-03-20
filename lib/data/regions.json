@@ -1,0 +1,55 @@
+{
+    "name": "TUNDRA",
+    "desc": "on a cold and treeless plain",
+    "growth": 1
+},
+{
+    "name": "TAIGA",
+    "desc": "surrounded by coniferous woodlands",
+    "growth": 2
+},
+{
+    "name": "WOODLAND",
+    "desc": "nestled in open temperate woodlands",
+    "growth": 3
+},
+{
+    "name": "PARKLAND",
+    "desc": "at the centre of well-maintained farms and groves",
+    "growth": 6
+},
+{
+    "name": "SCRUB",
+    "desc": "looking across thickets and shrubs",
+    "growth": 4
+},
+{
+    "name": "MACCHIA",
+    "desc": "settled in thick evergreen shrubland",
+    "growth": 5
+},
+{
+    "name": "TROPICAL_SHRUBLAND",
+    "desc": "amidst a mixture of thorny grasses and tropical plants",
+    "growth": 4
+},
+{
+    "name": "FLOODPLAIN",
+    "desc": "along a wide alluvial plain",
+    "growth": 6
+},
+{
+    "name": "JUNGLE",
+    "desc": "hidden within deep and wet forests",
+    "growth": 2
+},
+{
+    "name": "STEPPE",
+    "desc": "scattered on an arid steppe",
+    "growth": 2
+},
+{
+    "name": "DESERT",
+    "desc": "under the hot desert sun",
+    "growth": 1
+}

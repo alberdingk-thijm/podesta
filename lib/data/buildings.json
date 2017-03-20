@@ -1,0 +1,381 @@
+{
+    "name": "SHRINE",
+    "id": 1,
+    "type": "RESIDENTIAL",
+    "preq": null,
+    "cost": 100.0,
+    "build": 10.0,
+    "events": [
+        { "name": "HERESY", "chance": 2 },
+        { "name": "REVELATION", "chance": 1 }],
+    "flags": "0x0fff"
+},
+{
+    "name": "TEMPLE",
+    "id": 2,
+    "type": "RESIDENTIAL",
+    "preq": ["SHRINE"],
+    "cost": 300.0,
+    "build": 8.0,
+    "events": [
+        { "name": "HERESY", "chance": 1 },
+        { "name": "REVELATION", "chance": 2 },
+        { "name": "OBSERVANCE", "chance": 1 }],
+    "flags": "0x0fff"
+},
+{
+    "name": "GARDEN",
+    "id": 3,
+    "type": "RESIDENTIAL",
+    "preq": [ "SHRINE" ],
+    "cost": 500.0,
+    "build": 5.0,
+    "events": [
+        { "name": "REVELATION", "chance": 3 }],
+    "flags": "0x0fff"
+},
+{
+    "name": "GRAND_TEMPLE",
+    "id": 4,
+    "type": "RESIDENTIAL",
+    "preq": [ "TEMPLE" ],
+    "cost": 1500.0,
+    "build": 3.0,
+    "events": [
+        { "name": "HERESY", "chance": -1 },
+        { "name": "REVELATION", "chance": 1 },
+        { "name": "OBSERVANCE", "chance": 2 },
+        { "name": "MASTERWORK", "chance": 1 }],
+    "flags": "0x0fff"
+},
+{
+    "name": "THEATRE",
+    "id": 5,
+    "type": "RESIDENTIAL",
+    "preq": [ "LIBRARY", "GARDEN" ],
+    "cost": 1000.0,
+    "build": 4.0,
+    "events": [
+        { "name": "RARE_BOOK", "chance": 1 },
+        { "name": "PERFORMANCE", "chance": 2 }],
+    "flags": "0x0fff"
+},
+{
+    "name": "MUSEUM",
+    "id": 6,
+    "type": "RESIDENTIAL",
+    "preq": [ "UNIVERSITY", "THEATRE" ],
+    "cost": 4000.0,
+    "build": 3.0,
+    "events": [
+        { "name": "RARE_BOOK", "chance": 2 },
+        { "name": "LECTURE", "chance": 1 },
+        { "name": "FINE_CRAFT", "chance": 2 },
+        { "name": "MASTERWORK", "chance": 1 }],
+    "flags": "0x0fff"
+},
+{
+    "name": "MARKET",
+    "id": 101,
+    "type": "INDUSTRIAL",
+    "preq": null,
+    "cost": 100.0,
+    "build": 10.0,
+    "events": [
+        { "name": "MERCHANTS", "chance": 2 },
+        { "name": "OUTLAWS", "chance": 1 },
+    "flags": "0x1fff"
+},
+{
+    "name": "INN",
+    "id": 102,
+    "type": "INDUSTRIAL",
+    "preq": [ "MARKET" ],
+    "cost": 300.0,
+    "build": 8.0,
+    "events": [
+        { "name": "MERCHANTS", "chance": 2 },
+        { "name": "OUTLAWS", "chance": 1 },
+    "flags": "0x1fff"
+},
+{
+    "name": "FORGE",
+    "id": 103,
+    "type": "INDUSTRIAL",
+    "preq": null,
+    "cost": 200.0,
+    "build": 10.0,
+    "events": [
+        { "name": "BREAKTHROUGH", "chance": 1 },
+        { "name": "FIRE", "chance": 1 },
+        { "name": "FINE_CRAFT", "chance": 2 }],
+    "flags": "0x1fff"
+},
+{
+    "name": "MINT",
+    "id": 104,
+    "type": "INDUSTRIAL",
+    "preq": [ "FORGE", "MARKET" ],
+    "cost": 700.0,
+    "build": 5.0,
+    "events": [
+        { "name": "OUTLAWS", "chance": 1 },
+        { "name": "TAX", "chance": 3 }],
+    "flags": "0x1fff"
+},
+{
+    "name": "WORKSHOP",
+    "id": 105,
+    "type": "INDUSTRIAL",
+    "preq": null,
+    "cost": 400.0,
+    "build": 8.0,
+    "events": [
+        { "name": "ACCIDENT", "chance": -1},
+        { "name": "FINE_CRAFT", "chance": 2 }],
+    "flags": "0x1fff"
+},
+{
+    "name": "GUILD_HALL",
+    "id": 106,
+    "type": "INDUSTRIAL",
+    "preq": [ "MARKET", "WORKSHOP" ],
+    "cost": 1000.0,
+    "build": 4.0,
+    "events": [
+        { "name": "BREAKTHROUGH", "chance": 1 },
+        { "name": "ARCHITECT", "chance": 1 },
+        { "name": "MERCHANTS", "chance": 1 },
+        { "name": "STRIKE", "chance": 1 },
+        { "name": "FINE_CRAFT", "chance": 3 }],
+    "flags": "0x1fff"
+},
+{
+    "name": "LIGHTHOUSE",
+    "id": 201,
+    "type": "PORT",
+    "preq": null,
+    "cost": 200.0,
+    "build": 10.0,
+    "events": [
+        { "name": "OUTLAWS", "chance": 2 },
+        { "name": "FIRE", "chance": 1 }],
+    "flags": "0x2fff"
+},
+{
+    "name": "HARBOUR",
+    "id": 202,
+    "type": "PORT",
+    "preq": [ "LIGHTHOUSE" ],
+    "cost": 600.0,
+    "build": 5.0,
+    "events": [
+        { "name": "OUTLAWS", "chance": 2 },
+        { "name": "PLAGUE", "chance": 2 },
+        { "name": "MERCHANTS", "chance": 1 }],
+    "flags": "0x2fff"
+},
+{
+    "name": "WAREHOUSE",
+    "id": 203,
+    "type": "PORT",
+    "preq": [ "HARBOUR" ],
+    "cost": 900.0,
+    "build": 4.0,
+    "events": [
+        { "name": "PLAGUE", "chance": 1 },
+        { "name": "MERCHANTS", "chance": 2 }],
+    "flags": "0x2fff"
+},
+{
+    "name": "SHIPYARD",
+    "id": 204,
+    "type": "PORT",
+    "preq": [ "HARBOUR", "WORKSHOP" ],
+    "cost": 1500.0,
+    "build": 3.0,
+    "events": [
+        { "name": "INVESTMENT", "chance": 1},
+        { "name": "EMBARGO", "chance": 1 },
+        { "name": "SKIRMISH", "chance": 1 }],
+    "flags": "0x2fff"
+},
+{
+    "name": "CUSTOMS_HOUSE",
+    "id": 205,
+    "type": "PORT",
+    "preq": [ "MARKET", "WAREHOUSE" ],
+    "cost": 2000.0,
+    "build": 2.0,
+    "events": [
+        { "name": "MERCHANTS", "chance": 2 },
+        { "name": "TAX", "chance": 2 },
+        { "name": "EMBARGO", "chance": 2 },
+        { "name": "INVESTMENT", "chance": 1 },
+        { "name": "PLAGUE", "chance": 1 }],
+    "flags": "0x2fff"
+},
+{
+    "name": "LAZARETTO",
+    "id": 206,
+    "type": "PORT",
+    "preq": [ "TEMPLE", "HARBOUR" ],
+    "cost": 1200.0,
+    "build": 3.0,
+    "events": [
+        { "name": "PLAGUE", "chance": -2 },
+        { "name": "REVELATION", "chance": 1 }],
+    "flags": "0x2fff"
+},
+{
+    "name": "LIBRARY",
+    "id": 301,
+    "type": "ACADEMIC",
+    "preq": null,
+    "cost": 400.0,
+    "build": 8.0,
+    "events": [
+        { "name": "RARE_BOOK", "chance": 1 },
+        { "name": "BREAKTHROUGH", "chance": 1 }],
+    "flags": "0x3fff"
+},
+{
+    "name": "SCHOOL",
+    "id": 302,
+    "type": "ACADEMIC",
+    "preq": [ "LIBRARY", "TEMPLE" ],
+    "cost": 1200.0,
+    "build": 3.0,
+    "events": [
+        { "name": "RARE_BOOK", "chance": 2 },
+        { "name": "LECTURE", "chance": 2 },
+    "flags": "0x3fff"
+},
+{
+    "name": "UNIVERSITY",
+    "id": 303,
+    "type": "ACADEMIC",
+    "preq": [ "SCHOOL" ],
+    "cost": 3000.0,
+    "build": 2.0,
+    "events": [
+        { "name": "RARE_BOOK", "chance": 2 },
+        { "name": "LECTURE", "chance": 2 },
+        { "name": "BREAKTHROUGH", "chance": 1 },
+        { "name": "STRIKE", "chance": 1 },
+        { "name": "ARCHITECT", "chance": 1 }],
+    "flags": "0x4fff"
+},
+{
+    "name": "OBSERVATORY",
+    "id": 304,
+    "type": "ACADEMIC",
+    "preq": [ "SCHOOL" ],
+    "cost": 2500.0,
+    "build": 2.0,
+    "events": [
+        { "name": "RARE_BOOK", "chance": 1 },
+        { "name": "CELESTIAL_EVENT", "chance": 2 }],
+    "flags": "0x4daf"
+},
+{
+    "name": "SOCIETY",
+    "id": 305,
+    "type": "ACADEMIC",
+    "preq": [ "UNIVERSITY" ],
+    "cost": 5000.0,
+    "build": 2.0,
+    "events": [
+        { "name": "RARE_BOOK", "chance": 1 },
+        { "name": "LECTURE", "chance": 2 },
+        { "name": "PERFORMANCE", "chance": 1 },
+        { "name": "HERESY", "chance": 1 },
+        { "name": "ARTIFACT", "chance": 1 }],
+    "flags": "0x4fff"
+},
+{
+    "name": "WALLS",
+    "id": 401,
+    "type": "ADMINISTRATIVE",
+    "preq": null,
+    "cost": 100.0,
+    "build": 10.0,
+    "events": [
+        { "name": "SKIRMISH", "chance": 1 },
+        { "name": "OUTLAWS", "chance": -1 }],
+    "flags": "0x5fff"
+},
+{
+    "name": "BARRACKS",
+    "id": 402,
+    "type": "ADMINISTRATIVE",
+    "preq": [ "WALLS" ],
+    "cost": 300.0,
+    "build": 8.0,
+    "events": [
+        { "name": "SKIRMISH", "chance": 3 }],
+    "flags": "0x5fff"
+},
+{
+    "name": "ARMOURY",
+    "id": 403,
+    "type": "ADMINISTRATIVE",
+    "preq": [ "BARRACKS", "FORGE" ],
+    "cost": 1000.0,
+    "build": 4.0,
+    "events": [
+        { "name": "SKIRMISH", "chance": 2 },
+        { "name": "FINE_CRAFT", "chance": 1 }],
+    "flags": "0x5fff"
+},
+{
+    "name": "FORTRESS",
+    "id": 404,
+    "type": "ADMINISTRATIVE",
+    "preq": [ "ARMOURY" ],
+    "cost": 2000.0,
+    "build": 2.0,
+    "events": [
+        { "name": "SKIRMISH", "chance": 2 },
+        { "name": "FINE_CRAFT", "chance": 1 },
+        { "name": "OCCUPATION", "chance": 1 }],
+    "flags": "0x5fff"
+},
+{
+    "name": "ASSEMBLY",
+    "id": 405,
+    "type": "ADMINISTRATIVE",
+    "preq": null,
+    "cost": 200.0,
+    "build": 10.0,
+    "events": [
+        { "name": "TRIAL", "chance": 2 },
+        { "name": "OUTLAWS", "chance": -1 }],
+    "flags": "0x5fff"
+},
+{
+    "name": "PRISON",
+    "id": 406,
+    "type": "ADMINISTRATIVE",
+    "preq": [ "ASSEMBLY", "BARRACKS" ],
+    "cost": 800.0,
+    "build": 5.0,
+    "events": [
+        { "name": "TRIAL", "chance": 2 },
+        { "name": "SKIRMISH", "chance": -2 },
+        { "name": "OUTLAWS", "chance": -2 }],
+    "flags": "0x5fff"
+},
+{
+    "name": "PALACE",
+    "id": 407,
+    "type": "ADMINISTRATIVE",
+    "preq": [ "WALLS", "ASSEMBLY" ],
+    "cost": 5000.0,
+    "build": 2.0,
+    "events": [
+        { "name": "INVESTMENT", "chance": 2 },
+        { "name": "DIPLOMAT", "chance": 2 },
+        { "name": "MASTERWORK", "chance": 1 }],
+    "flags": "0xdfff"
+}

@@ -1,0 +1,6 @@
+[package]
+name = "podesta"
+version = "0.1.0"
+authors = ["Tim Alberdingk Thijm <tim.thijm@gmail.com>"]
+
+[dependencies]

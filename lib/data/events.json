@@ -1,0 +1,175 @@
+{
+    "name": "FIRE",
+    "id": 1,
+    "desc": "%s has erupted into flames!",
+    "chance": 3,
+    "event": [ "KILL_2", "DAM_2" ]
+},
+{
+    "name": "ACCIDENT",
+    "id": 2,
+    "desc": "there has been an accident at %s",
+    "chance": 3,
+    "event": [ "KILL_1", "DAM_1" ]
+},
+{
+    "name": "BREAKTHROUGH",
+    "id": 3,
+    "desc": "%s is celebrating a breakthrough",
+    "chance": 3,
+    "event": [ "BLD_1", "GROW_1" ]
+},
+{
+    "name": "INVESTMENT",
+    "id": 4,
+    "desc": "%s received a welcome investment",
+    "chance": 3,
+    "event": [ "GOLD_1" ]
+},
+{
+    "name": "RARE_BOOK",
+    "id": 11,
+    "desc": "%s has acquired a rare book",
+    "chance": 0,
+    "event": [ "ITEM_1" ]
+},
+{
+    "name": "LECTURE",
+    "id": 12,
+    "desc": "a lecture was held at %s",
+    "chance": 0,
+    "event": [ "HERO_MAGE" ]
+},
+{
+    "name": "CELESTIAL_EVENT",
+    "id": 13,
+    "desc": "%s observed an incredible celestial event!",
+    "chance": 0,
+    "event": [ "RIOT_2", "HERO_MAGE" ]
+},
+{
+    "name": "STRIKE",
+    "id": 14,
+    "desc": "members of %s are striking",
+    "chance": 0,
+    "event": [ "RIOT_3", "DAM_1" ]
+},
+{
+    "name": "ARTIFACT",
+    "id": 15,
+    "desc": "a precious artifact has arrived at %s",
+    "chance": 0,
+    "event": [ "ITEM_3" ]
+},
+{
+    "name": "MASTERWORK",
+    "id": 21,
+    "desc": "%s has received a beautiful masterwork",
+    "chance": 0,
+    "event": [ "ITEM_2" ]
+},
+{
+    "name": "PERFORMANCE",
+    "id": 22,
+    "desc": "a performance has been mounted at %s",
+    "chance": 0,
+    "event": [ "GROW_1", "HERO_BARD" ]
+},
+{
+    "name": "HERESY",
+    "id": 23,
+    "desc": "%s has uncovered heretics",
+    "chance": 0,
+    "event": [ "RIOT_2", "HERO_RLG" ]
+},
+{
+    "name": "REVELATION",
+    "id": 24,
+    "desc": "a visitor to %s experienced a revelation!",
+    "chance": 0,
+    "event": [ "GROW_1", "HERO_RLG" ]
+},
+{
+    "name": "OBSERVANCE",
+    "id": 25,
+    "desc": "the community of %s is observing a religious holiday",
+    "chance": 0,
+    "event": [ "GROW_2" ]
+},
+{
+    "name": "FINE_CRAFT",
+    "id": 31,
+    "desc": "%s has produced a fine piece of work",
+    "chance": 0,
+    "event": [ "ITEM_1" ]
+},
+{
+    "name": "MERCHANTS",
+    "id": 32,
+    "desc": "rich merchants have arrived at %s",
+    "chance": 0,
+    "event": [ "HERO_MERCH", "GOLD_1" ]
+},
+{
+    "name": "TAX",
+    "id": 33,
+    "desc": "%s has established a new tax",
+    "chance": 0,
+    "event": [ "RIOT_1", "GOLD_2" ]
+},
+{
+    "name": "EMBARGO",
+    "id": 34,
+    "desc": "an embargo was established by %s",
+    "chance": 0,
+    "event": [ "RIOT_2", "HERO_CRIME" ]
+},
+{
+    "name": "OUTLAWS",
+    "id": 35,
+    "desc": "outlaws have been harassing travellers!",
+    "chance": 0,
+    "event": [ "RIOT_1", "HERO_CRIME" ]
+},
+{
+    "name": "ARCHITECT",
+    "id": 36,
+    "desc": "a talented architect has arrived at %s",
+    "chance": 0,
+    "event": [ "BLD_2" ]
+},
+{
+    "name": "PLAGUE",
+    "id": 37,
+    "desc": "a terrible plague has claimed us!",
+    "chance": 0,
+    "event": [ "KILL_2", "RIOT_3" ]
+},
+{
+    "name": "SKIRMISH",
+    "id": 41,
+    "desc": "soldiers at %s have returned from a skirmish",
+    "chance": 0,
+    "event": [ "KILL_1", "HERO_WAR" ]
+},
+{
+    "name": "OCCUPATION",
+    "id": 42,
+    "desc": "hostile forces have occupied %s!",
+    "chance": 0,
+    "event": [ "KILL_2", "DAM_2", "HERO_WAR" ]
+},
+{
+    "name": "TRIAL",
+    "id": 43,
+    "desc": "a trial is being held at %s",
+    "chance": 0,
+    "event": [ "KILL_1", "RIOT_1" ]
+},
+{
+    "name": "DIPLOMAT",
+    "id": 44,
+    "desc": "a dignitary is visiting at %s",
+    "chance": 0,
+    "event": [ "GOLD_2", "GROW_2", "BLD_1" ]
+}
