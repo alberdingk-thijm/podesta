@@ -17,9 +17,35 @@ struct Event {
     // TODO: convert to Vec<event effect>
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+struct Building {
+    name: String,
+    id: i32,
+    btype: Btype,  // use serde macro to match type
+    preq: Some(Vec<String>),  // can be null
+    cost: f32,
+    build: f32,
+    events: Vec<EventChance>,
+    flags: i32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+enum BType {
+    Residential,
+    Industrial,
+    Port,
+    Academic,
+    Administrative,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct EventChance {
+    name: String,
+    chance: f32,
+}
+
 #[allow(dead_code)]
 fn get_events() -> Result<Vec<Event>, serde_json::Error> {
-    // TODO: fix file path
     let mut p = env::current_dir().unwrap();
     p.push("lib");
     p.push("data");
