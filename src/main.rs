@@ -2,9 +2,10 @@
 extern crate serde_derive;
 extern crate serde_json;
 
-use std::io;
+//use std::io;
 use std::fs::File;
-use std::io::BufReader;
+use std::io::{Read, BufReader};
+use std::env;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Event {
@@ -16,14 +17,29 @@ struct Event {
     // TODO: convert to Vec<event effect>
 }
 
+#[allow(dead_code)]
+fn get_events() -> Result<Vec<Event>, serde_json::Error> {
+    // TODO: fix file path
+    let mut p = env::current_dir().unwrap();
+    p.push("lib");
+    p.push("data");
+    p.push("events.json");
+    let mut f = File::open(p)
+        .expect("Unable to open events file!");
+    let mut reader = BufReader::new(f);
+
+    let mut e: Vec<Event> = try!(serde_json::from_reader(reader));
+
+    Ok(e)
+
+}
 
 fn main() {
 
-    let mut f = try!(File::open("../lib/data/events.json"));
-    let mut reader = BufReader::new(f);
-
-    let mut de = serde_json::de::Deserializer<BufReader>::from_reader(reader);
-    // convert to Vec<Event>
+    match get_events() {
+        Ok(e) => { let events = e; println!("Loaded events.json!") },
+        Err(e) => println!("Error: {}", e.to_string()),
+    }
 
     let ev = Event {
         name: "FIRE".to_string(),
