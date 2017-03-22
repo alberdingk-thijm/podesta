@@ -22,7 +22,7 @@ impl Event {
     /// event effects specified by self.event.
     #[allow(dead_code)]
     pub fn activate(&self, roll: i32) {
-        if roll <= chance {
+        if roll <= self.chance {
             // TODO: perform event effects
         }
     }
