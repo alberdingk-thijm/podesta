@@ -8,18 +8,6 @@ mod events;
 use std::env;
 //use std::io;
 
-/*
-#[derive(Serialize, Deserialize, Debug)]
-struct Event {
-    name: String,
-    id: i32,
-    desc: String,
-    chance: i32,
-    event: Vec<String>,
-    // TODO: convert to Vec<event effect>
-}
-*/
-
 #[derive(Serialize, Deserialize, Debug)]
 struct Building {
     name: String,
@@ -50,7 +38,6 @@ struct EventChance {
 
 fn main() {
 
- 
     let events : Vec<events::Event> = parser::get_data("events.json")
         .expect("Error parsing JSON!");
 
