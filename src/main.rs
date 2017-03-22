@@ -3,10 +3,8 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate serde;
 
+mod parser;
 //use std::io;
-use std::fs::File;
-use std::io::BufReader;
-use std::env;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Event {
@@ -46,32 +44,12 @@ struct EventChance {
 }
 
 
-fn get_data<T>(jsonfile: &str) -> Result<Vec<T>, serde_json::Error>
-    where T: serde::Deserialize + serde::Serialize {
-
-    let mut p = env::current_dir().unwrap();
-    p.push("lib");
-    p.push("data");
-    p.push(jsonfile);
-    let f = File::open(p)
-        .expect("Unable to open file");
-    let reader = BufReader::new(f);
-
-    let e: Vec<T> = try!(serde_json::from_reader(reader));
-
-    Ok(e)
-}
-
 fn main() {
 
+    let events : Vec<Event> = parser::get_data("events.json")
+        .expect("Error parsing JSON!");
 
-    let events : Vec<Event> = get_data("events.json").expect("Error parsing JSON!");
-
-    println!("Loaded events.json!");
-
-    for ev in events.into_iter() {
-        println!("{}", ev.name);
-    }
+    println!("Loaded events.json! {} events found", events.len());
 
     let ev = Event {
         name: "FIRE".to_string(),
