@@ -1,10 +1,11 @@
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
+extern crate serde;
 
 //use std::io;
 use std::fs::File;
-use std::io::{Read, BufReader};
+use std::io::BufReader;
 use std::env;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -21,8 +22,8 @@ struct Event {
 struct Building {
     name: String,
     id: i32,
-    btype: Btype,  // use serde macro to match type
-    preq: Some(Vec<String>),  // can be null
+    btype: BType,  // use serde macro to match type
+    preq: Option<Vec<String>>,  // can be null
     cost: f32,
     build: f32,
     events: Vec<EventChance>,
@@ -44,27 +45,32 @@ struct EventChance {
     chance: f32,
 }
 
-#[allow(dead_code)]
-fn get_events() -> Result<Vec<Event>, serde_json::Error> {
+
+fn get_data<T>(jsonfile: &str) -> Result<Vec<T>, serde_json::Error>
+    where T: serde::Deserialize + serde::Serialize {
+
     let mut p = env::current_dir().unwrap();
     p.push("lib");
     p.push("data");
-    p.push("events.json");
-    let mut f = File::open(p)
-        .expect("Unable to open events file!");
-    let mut reader = BufReader::new(f);
+    p.push(jsonfile);
+    let f = File::open(p)
+        .expect("Unable to open file");
+    let reader = BufReader::new(f);
 
-    let mut e: Vec<Event> = try!(serde_json::from_reader(reader));
+    let e: Vec<T> = try!(serde_json::from_reader(reader));
 
     Ok(e)
-
 }
 
 fn main() {
 
-    match get_events() {
-        Ok(e) => { let events = e; println!("Loaded events.json!") },
-        Err(e) => println!("Error: {}", e.to_string()),
+
+    let events : Vec<Event> = get_data("events.json").expect("Error parsing JSON!");
+
+    println!("Loaded events.json!");
+
+    for ev in events.into_iter() {
+        println!("{}", ev.name);
     }
 
     let ev = Event {

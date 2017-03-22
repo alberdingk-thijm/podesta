@@ -1,0 +1,87 @@
+---------------------
+QUARTERS IN SETTGEN
+---------------------
+
+Introduction:
+Every settlement is composed of multiple quarters (not necessarily four).
+These represent the administrative divisions of the settlement as were manifest
+in late medieval towns and cities of Europe and elsewhere. Quarters tend to
+coincide with neighbourhoods and split along ethnic, religious or economic
+lines (e.g. the Mughrabi Quarter in Jerusalem, Jodenbreestraat in Amsterdam or
+Shoreditch in London).
+As a settlement grows, its citizens spill out of its first quarter and into
+new quarters. The new quarter may be similar to the first, or it may be made
+up of other races or professions. It contains buildings of its own, and, for
+the most part, events in the new quarter will not affect the others.
+
+New quarters:
+A new settlement begins with a single quarter and no buildings. The type of
+the quarter will also affect the settlement's starting population, gold and
+first governor's class. The starting gold will be enough to start construction
+on a basic building in the district (although it could also be spent to INVITE
+TALENT to the settlement).
+After the first quarter, new quarters can be built each time the settlement's
+population doubles. Hence, settlements will acquire their first few quarters
+quickly and then slow over time. There is no limit on the number of quarters
+of a particular type.
+
+New buildings:
+Settlements have a single pool of gold to spread across quarters. This is most
+useful for purchasing new buildings for the quarter. Once enough money is
+accumulated and any prerequisite buildings are complete, the gold can be spent
+to start a new building in the quarter. The building begins at 0% progress and
+increases some percent each timestep, unless a RIOT event effect has halted it.
+In this stage, the building can still be affected by DAM event effects, which
+reset progress back to 0%.
+Once a building is completed, its events are "active" and may trigger on
+subsequent timesteps.
+
+Quarter types:
+There are five types of quarters. Each quarter also has a dominant race, which
+is unrelated to the quarter's type and purely for cosmetic purposes (although
+notables of certain races may be better at different tasks: see notables.txt
+for more information).
+
+RESIDENTIAL quarters:
+Residential quarters are the most common type of quarter. Filled mostly with
+houses, residential areas also tend to host religious edifices and some
+artistic buildings (the THEATRE and MUSEUM). Residential quarters grow the
+fastest of all quarters, and their associated buildings have the most GROW
+event effects. Notables based in residential quarters tend to be clerics,
+druids, paladins, monks or bards.
+
+INDUSTRIAL quarters:
+Industrial quarters are the second most common quarters. They are the homes of
+artisans and craftspeople who produce many of the goods enjoyed and exported
+by the settlement, and they contain a mixture of shops and workhouses.
+Industrial quarters increase a settlement's gold and speed up its building
+progress better than any other quarter (although PORT districts provide
+similar benefits). Notables based in industrial quarters tend to be
+merchants, thieves and assassins.
+
+PORT quarters:
+Port quarters are quarters exclusive to coastal settlements, where mariners
+arrive with goods and valuables from around the world. They provide many of
+the same benefits as industrial quarters, but carry a risk of exposing the
+settlement to plague. Port quarters provide a wider variety of notables than
+other quarters: notables in port quarters can be merchants, clerics, druids,
+paladins, monks, fighters, rangers, thieves or assassins.
+
+ACADEMIC quarters:
+Academic quarters produce valuable goods and notables at campuses devoted to
+science and magical education. Compared to other quarters, the buildings of
+the academic quarter are considerably more expensive, but confer a few
+extremely valuable events in return. Like the INDUSTRIAL quarters, academic
+quarters also produce their fair share of valuable items and can speed up
+building progress. Notables based in academic quarters tend to be mages and
+illusionists.
+
+ADMINISTRATIVE quarters:
+Administrative quarters are the seat of the settlement's government. They are
+filled with civic and military buildings to protect and train the people. They
+do not provide many benefits to growth, gold or building speed, but instead help
+mitigate common negative event effects. The number of administrative buildings
+in a settlement is counted against any RIOT event effects, allowing
+settlements to grow and build efficiently, and they also provide GOVERNING
+bonuses. Notables based in administrative districts tend to be fighters or
+rangers.

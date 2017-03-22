@@ -1,0 +1,77 @@
+--------------------
+DESIGN OF SETTGEN
+-------------------
+
+FRONTEND/DISPLAY:
+
+Load game data:
+When settgen starts, the first step taken is to load the game data into memory.
+This includes all the buildings and events files in lib/data, which are parsed
+from JSON and stored in arrays.
+
+Display welcome screen:
+The screen is cleared and the welcome splash screen is shown, presenting
+options to the user to start a new settlement, load an existing settlement,
+view the credits and license, view the help file and quit the game. A single
+keypress will load these options.
+
+Start a new settlement:
+The screen is cleared and a menu appears prompting the user to name the
+settlement, and then requesting the level of control/autogeneration desired.
+Choosing total control will provide a series of menus allowing the user to
+tweak effects: the unit of a timestep, the starting quarter and racial
+population, whether some effects are blocked, whether the settlement is on the
+water or not and any other important details.
+Choosing random will set the unit of a timestep to a year and randomly choose
+the starting quarter, its race and its location, with all effects active.
+The user is notified when this process is complete.
+
+Load an existing settlement:
+The screen is cleared and a menu appears with the paths and basic information
+of the most recent settlements generated. Navigating with the arrow keys or
+shortcuts, the user can choose which settlement to load.
+
+Settlement:
+The screen is cleared and the settlement, with its UI elements, appears on
+screen.
+
+BACKEND:
+
+Settlement:
+A settlement stores several pieces of information:
+- current settlement age
+- total population (sum of quarter populations)
+- current settlement gold
+- events affecting the entire settlement and their duration
+- list of quarters in the settlement
+
+The main function operated by the settlement is execute_timestep, which
+performs the following series of actions:
+- for each quarter, the settlement runs the quarter's inner execute_timestep
+  code, which
+  - grows the quarter based on its growth rate
+  - updates the condition of each building in the quarter, based on its age
+    and its build progress (if still in progress)
+  - update notable age and activity for each notable based in the quarter
+  - roll events for the quarter based on its completed buildings
+- update the gold total available in the settlement as a whole, based on the
+  gold modifiers and total population (notable treasure or trade, events,
+  population taxes).
+
+District:
+start at low pop, grow each year and increase infrastructure progress
+each year, check for events
+
+Events:
+event(settlement, district);
+kill x% of population
+destroy building
+increase build speed by x%
+increase growth speed by x%
+add notable person
+add flavour
+
+Birth/death rate:
+track lifetimes of notables, kill after X years (modify with events e.g. fire,
+accident, plague)
+
