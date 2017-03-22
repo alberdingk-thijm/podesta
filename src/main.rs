@@ -4,8 +4,11 @@ extern crate serde_json;
 extern crate serde;
 
 mod parser;
+mod events;
+use std::env;
 //use std::io;
 
+/*
 #[derive(Serialize, Deserialize, Debug)]
 struct Event {
     name: String,
@@ -15,6 +18,7 @@ struct Event {
     event: Vec<String>,
     // TODO: convert to Vec<event effect>
 }
+*/
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Building {
@@ -46,12 +50,13 @@ struct EventChance {
 
 fn main() {
 
-    let events : Vec<Event> = parser::get_data("events.json")
+ 
+    let events : Vec<events::Event> = parser::get_data("events.json")
         .expect("Error parsing JSON!");
 
     println!("Loaded events.json! {} events found", events.len());
 
-    let ev = Event {
+    let ev = events::Event {
         name: "FIRE".to_string(),
         id: 1,
         desc: "%s has erupted into flames!".to_string(),
@@ -62,6 +67,6 @@ fn main() {
     let serialized = serde_json::to_string(&ev).unwrap();
     println!("serialized = {}", serialized);
 
-    let deserialized: Event = serde_json::from_str(&serialized).unwrap();
+    let deserialized: events::Event = serde_json::from_str(&serialized).unwrap();
     println!("deserialized = {:?}", deserialized);
 }
