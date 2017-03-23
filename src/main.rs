@@ -33,7 +33,7 @@ fn main() {
         id: 1,
         desc: "%s has erupted into flames!".to_string(),
         chance: 3,
-        event: vec!("Kill_2".to_string(), "Dam_2".to_string()),
+        effects: vec!("Kill_2".to_string(), "Dam_2".to_string()),
     };
 
     let serialized = serde_json::to_string(&ev).unwrap();

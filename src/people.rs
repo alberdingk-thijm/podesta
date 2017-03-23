@@ -1,4 +1,5 @@
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct Hero {
     pub name: String,
@@ -8,6 +9,7 @@ pub struct Hero {
     pub activity: Activity,
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum Race {
     Dwarf,
@@ -19,6 +21,7 @@ pub enum Race {
     Human,
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum Class {
     Cleric,
@@ -34,6 +37,7 @@ pub enum Class {
     Bard,
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum Activity {
     Working,
@@ -42,4 +46,18 @@ pub enum Activity {
     Adventuring,
     Resting,
     Dead,
+}
+
+impl Hero {
+    #[allow(dead_code)]
+    pub fn execute_timestep(&self) {
+        match self.activity {
+            Activity::Working => (),
+            Activity::Governing => (),
+            Activity::Trading => (),
+            Activity::Adventuring => (),
+            Activity::Resting => (),
+            Activity::Dead => (),
+        }
+    }
 }

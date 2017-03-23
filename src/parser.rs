@@ -1,3 +1,5 @@
+//! Parse the JSON data files used to store settlement information.
+//! The get_data function deserializes the data to the intended struct.
 use serde;
 use serde_json;
 
@@ -6,16 +8,25 @@ use std::io::BufReader;
 use std::env;
 use std::path;
 
-//const DATAPATH: &'static str = concat!("lib", path::MAIN_SEPARATOR, "data");
-
+/// Return a Result holding a deserialized vector of podsim data,
+/// where each vector element was stored in a JSON file named by
+/// the **jsonfile** parameter; or an error if the JSON file could
+/// not be parsed. Each element must itself be deserializable.
+/// Panic! if the file cannot be opened.
+///
+/// # Example
+///
+/// ```
+/// use events;
+/// use parser::get_data;
+/// let events = get_data("events.json");
+/// assert!(events.is_ok())
+/// ```
+///
 pub fn get_data<T>(jsonfile: &str) -> Result<Vec<T>, serde_json::Error>
-    where T: serde::Deserialize + serde::Serialize {
-
-    /*
-    let mut p = env::current_dir().unwrap();
-    p.push("lib");
-    p.push("data");
-    */
+where
+    T: serde::Deserialize + serde::Serialize
+{
     let mut p = get_data_dir();
     p.push(jsonfile);
     let f = File::open(p)
@@ -25,8 +36,8 @@ pub fn get_data<T>(jsonfile: &str) -> Result<Vec<T>, serde_json::Error>
     Ok(e)
 }
 
-// return the PathBuf to the directory where the data is stored
-// ($CARGO_MANIFEST_DIR/lib/data/)
+/// Return the PathBuf to the directory where the data is stored.
+/// This is $CARGO_MANIFEST_DIR/lib/data/.
 fn get_data_dir() -> path::PathBuf {
     let head = env::var_os("CARGO_MANIFEST_DIR").unwrap();
     let p = path::Path::new(&head).join("lib").join("data");

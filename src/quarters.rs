@@ -3,6 +3,7 @@ use std::str;
 use buildings;
 use people;
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct Quarter {
     pub name: String,
