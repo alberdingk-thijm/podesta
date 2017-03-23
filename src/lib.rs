@@ -23,3 +23,11 @@ fn get_datafiles() {
     let regions : Vec<regions::Region> =
         parser::get_data("regions.json").expect("Error parsing JSON!");
 }
+
+/// Create a new settlement, prompting for user input occasionally.
+fn init() {
+    // Prompt for region type
+    // Generate empty settlement
+    //
+    unimplemented!()
+}

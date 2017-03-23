@@ -3,6 +3,13 @@ use std::str;
 use buildings;
 use people;
 
+#[derive(Debug)]
+pub struct QuarterConf {
+    pub name: String,
+    pub qtype: QType,
+    pub race: people::Race,
+}
+
 #[allow(dead_code)]
 #[derive(Debug)]
 pub struct Quarter {
@@ -50,14 +57,29 @@ impl str::FromStr for QType {
     }
 }
 
+type BuildErr = ();  // TODO: convert to actual error
 impl Quarter {
+
+    /// Create a new Quarter with a given name, population, type and racial
+    /// majority. Age is set to zero and no buildings exist initially.
+    pub fn new(n: &str, qt: QType, p: i32, r: people::Race) -> Quarter {
+        Quarter {
+            name: n.to_string(),
+            qtype: qt,
+            pop: p,
+            age: 0,
+            race: r,
+            bldgs: vec!(),
+        }
+    }
+
     /// Execute timestep
     pub fn step(&self) {
         unimplemented!()
     }
 
     /// Add a building
-    pub fn construct(&self, bname: &str) -> Result<Self, Err> {
+    pub fn add_building(&self, bname: &str) -> Result<Self, BuildErr> {
         unimplemented!()
     }
 }
