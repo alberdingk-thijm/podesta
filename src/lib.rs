@@ -3,22 +3,23 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate serde;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub mod parser;
+pub mod events;
+pub mod buildings;
+pub mod regions;
+pub mod quarters;
+pub mod people;
 
-    #[test]
-    fn it_works() {
-    }
+#[allow(unused_variables)]
+#[test]
+fn get_datafiles() {
 
-    #[test]
-    #[should_panic]
-    fn bad_move() {
-        assert!(false)
-    }
+    let events : Vec<events::Event> =
+        parser::get_data("events.json").expect("Error parsing JSON!");
 
-    #[test]
-    fn events_exists() {
-        // TODO: check that lib/data/events.json is present and valid JSON
-    }
+    let buildings : Vec<buildings::Building> =
+        parser::get_data("buildings.json").expect("Error parsing JSON!");
+
+    let regions : Vec<regions::Region> =
+        parser::get_data("regions.json").expect("Error parsing JSON!");
 }

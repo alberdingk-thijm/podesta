@@ -1,5 +1,15 @@
 //! Parse the JSON data files used to store settlement information.
 //! The get_data function deserializes the data to the intended struct.
+//!
+//! ## Example
+//!
+//! ```
+//! use podesta::parser;
+//! use podesta::events;
+//! let events : Vec<events::Event> = parser::get_data("events.json").
+//!     expect("Failed to get data");
+//! ```
+
 use serde;
 use serde_json;
 
@@ -13,16 +23,6 @@ use std::path;
 /// the **jsonfile** parameter; or an error if the JSON file could
 /// not be parsed. Each element must itself be deserializable.
 /// Panic! if the file cannot be opened.
-///
-/// # Example
-///
-/// ```
-/// use events;
-/// use parser::get_data;
-/// let events = get_data("events.json");
-/// assert!(events.is_ok())
-/// ```
-///
 pub fn get_data<T>(jsonfile: &str) -> Result<Vec<T>, serde_json::Error>
 where
     T: serde::Deserialize + serde::Serialize
