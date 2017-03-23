@@ -51,5 +51,13 @@ impl str::FromStr for QType {
 }
 
 impl Quarter {
-    // Execute timestep
+    /// Execute timestep
+    pub fn step(&self) {
+        unimplemented!()
+    }
+
+    /// Add a building
+    pub fn construct(&self, bname: &str) -> Result<Self, Err> {
+        unimplemented!()
+    }
 }
