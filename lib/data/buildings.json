@@ -1,711 +1,681 @@
 [
   {
-    "name": "SHRINE",
+    "name": "Shrine",
     "id": 1,
-    "type": "RESIDENTIAL",
+    "type": "Residential",
     "preq": null,
     "cost": 100,
     "build": 10,
     "events": [
       {
-        "name": "HERESY",
+        "name": "Heresy",
         "chance": 2
       },
       {
-        "name": "REVELATION",
+        "name": "Revelation",
         "chance": 1
       }
-    ],
-    "flags": "0x0fff"
+    ]
   },
   {
-    "name": "TEMPLE",
+    "name": "Temple",
     "id": 2,
-    "type": "RESIDENTIAL",
+    "type": "Residential",
     "preq": [
-      "SHRINE"
+      "Shrine"
     ],
     "cost": 300,
     "build": 8,
     "events": [
       {
-        "name": "HERESY",
+        "name": "Heresy",
         "chance": 1
       },
       {
-        "name": "REVELATION",
+        "name": "Revelation",
         "chance": 2
       },
       {
-        "name": "OBSERVANCE",
+        "name": "Observance",
         "chance": 1
       }
-    ],
-    "flags": "0x0fff"
+    ]
   },
   {
-    "name": "GARDEN",
+    "name": "Garden",
     "id": 3,
-    "type": "RESIDENTIAL",
+    "type": "Residential",
     "preq": [
-      "SHRINE"
+      "Shrine"
     ],
     "cost": 500,
     "build": 5,
     "events": [
       {
-        "name": "REVELATION",
+        "name": "Revelation",
         "chance": 3
       }
-    ],
-    "flags": "0x0fff"
+    ]
   },
   {
-    "name": "GRAND_TEMPLE",
+    "name": "Grand_Temple",
     "id": 4,
-    "type": "RESIDENTIAL",
+    "type": "Residential",
     "preq": [
-      "TEMPLE"
+      "Temple"
     ],
     "cost": 1500,
     "build": 3,
     "events": [
       {
-        "name": "HERESY",
+        "name": "Heresy",
         "chance": -1
       },
       {
-        "name": "REVELATION",
+        "name": "Revelation",
         "chance": 1
       },
       {
-        "name": "OBSERVANCE",
+        "name": "Observance",
         "chance": 2
       },
       {
-        "name": "MASTERWORK",
+        "name": "Masterwork",
         "chance": 1
       }
-    ],
-    "flags": "0x0fff"
+    ]
   },
   {
-    "name": "THEATRE",
+    "name": "Theatre",
     "id": 5,
-    "type": "RESIDENTIAL",
+    "type": "Residential",
     "preq": [
-      "LIBRARY",
-      "GARDEN"
+      "Library",
+      "Garden"
     ],
     "cost": 1000,
     "build": 4,
     "events": [
       {
-        "name": "RARE_BOOK",
+        "name": "Rare_Book",
         "chance": 1
       },
       {
-        "name": "PERFORMANCE",
+        "name": "Performance",
         "chance": 2
       }
-    ],
-    "flags": "0x0fff"
+    ]
   },
   {
-    "name": "MUSEUM",
+    "name": "Museum",
     "id": 6,
-    "type": "RESIDENTIAL",
+    "type": "Residential",
     "preq": [
-      "UNIVERSITY",
-      "THEATRE"
+      "University",
+      "Theatre"
     ],
     "cost": 4000,
     "build": 3,
     "events": [
       {
-        "name": "RARE_BOOK",
+        "name": "Rare_Book",
         "chance": 2
       },
       {
-        "name": "LECTURE",
+        "name": "Lecture",
         "chance": 1
       },
       {
-        "name": "FINE_CRAFT",
+        "name": "Fine_Craft",
         "chance": 2
       },
       {
-        "name": "MASTERWORK",
+        "name": "Masterwork",
         "chance": 1
       }
-    ],
-    "flags": "0x0fff"
+    ]
   },
   {
-    "name": "MARKET",
+    "name": "Market",
     "id": 101,
-    "type": "INDUSTRIAL",
+    "type": "Industrial",
     "preq": null,
     "cost": 100,
     "build": 10,
     "events": [
       {
-        "name": "MERCHANTS",
+        "name": "Merchants",
         "chance": 2
       },
       {
-        "name": "OUTLAWS",
+        "name": "Outlaws",
         "chance": 1
       }
-    ],
-    "flags": "0x1fff"
+    ]
   },
   {
-    "name": "INN",
+    "name": "Inn",
     "id": 102,
-    "type": "INDUSTRIAL",
+    "type": "Industrial",
     "preq": [
-      "MARKET"
+      "Market"
     ],
     "cost": 300,
     "build": 8,
     "events": [
       {
-        "name": "MERCHANTS",
+        "name": "Merchants",
         "chance": 2
       },
       {
-        "name": "OUTLAWS",
+        "name": "Outlaws",
         "chance": 1
       }
-    ],
-    "flags": "0x1fff"
+    ]
   },
   {
-    "name": "FORGE",
+    "name": "Forge",
     "id": 103,
-    "type": "INDUSTRIAL",
+    "type": "Industrial",
     "preq": null,
     "cost": 200,
     "build": 10,
     "events": [
       {
-        "name": "BREAKTHROUGH",
+        "name": "Breakthrough",
         "chance": 1
       },
       {
-        "name": "FIRE",
+        "name": "Fire",
         "chance": 1
       },
       {
-        "name": "FINE_CRAFT",
+        "name": "Fine_Craft",
         "chance": 2
       }
-    ],
-    "flags": "0x1fff"
+    ]
   },
   {
-    "name": "MINT",
+    "name": "Mint",
     "id": 104,
-    "type": "INDUSTRIAL",
+    "type": "Industrial",
     "preq": [
-      "FORGE",
-      "MARKET"
+      "Forge",
+      "Market"
     ],
     "cost": 700,
     "build": 5,
     "events": [
       {
-        "name": "OUTLAWS",
+        "name": "Outlaws",
         "chance": 1
       },
       {
-        "name": "TAX",
+        "name": "Tax",
         "chance": 3
       }
-    ],
-    "flags": "0x1fff"
+    ]
   },
   {
-    "name": "WORKSHOP",
+    "name": "Workshop",
     "id": 105,
-    "type": "INDUSTRIAL",
+    "type": "Industrial",
     "preq": null,
     "cost": 400,
     "build": 8,
     "events": [
       {
-        "name": "ACCIDENT",
+        "name": "Accident",
         "chance": -1
       },
       {
-        "name": "FINE_CRAFT",
+        "name": "Fine_Craft",
         "chance": 2
       }
-    ],
-    "flags": "0x1fff"
+    ]
   },
   {
-    "name": "GUILD_HALL",
+    "name": "Guild_Hall",
     "id": 106,
-    "type": "INDUSTRIAL",
+    "type": "Industrial",
     "preq": [
-      "MARKET",
-      "WORKSHOP"
+      "Market",
+      "Workshop"
     ],
     "cost": 1000,
     "build": 4,
     "events": [
       {
-        "name": "BREAKTHROUGH",
+        "name": "Breakthrough",
         "chance": 1
       },
       {
-        "name": "ARCHITECT",
+        "name": "Architect",
         "chance": 1
       },
       {
-        "name": "MERCHANTS",
+        "name": "Merchants",
         "chance": 1
       },
       {
-        "name": "STRIKE",
+        "name": "Strike",
         "chance": 1
       },
       {
-        "name": "FINE_CRAFT",
+        "name": "Fine_Craft",
         "chance": 3
       }
-    ],
-    "flags": "0x1fff"
+    ]
   },
   {
-    "name": "LIGHTHOUSE",
+    "name": "Lighthouse",
     "id": 201,
-    "type": "PORT",
+    "type": "Port",
     "preq": null,
     "cost": 200,
     "build": 10,
     "events": [
       {
-        "name": "OUTLAWS",
+        "name": "Outlaws",
         "chance": 2
       },
       {
-        "name": "FIRE",
+        "name": "Fire",
         "chance": 1
       }
-    ],
-    "flags": "0x2fff"
+    ]
   },
   {
-    "name": "HARBOUR",
+    "name": "Harbour",
     "id": 202,
-    "type": "PORT",
+    "type": "Port",
     "preq": [
-      "LIGHTHOUSE"
+      "Lighthouse"
     ],
     "cost": 600,
     "build": 5,
     "events": [
       {
-        "name": "OUTLAWS",
+        "name": "Outlaws",
         "chance": 2
       },
       {
-        "name": "PLAGUE",
+        "name": "Plague",
         "chance": 2
       },
       {
-        "name": "MERCHANTS",
+        "name": "Merchants",
         "chance": 1
       }
-    ],
-    "flags": "0x2fff"
+    ]
   },
   {
-    "name": "WAREHOUSE",
+    "name": "Warehouse",
     "id": 203,
-    "type": "PORT",
+    "type": "Port",
     "preq": [
-      "HARBOUR"
+      "Harbour"
     ],
     "cost": 900,
     "build": 4,
     "events": [
       {
-        "name": "PLAGUE",
+        "name": "Plague",
         "chance": 1
       },
       {
-        "name": "MERCHANTS",
+        "name": "Merchants",
         "chance": 2
       }
-    ],
-    "flags": "0x2fff"
+    ]
   },
   {
-    "name": "SHIPYARD",
+    "name": "Shipyard",
     "id": 204,
-    "type": "PORT",
+    "type": "Port",
     "preq": [
-      "HARBOUR",
-      "WORKSHOP"
+      "Harbour",
+      "Workshop"
     ],
     "cost": 1500,
     "build": 3,
     "events": [
       {
-        "name": "INVESTMENT",
+        "name": "Investment",
         "chance": 1
       },
       {
-        "name": "EMBARGO",
+        "name": "Embargo",
         "chance": 1
       },
       {
-        "name": "SKIRMISH",
+        "name": "Skirmish",
         "chance": 1
       }
-    ],
-    "flags": "0x2fff"
+    ]
   },
   {
-    "name": "CUSTOMS_HOUSE",
+    "name": "Customs_House",
     "id": 205,
-    "type": "PORT",
+    "type": "Port",
     "preq": [
-      "MARKET",
-      "WAREHOUSE"
+      "Market",
+      "Warehouse"
     ],
     "cost": 2000,
     "build": 2,
     "events": [
       {
-        "name": "MERCHANTS",
+        "name": "Merchants",
         "chance": 2
       },
       {
-        "name": "TAX",
+        "name": "Tax",
         "chance": 2
       },
       {
-        "name": "EMBARGO",
+        "name": "Embargo",
         "chance": 2
       },
       {
-        "name": "INVESTMENT",
+        "name": "Investment",
         "chance": 1
       },
       {
-        "name": "PLAGUE",
+        "name": "Plague",
         "chance": 1
       }
-    ],
-    "flags": "0x2fff"
+    ]
   },
   {
-    "name": "LAZARETTO",
+    "name": "Lazaretto",
     "id": 206,
-    "type": "PORT",
+    "type": "Port",
     "preq": [
-      "TEMPLE",
-      "HARBOUR"
+      "Temple",
+      "Harbour"
     ],
     "cost": 1200,
     "build": 3,
     "events": [
       {
-        "name": "PLAGUE",
+        "name": "Plague",
         "chance": -2
       },
       {
-        "name": "REVELATION",
+        "name": "Revelation",
         "chance": 1
       }
-    ],
-    "flags": "0x2fff"
+    ]
   },
   {
-    "name": "LIBRARY",
+    "name": "Library",
     "id": 301,
-    "type": "ACADEMIC",
+    "type": "Academic",
     "preq": null,
     "cost": 400,
     "build": 8,
     "events": [
       {
-        "name": "RARE_BOOK",
+        "name": "Rare_Book",
         "chance": 1
       },
       {
-        "name": "BREAKTHROUGH",
+        "name": "Breakthrough",
         "chance": 1
       }
-    ],
-    "flags": "0x3fff"
+    ]
   },
   {
-    "name": "SCHOOL",
+    "name": "School",
     "id": 302,
-    "type": "ACADEMIC",
+    "type": "Academic",
     "preq": [
-      "LIBRARY",
-      "TEMPLE"
+      "Library",
+      "Temple"
     ],
     "cost": 1200,
     "build": 3,
     "events": [
       {
-        "name": "RARE_BOOK",
+        "name": "Rare_Book",
         "chance": 2
       },
       {
-        "name": "LECTURE",
+        "name": "Lecture",
         "chance": 2
       }
-    ],
-    "flags": "0x3fff"
+    ]
   },
   {
-    "name": "UNIVERSITY",
+    "name": "University",
     "id": 303,
-    "type": "ACADEMIC",
+    "type": "Academic",
     "preq": [
-      "SCHOOL"
+      "School"
     ],
     "cost": 3000,
     "build": 2,
     "events": [
       {
-        "name": "RARE_BOOK",
+        "name": "Rare_Book",
         "chance": 2
       },
       {
-        "name": "LECTURE",
+        "name": "Lecture",
         "chance": 2
       },
       {
-        "name": "BREAKTHROUGH",
+        "name": "Breakthrough",
         "chance": 1
       },
       {
-        "name": "STRIKE",
+        "name": "Strike",
         "chance": 1
       },
       {
-        "name": "ARCHITECT",
+        "name": "Architect",
         "chance": 1
       }
-    ],
-    "flags": "0x4fff"
+    ]
   },
   {
-    "name": "OBSERVATORY",
+    "name": "Observatory",
     "id": 304,
-    "type": "ACADEMIC",
+    "type": "Academic",
     "preq": [
-      "SCHOOL"
+      "School"
     ],
     "cost": 2500,
     "build": 2,
     "events": [
       {
-        "name": "RARE_BOOK",
+        "name": "Rare_Book",
         "chance": 1
       },
       {
-        "name": "CELESTIAL_EVENT",
+        "name": "Celestial_Event",
         "chance": 2
       }
-    ],
-    "flags": "0x4daf"
+    ]
   },
   {
-    "name": "SOCIETY",
+    "name": "Society",
     "id": 305,
-    "type": "ACADEMIC",
+    "type": "Academic",
     "preq": [
-      "UNIVERSITY"
+      "University"
     ],
     "cost": 5000,
     "build": 2,
     "events": [
       {
-        "name": "RARE_BOOK",
+        "name": "Rare_Book",
         "chance": 1
       },
       {
-        "name": "LECTURE",
+        "name": "Lecture",
         "chance": 2
       },
       {
-        "name": "PERFORMANCE",
+        "name": "Performance",
         "chance": 1
       },
       {
-        "name": "HERESY",
+        "name": "Heresy",
         "chance": 1
       },
       {
-        "name": "ARTIFACT",
+        "name": "Artifact",
         "chance": 1
       }
-    ],
-    "flags": "0x4fff"
+    ]
   },
   {
-    "name": "WALLS",
+    "name": "Walls",
     "id": 401,
-    "type": "ADMINISTRATIVE",
+    "type": "Administrative",
     "preq": null,
     "cost": 100,
     "build": 10,
     "events": [
       {
-        "name": "SKIRMISH",
+        "name": "Skirmish",
         "chance": 1
       },
       {
-        "name": "OUTLAWS",
+        "name": "Outlaws",
         "chance": -1
       }
-    ],
-    "flags": "0x5fff"
+    ]
   },
   {
-    "name": "BARRACKS",
+    "name": "Barracks",
     "id": 402,
-    "type": "ADMINISTRATIVE",
+    "type": "Administrative",
     "preq": [
-      "WALLS"
+      "Walls"
     ],
     "cost": 300,
     "build": 8,
     "events": [
       {
-        "name": "SKIRMISH",
+        "name": "Skirmish",
         "chance": 3
       }
-    ],
-    "flags": "0x5fff"
+    ]
   },
   {
-    "name": "ARMOURY",
+    "name": "Armoury",
     "id": 403,
-    "type": "ADMINISTRATIVE",
+    "type": "Administrative",
     "preq": [
-      "BARRACKS",
-      "FORGE"
+      "Barracks",
+      "Forge"
     ],
     "cost": 1000,
     "build": 4,
     "events": [
       {
-        "name": "SKIRMISH",
+        "name": "Skirmish",
         "chance": 2
       },
       {
-        "name": "FINE_CRAFT",
+        "name": "Fine_Craft",
         "chance": 1
       }
-    ],
-    "flags": "0x5fff"
+    ]
   },
   {
-    "name": "FORTRESS",
+    "name": "Fortress",
     "id": 404,
-    "type": "ADMINISTRATIVE",
+    "type": "Administrative",
     "preq": [
-      "ARMOURY"
+      "Armoury"
     ],
     "cost": 2000,
     "build": 2,
     "events": [
       {
-        "name": "SKIRMISH",
+        "name": "Skirmish",
         "chance": 2
       },
       {
-        "name": "FINE_CRAFT",
+        "name": "Fine_Craft",
         "chance": 1
       },
       {
-        "name": "OCCUPATION",
+        "name": "Occupation",
         "chance": 1
       }
-    ],
-    "flags": "0x5fff"
+    ]
   },
   {
-    "name": "ASSEMBLY",
+    "name": "Assembly",
     "id": 405,
-    "type": "ADMINISTRATIVE",
+    "type": "Administrative",
     "preq": null,
     "cost": 200,
     "build": 10,
     "events": [
       {
-        "name": "TRIAL",
+        "name": "Trial",
         "chance": 2
       },
       {
-        "name": "OUTLAWS",
+        "name": "Outlaws",
         "chance": -1
       }
-    ],
-    "flags": "0x5fff"
+    ]
   },
   {
-    "name": "PRISON",
+    "name": "Prison",
     "id": 406,
-    "type": "ADMINISTRATIVE",
+    "type": "Administrative",
     "preq": [
-      "ASSEMBLY",
-      "BARRACKS"
+      "Assembly",
+      "Barracks"
     ],
     "cost": 800,
     "build": 5,
     "events": [
       {
-        "name": "TRIAL",
+        "name": "Trial",
         "chance": 2
       },
       {
-        "name": "SKIRMISH",
+        "name": "Skirmish",
         "chance": -2
       },
       {
-        "name": "OUTLAWS",
+        "name": "Outlaws",
         "chance": -2
       }
-    ],
-    "flags": "0x5fff"
+    ]
   },
   {
-    "name": "PALACE",
+    "name": "Palace",
     "id": 407,
-    "type": "ADMINISTRATIVE",
+    "type": "Administrative",
     "preq": [
-      "WALLS",
-      "ASSEMBLY"
+      "Walls",
+      "Assembly"
     ],
     "cost": 5000,
     "build": 2,
     "events": [
       {
-        "name": "INVESTMENT",
+        "name": "Investment",
         "chance": 2
       },
       {
-        "name": "DIPLOMAT",
+        "name": "Diplomat",
         "chance": 2
       },
       {
-        "name": "MASTERWORK",
+        "name": "Masterwork",
         "chance": 1
       }
-    ],
-    "flags": "0xdfff"
+    ]
   }
 ]

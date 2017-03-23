@@ -5,7 +5,7 @@ extern crate serde;
 
 mod parser;
 mod events;
-use std::env;
+mod buildings;
 //use std::io;
 
 fn main() {
@@ -14,6 +14,13 @@ fn main() {
         .expect("Error parsing JSON!");
 
     println!("Loaded events.json! {} events found", events.len());
+
+    let buildings : Vec<buildings::Building> = parser::get_data("buildings.json")
+        .expect("Error parsing JSON!");
+
+    println!("Loaded buildings.json! {} buildings found", buildings.len());
+
+    println!("{:?}", buildings[0]);
 
     let ev = events::Event {
         name: "FIRE".to_string(),

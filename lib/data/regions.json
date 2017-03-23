@@ -1,56 +1,56 @@
 [
 {
-    "name": "TUNDRA",
+    "name": "Tundra",
     "desc": "on a cold and treeless plain",
     "growth": 1
 },
 {
-    "name": "TAIGA",
+    "name": "Taiga",
     "desc": "surrounded by coniferous woodlands",
     "growth": 2
 },
 {
-    "name": "WOODLAND",
+    "name": "Woodland",
     "desc": "nestled in open temperate woodlands",
     "growth": 3
 },
 {
-    "name": "PARKLAND",
+    "name": "Parkland",
     "desc": "at the centre of well-maintained farms and groves",
     "growth": 6
 },
 {
-    "name": "SCRUB",
+    "name": "Scrub",
     "desc": "looking across thickets and shrubs",
     "growth": 4
 },
 {
-    "name": "MACCHIA",
+    "name": "Macchia",
     "desc": "settled in thick evergreen shrubland",
     "growth": 5
 },
 {
-    "name": "TROPICAL_SHRUBLAND",
+    "name": "Tropical_Shrubland",
     "desc": "amidst a mixture of thorny grasses and tropical plants",
     "growth": 4
 },
 {
-    "name": "FLOODPLAIN",
+    "name": "Floodplain",
     "desc": "along a wide alluvial plain",
     "growth": 6
 },
 {
-    "name": "JUNGLE",
+    "name": "Jungle",
     "desc": "hidden within deep and wet forests",
     "growth": 2
 },
 {
-    "name": "STEPPE",
+    "name": "Steppe",
     "desc": "scattered on an arid steppe",
     "growth": 2
 },
 {
-    "name": "DESERT",
+    "name": "Desert",
     "desc": "under the hot desert sun",
     "growth": 1
 }

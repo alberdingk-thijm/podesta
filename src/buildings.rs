@@ -1,4 +1,5 @@
-use serde;
+use std::fmt;
+use std::str;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Building {
@@ -10,11 +11,12 @@ pub struct Building {
     pub cost: f32,
     pub build: f32,
     pub events: Vec<EventChance>,
-    pub flags: i32,
+    //#[serde(with = "hexflags")]
+    //pub flags: Vec<BFlags>,  // should be hex
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-enum BType {
+pub enum BType {
     Residential,
     Industrial,
     Port,
@@ -24,17 +26,19 @@ enum BType {
 
 impl fmt::Display for BType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, match *self {
+        write!(f, "{}", match *self {
             BType::Residential => "RESIDENTIAL",
             BType::Industrial => "INDUSTRIAL",
             BType::Port => "PORT",
             BType::Academic => "ACADEMIC",
-            BType::Administrative => "ADMINISTRATIVE")
-        }
+            BType::Administrative => "ADMINISTRATIVE",
+        })
     }
 }
 
 impl str::FromStr for BType {
+    type Err = ();
+
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "RESIDENTIAL" => Ok(BType::Residential),
@@ -45,31 +49,70 @@ impl str::FromStr for BType {
             _ => Err(()),
         }
     }
+}
 
+/*
 impl ::serde::Serialize for BType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
       where S: ::serde::Serializer {
         // serialize enum as string in all caps
-        let name = *self.to_string();
-        serializer.serialize_str(name)
+        let name = self.to_string();
+        serializer.serialize_str(&name)
     }
 }
 
 impl ::serde::Deserialize for BType {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
       where D: ::serde::Deserializer {
-        
+
         struct Visitor;
 
-        impl 
+        impl ::serde::de::Visitor for Visitor {
+            type Value = BType;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("string")
+            }
+
+            fn visit_str<E>(self, value: &str) -> Result<BType, E>
+                where E: ::serde::de::Error
+            {
+                match value.parse::<BType>() {
+                    Ok(t) => Ok(t),
+                    Err(_) => Err(E::custom(
+                            format!("No BType for {}", value))),
+                }
+            }
+        }
+
+        // Deserialize the enum from a str.
+        deserializer.deserialize_str(Visitor)
     }
 }
+*/
 
 #[derive(Serialize, Deserialize, Debug)]
-struct EventChance {
+pub struct EventChance {
     name: String,
     chance: f32,
 }
+/*
+pub mod hexflags {
+    use serde::{self, Deserialize, Serializer, Deserializer};
+
+    pub fn serialize<S>(hex: i32, serializer: S) -> Result<S::Ok, S::Error>
+        where S: Serializer
+    {
+        let s = format!("{:x}", hex);
+        serializer.serialize_str(&s)
+    }
+
+    pub fn deserialize<D>(deserializer: D) -> Result<i32, D::Error>
+        where D: Deserializer
+    {
+        let s = String::deserialize(deserializer)?;
+    }
+}*/
 
 impl Building {
 

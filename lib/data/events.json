@@ -1,246 +1,246 @@
 [
   {
-    "name": "FIRE",
+    "name": "Fire",
     "id": 1,
     "desc": "%s has erupted into flames!",
     "chance": 3,
     "event": [
-      "KILL_2",
-      "DAM_2"
+      "Kill_2",
+      "Dam_2"
     ]
   },
   {
-    "name": "ACCIDENT",
+    "name": "Accident",
     "id": 2,
     "desc": "there has been an accident at %s",
     "chance": 3,
     "event": [
-      "KILL_1",
-      "DAM_1"
+      "Kill_1",
+      "Dam_1"
     ]
   },
   {
-    "name": "BREAKTHROUGH",
+    "name": "Breakthrough",
     "id": 3,
     "desc": "%s is celebrating a breakthrough",
     "chance": 3,
     "event": [
-      "BLD_1",
-      "GROW_1"
+      "Bld_1",
+      "Grow_1"
     ]
   },
   {
-    "name": "INVESTMENT",
+    "name": "Investment",
     "id": 4,
     "desc": "%s received a welcome investment",
     "chance": 3,
     "event": [
-      "GOLD_1"
+      "Gold_1"
     ]
   },
   {
-    "name": "RARE_BOOK",
+    "name": "Rare_Book",
     "id": 11,
     "desc": "%s has acquired a rare book",
     "chance": 0,
     "event": [
-      "ITEM_1"
+      "Item_1"
     ]
   },
   {
-    "name": "LECTURE",
+    "name": "Lecture",
     "id": 12,
     "desc": "a lecture was held at %s",
     "chance": 0,
     "event": [
-      "HERO_MAGE"
+      "Hero_Mage"
     ]
   },
   {
-    "name": "CELESTIAL_EVENT",
+    "name": "Celestial_Event",
     "id": 13,
     "desc": "%s observed an incredible celestial event!",
     "chance": 0,
     "event": [
-      "RIOT_2",
-      "HERO_MAGE"
+      "Riot_2",
+      "Hero_Mage"
     ]
   },
   {
-    "name": "STRIKE",
+    "name": "Strike",
     "id": 14,
     "desc": "members of %s are striking",
     "chance": 0,
     "event": [
-      "RIOT_3",
-      "DAM_1"
+      "Riot_3",
+      "Dam_1"
     ]
   },
   {
-    "name": "ARTIFACT",
+    "name": "Artifact",
     "id": 15,
     "desc": "a precious artifact has arrived at %s",
     "chance": 0,
     "event": [
-      "ITEM_3"
+      "Item_3"
     ]
   },
   {
-    "name": "MASTERWORK",
+    "name": "Masterwork",
     "id": 21,
     "desc": "%s has received a beautiful masterwork",
     "chance": 0,
     "event": [
-      "ITEM_2"
+      "Item_2"
     ]
   },
   {
-    "name": "PERFORMANCE",
+    "name": "Performance",
     "id": 22,
     "desc": "a performance has been mounted at %s",
     "chance": 0,
     "event": [
-      "GROW_1",
-      "HERO_BARD"
+      "Grow_1",
+      "Hero_Bard"
     ]
   },
   {
-    "name": "HERESY",
+    "name": "Heresy",
     "id": 23,
     "desc": "%s has uncovered heretics",
     "chance": 0,
     "event": [
-      "RIOT_2",
-      "HERO_RLG"
+      "Riot_2",
+      "Hero_Rlg"
     ]
   },
   {
-    "name": "REVELATION",
+    "name": "Revelation",
     "id": 24,
     "desc": "a visitor to %s experienced a revelation!",
     "chance": 0,
     "event": [
-      "GROW_1",
-      "HERO_RLG"
+      "Grow_1",
+      "Hero_Rlg"
     ]
   },
   {
-    "name": "OBSERVANCE",
+    "name": "Observance",
     "id": 25,
     "desc": "the community of %s is observing a religious holiday",
     "chance": 0,
     "event": [
-      "GROW_2"
+      "Grow_2"
     ]
   },
   {
-    "name": "FINE_CRAFT",
+    "name": "Fine_Craft",
     "id": 31,
     "desc": "%s has produced a fine piece of work",
     "chance": 0,
     "event": [
-      "ITEM_1"
+      "Item_1"
     ]
   },
   {
-    "name": "MERCHANTS",
+    "name": "Merchants",
     "id": 32,
     "desc": "rich merchants have arrived at %s",
     "chance": 0,
     "event": [
-      "HERO_MERCH",
-      "GOLD_1"
+      "Hero_Merch",
+      "Gold_1"
     ]
   },
   {
-    "name": "TAX",
+    "name": "Tax",
     "id": 33,
     "desc": "%s has established a new tax",
     "chance": 0,
     "event": [
-      "RIOT_1",
-      "GOLD_2"
+      "Riot_1",
+      "Gold_2"
     ]
   },
   {
-    "name": "EMBARGO",
+    "name": "Embargo",
     "id": 34,
     "desc": "an embargo was established by %s",
     "chance": 0,
     "event": [
-      "RIOT_2",
-      "HERO_CRIME"
+      "Riot_2",
+      "Hero_Crime"
     ]
   },
   {
-    "name": "OUTLAWS",
+    "name": "Outlaws",
     "id": 35,
     "desc": "outlaws have been harassing travellers!",
     "chance": 0,
     "event": [
-      "RIOT_1",
-      "HERO_CRIME"
+      "Riot_1",
+      "Hero_Crime"
     ]
   },
   {
-    "name": "ARCHITECT",
+    "name": "Architect",
     "id": 36,
     "desc": "a talented architect has arrived at %s",
     "chance": 0,
     "event": [
-      "BLD_2"
+      "Bld_2"
     ]
   },
   {
-    "name": "PLAGUE",
+    "name": "Plague",
     "id": 37,
     "desc": "a terrible plague has claimed us!",
     "chance": 0,
     "event": [
-      "KILL_2",
-      "RIOT_3"
+      "Kill_2",
+      "Riot_3"
     ]
   },
   {
-    "name": "SKIRMISH",
+    "name": "Skirmish",
     "id": 41,
     "desc": "soldiers at %s have returned from a skirmish",
     "chance": 0,
     "event": [
-      "KILL_1",
-      "HERO_WAR"
+      "Kill_1",
+      "Hero_War"
     ]
   },
   {
-    "name": "OCCUPATION",
+    "name": "Occupation",
     "id": 42,
     "desc": "hostile forces have occupied %s!",
     "chance": 0,
     "event": [
-      "KILL_2",
-      "DAM_2",
-      "HERO_WAR"
+      "Kill_2",
+      "Dam_2",
+      "Hero_War"
     ]
   },
   {
-    "name": "TRIAL",
+    "name": "Trial",
     "id": 43,
     "desc": "a trial is being held at %s",
     "chance": 0,
     "event": [
-      "KILL_1",
-      "RIOT_1"
+      "Kill_1",
+      "Riot_1"
     ]
   },
   {
-    "name": "DIPLOMAT",
+    "name": "Diplomat",
     "id": 44,
     "desc": "a dignitary is visiting at %s",
     "chance": 0,
     "event": [
-      "GOLD_2",
-      "GROW_2",
-      "BLD_1"
+      "Gold_2",
+      "Grow_2",
+      "Bld_1"
     ]
   }
 ]
