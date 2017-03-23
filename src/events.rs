@@ -1,9 +1,3 @@
-/*
-#[macro_use]
-use serde_derive;
-use serde_json;
-use serde;
-*/
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Event {

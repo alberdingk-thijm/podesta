@@ -6,6 +6,9 @@ extern crate serde;
 mod parser;
 mod events;
 mod buildings;
+mod regions;
+mod quarters;
+mod people;
 //use std::io;
 
 fn main() {
@@ -20,7 +23,10 @@ fn main() {
 
     println!("Loaded buildings.json! {} buildings found", buildings.len());
 
-    println!("{:?}", buildings[0]);
+    let regions : Vec<regions::Region> = parser::get_data("regions.json")
+        .expect("Error parsing JSON!");
+
+    println!("Loaded regions.json! {} regions found", regions.len());
 
     let ev = events::Event {
         name: "Fire".to_string(),
