@@ -26,6 +26,13 @@ pub struct Event {
     // TODO: convert to Vec<event effect>
 }
 
+pub enum EventEffect {
+    Kill(i32, i32),
+    Dam(i32, i32),
+    Riot(i32, i32, i32),
+
+}
+
 impl Event {
 
     /// Attempt to activate the event's effects with a provided roll.
