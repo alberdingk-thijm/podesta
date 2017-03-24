@@ -19,10 +19,10 @@ Event Effects:
 There are eight different event effects.
 
 - Kill citizens (KILL)
-- Damage buildings (DAM)
+- Damage buildings (DAMAGE)
 - Slow growth and building (RIOT)
 - Grow the settlement (GROW)
-- Build more quickly (BLD)
+- Build more quickly (BUILD)
 - Earn gold faster (GOLD) (NEW)
 - Add a new notable (HERO)
 - Add a new item (ITEM)
@@ -36,13 +36,13 @@ number as opposed to a percentage.
 KILL_2: kill a percentage of the population of the quarter; if a high enough
 roll is obtained, subsequent rolls must be made in the other quarters.
 
-DAM effect:
-When an event has a DAM effect, it has a risk of damaging infrastructure in
+DAMAGE effect:
+When an event has a DAMAGE effect, it has a risk of damaging infrastructure in
 the quarter or settlement as a whole, based on the intensity of the effect.
-There are two levels of the DAM effect, DAM_1 and DAM_2.
-DAM_1: damage a single building in the quarter, possibly destroying it
+There are two levels of the DAMAGE effect, DAMAGE_1 and DAMAGE_2.
+DAMAGE_1: damage a single building in the quarter, possibly destroying it
 entirely (i.e. the building's condition is Ruined).
-DAM_2: damage multiple buildings in the quarter, possibly destroying them
+DAMAGE_2: damage multiple buildings in the quarter, possibly destroying them
 entirely. On a high enough roll, subsequent rolls must be made in the other
 quarters.
 
@@ -64,12 +64,12 @@ levels of the GROW effect, GROW_1 and GROW_2.
 GROW_1: growth increases by some percentage for the quarter.
 GROW_2: growth increases by some percentage for the entire settlement.
 
-BLD effect:
-When an event has a BLD effect, it increases the build speed of the quarter
+BUILD effect:
+When an event has a BUILD effect, it increases the build speed of the quarter
 or the entire settlement, based on the intensity of the effect. There are two
-levels of the BLD effect, BLD_1 and BLD_2.
-BLD_1: build speed increases by some percentage for the quarter.
-BLD_2: build speed increases by some percentage for the entire settlement.
+levels of the BUILD effect, BUILD_1 and BUILD_2.
+BUILD_1: build speed increases by some percentage for the quarter.
+BUILD_2: build speed increases by some percentage for the entire settlement.
 
 GOLD effect:
 When an event has a GOLD effect, it increases the amount of gold earned by the

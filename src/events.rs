@@ -40,10 +40,10 @@ pub struct Event {
 
 pub enum EventEffect {
     Kill(i32, i32),
-    Dam(i32, i32),
+    Damage(i32, i32),
     Riot(i32, i32, i32),
     Grow(i32, i32),
-    Bld(i32, i32),
+    Build(i32, i32),
     Gold(i32, i32),
     Hero { mage: i32, bard: i32, merch: i32, crime: i32, rlg: i32, war: i32 },
     Item(i32, i32, i32),

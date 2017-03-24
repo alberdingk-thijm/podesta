@@ -58,7 +58,7 @@
     ]
   },
   {
-    "name": "Grand_Temple",
+    "name": "GrandTemple",
     "id": 4,
     "type": "Residential",
     "preq": [
@@ -97,7 +97,7 @@
     "build": 4,
     "events": [
       {
-        "name": "Rare_Book",
+        "name": "RareBook",
         "chance": 1
       },
       {
@@ -118,7 +118,7 @@
     "build": 3,
     "events": [
       {
-        "name": "Rare_Book",
+        "name": "RareBook",
         "chance": 2
       },
       {
@@ -126,7 +126,7 @@
         "chance": 1
       },
       {
-        "name": "Fine_Craft",
+        "name": "FineCraft",
         "chance": 2
       },
       {
@@ -190,7 +190,7 @@
         "chance": 1
       },
       {
-        "name": "Fine_Craft",
+        "name": "FineCraft",
         "chance": 2
       }
     ]
@@ -229,13 +229,13 @@
         "chance": -1
       },
       {
-        "name": "Fine_Craft",
+        "name": "FineCraft",
         "chance": 2
       }
     ]
   },
   {
-    "name": "Guild_Hall",
+    "name": "GuildHall",
     "id": 106,
     "type": "Industrial",
     "preq": [
@@ -262,7 +262,7 @@
         "chance": 1
       },
       {
-        "name": "Fine_Craft",
+        "name": "FineCraft",
         "chance": 3
       }
     ]
@@ -355,7 +355,7 @@
     ]
   },
   {
-    "name": "Customs_House",
+    "name": "CustomsHouse",
     "id": 205,
     "type": "Port",
     "preq": [
@@ -417,7 +417,7 @@
     "build": 8,
     "events": [
       {
-        "name": "Rare_Book",
+        "name": "RareBook",
         "chance": 1
       },
       {
@@ -438,7 +438,7 @@
     "build": 3,
     "events": [
       {
-        "name": "Rare_Book",
+        "name": "RareBook",
         "chance": 2
       },
       {
@@ -458,7 +458,7 @@
     "build": 2,
     "events": [
       {
-        "name": "Rare_Book",
+        "name": "RareBook",
         "chance": 2
       },
       {
@@ -490,11 +490,11 @@
     "build": 2,
     "events": [
       {
-        "name": "Rare_Book",
+        "name": "RareBook",
         "chance": 1
       },
       {
-        "name": "Celestial_Event",
+        "name": "CelestialEvent",
         "chance": 2
       }
     ]
@@ -510,7 +510,7 @@
     "build": 2,
     "events": [
       {
-        "name": "Rare_Book",
+        "name": "RareBook",
         "chance": 1
       },
       {
@@ -581,7 +581,7 @@
         "chance": 2
       },
       {
-        "name": "Fine_Craft",
+        "name": "FineCraft",
         "chance": 1
       }
     ]
@@ -601,7 +601,7 @@
         "chance": 2
       },
       {
-        "name": "Fine_Craft",
+        "name": "FineCraft",
         "chance": 1
       },
       {

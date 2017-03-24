@@ -5,8 +5,16 @@
     "desc": "%s has erupted into flames!",
     "chance": 3,
     "event": [
-      "Kill_2",
-      "Dam_2"
+      {
+        "Kill": {
+          "scale": 2
+        }
+      },
+      {
+        "Damage": {
+          "scale": 2
+        }
+      }
     ]
   },
   {
@@ -15,8 +23,16 @@
     "desc": "there has been an accident at %s",
     "chance": 3,
     "event": [
-      "Kill_1",
-      "Dam_1"
+      {
+        "Kill": {
+          "scale": 1
+        }
+      },
+      {
+        "Damage": {
+          "scale": 1
+        }
+      }
     ]
   },
   {
@@ -25,8 +41,16 @@
     "desc": "%s is celebrating a breakthrough",
     "chance": 3,
     "event": [
-      "Bld_1",
-      "Grow_1"
+      {
+        "Build": {
+          "all_q": false
+        }
+      },
+      {
+        "Grow": {
+          "all_q": false
+        }
+      }
     ]
   },
   {
@@ -35,16 +59,25 @@
     "desc": "%s received a welcome investment",
     "chance": 3,
     "event": [
-      "Gold_1"
+      {
+        "Gold": {
+          "scale": 1
+        }
+      }
     ]
   },
   {
-    "name": "Rare_Book",
+    "name": "RareBook",
     "id": 11,
     "desc": "%s has acquired a rare book",
     "chance": 0,
     "event": [
-      "Item_1"
+      {
+        "Item": {
+          "quality": 1,
+          "magical": false
+        }
+      }
     ]
   },
   {
@@ -53,17 +86,34 @@
     "desc": "a lecture was held at %s",
     "chance": 0,
     "event": [
-      "Hero_Mage"
+      {
+        "Hero": {
+          "classes": [
+            "Mage",
+            "Illusionist"
+          ]
+        }
+      }
     ]
   },
   {
-    "name": "Celestial_Event",
+    "name": "CelestialEvent",
     "id": 13,
     "desc": "%s observed an incredible celestial event!",
     "chance": 0,
     "event": [
-      "Riot_2",
-      "Hero_Mage"
+      {
+        "Riot": {
+          "scale": 2
+        }
+      },
+      {
+        "Hero": {
+          "classes": [
+            "Mage"
+          ]
+        }
+      }
     ]
   },
   {
@@ -72,8 +122,16 @@
     "desc": "members of %s are striking",
     "chance": 0,
     "event": [
-      "Riot_3",
-      "Dam_1"
+      {
+        "Riot": {
+          "scale": 3
+        }
+      },
+      {
+        "Damage": {
+          "scale": 1
+        }
+      }
     ]
   },
   {
@@ -82,7 +140,12 @@
     "desc": "a precious artifact has arrived at %s",
     "chance": 0,
     "event": [
-      "Item_3"
+      {
+        "Item": {
+          "quality": 3,
+          "magical": true
+        }
+      }
     ]
   },
   {
@@ -91,7 +154,12 @@
     "desc": "%s has received a beautiful masterwork",
     "chance": 0,
     "event": [
-      "Item_2"
+      {
+        "Item": {
+          "quality": 2,
+          "magical": true
+        }
+      }
     ]
   },
   {
@@ -100,8 +168,18 @@
     "desc": "a performance has been mounted at %s",
     "chance": 0,
     "event": [
-      "Grow_1",
-      "Hero_Bard"
+      {
+        "Grow": {
+          "all_q": false
+        }
+      },
+      {
+        "Hero": {
+          "classes": [
+            "Bard"
+          ]
+        }
+      }
     ]
   },
   {
@@ -110,8 +188,19 @@
     "desc": "%s has uncovered heretics",
     "chance": 0,
     "event": [
-      "Riot_2",
-      "Hero_Rlg"
+      {
+        "Riot": {
+          "scale": 2
+        }
+      },
+      {
+        "Hero": {
+          "classes": [
+            "Cleric",
+            "Paladin"
+          ]
+        }
+      }
     ]
   },
   {
@@ -120,8 +209,21 @@
     "desc": "a visitor to %s experienced a revelation!",
     "chance": 0,
     "event": [
-      "Grow_1",
-      "Hero_Rlg"
+      {
+        "Grow": {
+          "all_q": false
+        }
+      },
+      {
+        "Hero": {
+          "classes": [
+            "Cleric",
+            "Druid",
+            "Paladin",
+            "Monk"
+          ]
+        }
+      }
     ]
   },
   {
@@ -130,16 +232,25 @@
     "desc": "the community of %s is observing a religious holiday",
     "chance": 0,
     "event": [
-      "Grow_2"
+      {
+        "Grow": {
+          "all_q": true
+        }
+      }
     ]
   },
   {
-    "name": "Fine_Craft",
+    "name": "FineCraft",
     "id": 31,
     "desc": "%s has produced a fine piece of work",
     "chance": 0,
     "event": [
-      "Item_1"
+      {
+        "Item": {
+          "quality": 1,
+          "magical": false
+        }
+      }
     ]
   },
   {
@@ -148,8 +259,18 @@
     "desc": "rich merchants have arrived at %s",
     "chance": 0,
     "event": [
-      "Hero_Merch",
-      "Gold_1"
+      {
+        "Hero": {
+          "classes": [
+            "Merchant"
+          ]
+        }
+      },
+      {
+        "Gold": {
+          "scale": 1
+        }
+      }
     ]
   },
   {
@@ -158,8 +279,16 @@
     "desc": "%s has established a new tax",
     "chance": 0,
     "event": [
-      "Riot_1",
-      "Gold_2"
+      {
+        "Riot": {
+          "scale": 1
+        }
+      },
+      {
+        "Gold": {
+          "scale": 2
+        }
+      }
     ]
   },
   {
@@ -168,8 +297,18 @@
     "desc": "an embargo was established by %s",
     "chance": 0,
     "event": [
-      "Riot_2",
-      "Hero_Crime"
+      {
+        "Riot": {
+          "scale": 2
+        }
+      },
+      {
+        "Hero": {
+          "classes": [
+            "Thief"
+          ]
+        }
+      }
     ]
   },
   {
@@ -178,8 +317,19 @@
     "desc": "outlaws have been harassing travellers!",
     "chance": 0,
     "event": [
-      "Riot_1",
-      "Hero_Crime"
+      {
+        "Riot": {
+          "scale": 1
+        }
+      },
+      {
+        "Hero": {
+          "classes": [
+            "Thief",
+            "Assassin"
+          ]
+        }
+      }
     ]
   },
   {
@@ -188,7 +338,11 @@
     "desc": "a talented architect has arrived at %s",
     "chance": 0,
     "event": [
-      "Bld_2"
+      {
+        "Build": {
+          "all_q": true
+        }
+      }
     ]
   },
   {
@@ -197,8 +351,16 @@
     "desc": "a terrible plague has claimed us!",
     "chance": 0,
     "event": [
-      "Kill_2",
-      "Riot_3"
+      {
+        "Kill": {
+          "scale": 2
+        }
+      },
+      {
+        "Riot": {
+          "scale": 3
+        }
+      }
     ]
   },
   {
@@ -207,8 +369,19 @@
     "desc": "soldiers at %s have returned from a skirmish",
     "chance": 0,
     "event": [
-      "Kill_1",
-      "Hero_War"
+      {
+        "Kill": {
+          "scale": 1
+        }
+      },
+      {
+        "Hero": {
+          "classes": [
+            "Fighter",
+            "Ranger"
+          ]
+        }
+      }
     ]
   },
   {
@@ -217,9 +390,24 @@
     "desc": "hostile forces have occupied %s!",
     "chance": 0,
     "event": [
-      "Kill_2",
-      "Dam_2",
-      "Hero_War"
+      {
+        "Kill": {
+          "scale": 2
+        }
+      },
+      {
+        "Damage": {
+          "scale": 2
+        }
+      },
+      {
+        "Hero": {
+          "classes": [
+            "Fighter",
+            "Paladin"
+          ]
+        }
+      }
     ]
   },
   {
@@ -228,8 +416,16 @@
     "desc": "a trial is being held at %s",
     "chance": 0,
     "event": [
-      "Kill_1",
-      "Riot_1"
+      {
+        "Kill": {
+          "scale": 1
+        }
+      },
+      {
+        "Riot": {
+          "scale": 1
+        }
+      }
     ]
   },
   {
@@ -238,9 +434,21 @@
     "desc": "a dignitary is visiting at %s",
     "chance": 0,
     "event": [
-      "Gold_2",
-      "Grow_2",
-      "Bld_1"
+      {
+        "Gold": {
+          "scale": 2
+        }
+      },
+      {
+        "Grow": {
+          "all_q": true
+        }
+      },
+      {
+        "Build": {
+          "all_q": false
+        }
+      }
     ]
   }
 ]
