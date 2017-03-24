@@ -3,13 +3,6 @@ use std::str;
 use buildings;
 use people;
 
-#[derive(Debug)]
-pub struct QuarterConf {
-    pub name: String,
-    pub qtype: QType,
-    pub race: people::Race,
-}
-
 #[allow(dead_code)]
 #[derive(Debug)]
 pub struct Quarter {

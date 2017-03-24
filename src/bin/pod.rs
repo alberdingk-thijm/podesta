@@ -22,19 +22,5 @@ fn main() {
 
     println!("Loaded regions.json! {} regions found", regions.len());
 
-    let ev = podesta::events::Event {
-        name: "Fire".to_string(),
-        id: 1,
-        desc: "%s has erupted into flames!".to_string(),
-        chance: 3,
-        effects: vec!("Kill_2".to_string(), "Dam_2".to_string()),
-    };
-
-    let serialized = serde_json::to_string(&ev).unwrap();
-    println!("serialized = {}", serialized);
-
-    let deserialized: podesta::events::Event = serde_json::from_str(&serialized).unwrap();
-    println!("deserialized = {:?}", deserialized);
-
     podesta::init();
 }

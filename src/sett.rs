@@ -53,8 +53,11 @@ impl Sett {
     /// Gain a small amount of gold for doing so.
     /// Move a fraction of the sett's population to the new quarter,
     /// times the growth bonus.
-    pub fn add_quarter(&self, qc: quarters::QuarterConf)
-    -> Result<Self, quarters::BuildErr>
+    pub fn add_quarter(&self,
+                       n: String
+                       qt: quarters::QType,
+                       r: people::Race,
+    ) -> Result<Self, quarters::BuildErr>
     {
         // ensure pop is high enough
         // remove pop from existing quarters equally
