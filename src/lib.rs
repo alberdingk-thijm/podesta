@@ -5,6 +5,7 @@ extern crate serde;
 
 pub mod parser;
 pub mod events;
+pub mod sett;
 pub mod buildings;
 pub mod regions;
 pub mod quarters;
@@ -25,9 +26,19 @@ fn get_datafiles() {
 }
 
 /// Create a new settlement, prompting for user input occasionally.
-fn init() {
-    // Prompt for region type
+pub fn init() {
+    // Prompt for region
+    let reg = regions::Region {
+        name: "Floodplain".to_string(),
+        desc: "marshy wetlands".to_string(),
+        growth: 6,
+        starting_gold: 100.0,
+    };
+    // Prompt for quarter type
+    let qtype = quarters::QType::Port;
+    // Prompt for race?
+    let race = people::Race::Human;
     // Generate empty settlement
-    //
-    unimplemented!()
+    let s = sett::Sett::new("Amsterdam", reg, qtype, race, sett::SettFlags::Coastal);
+    println!("Generated a settlement: {:?}", s);
 }

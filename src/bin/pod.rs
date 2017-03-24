@@ -35,4 +35,6 @@ fn main() {
 
     let deserialized: podesta::events::Event = serde_json::from_str(&serialized).unwrap();
     println!("deserialized = {:?}", deserialized);
+
+    podesta::init();
 }

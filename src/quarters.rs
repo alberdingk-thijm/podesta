@@ -57,7 +57,7 @@ impl str::FromStr for QType {
     }
 }
 
-type BuildErr = ();  // TODO: convert to actual error
+pub type BuildErr = ();  // TODO: convert to actual error
 impl Quarter {
 
     /// Create a new Quarter with a given name, population, type and racial

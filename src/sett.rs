@@ -1,14 +1,47 @@
+//! The sett module contains the information governing the sett struct,
+//! the basic object which represents the growing settlement.
 use quarters;
+use regions;
+use people;
 
 #[derive(Debug)]
 pub struct Sett {
+    pub name: String,
     pub age: i32,
     pub pop: i32,
     pub gold: f64,
-    pub qrtrs: Vec<Quarter>,
+    pub reg: regions::Region,
+    pub qrtrs: Vec<quarters::Quarter>,
+    pub flags: SettFlags,
+}
+
+#[derive(Debug)]
+pub enum SettFlags {
+    Coastal,
+    Inland,
 }
 
 impl Sett {
+    /// Create a new Settlement
+    pub fn new(n: &str,
+               reg: regions::Region,
+               qt: quarters::QType,
+               r: people::Race,
+               f: SettFlags,
+    ) -> Sett {
+        // get the starting population based on the region's growth
+        let pop : i32 = 50 * reg.growth;
+        Sett {
+            name: n.to_string(),
+            age: 0,
+            pop: pop,
+            gold: reg.starting_gold,
+            reg: reg,
+            qrtrs: vec!(quarters::Quarter::new("main", qt, pop, r)),
+            flags: f,
+        }
+    }
+
     /// Execute settlement timestep
     pub fn step(&self) {
         // call each quarter's step
