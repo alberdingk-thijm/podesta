@@ -104,7 +104,7 @@
     "event": [
       {
         "Riot": {
-          "scale": 2
+          "scale": 1
         }
       },
       {
@@ -385,14 +385,14 @@
     ]
   },
   {
-    "name": "Occupation",
+    "name": "Coup",
     "id": 42,
-    "desc": "hostile forces have occupied %s!",
+    "desc": "disgruntled forces have siezed control of %s!",
     "chance": 0,
     "event": [
       {
         "Kill": {
-          "scale": 2
+          "scale": 1
         }
       },
       {
@@ -403,8 +403,7 @@
       {
         "Hero": {
           "classes": [
-            "Fighter",
-            "Paladin"
+            "Fighter"
           ]
         }
       }

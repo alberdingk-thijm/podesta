@@ -31,6 +31,7 @@ KILL effect:
 When an event has a KILL effect, it has a risk of killing some of the
 settlement's population, based on the intensity of the effect. There are two
 levels of the KILL effect, KILL_1 and KILL_2.
+The KILL effect has an associated roll
 KILL_1: kill a small portion of the population of the quarter; this is a set
 number as opposed to a percentage.
 KILL_2: kill a percentage of the population of the quarter; if a high enough
@@ -99,3 +100,102 @@ three levels of the ITEM effect, ITEM_1, ITEM_2 and ITEM_3.
 ITEM_1: the new item is a high-quality non-magical item.
 ITEM_2: the new item is a low-quality magic item.
 ITEM_3: the new item is a high-quality magic item.
+
+List of Events:
+
+Fire: 5d6
+- base, forge, lighthouse
+- Kill: 10..60% of quarter: if >=50%, check another quarter
+- Damage: starting building -> ruined; other buildings in quarter 0..40% damage;
+  if >=30%, check another quarter
+Accident: 1d20
+- base, workshop--
+- Kill: 1..20% of quarter
+- Damage: building takes 5..100 damage
+Breakthrough: 5d4
+- base, forge, guildhall, library, university
+- Build: 10..40% increase for quarter
+- Grow: 5..20% increase for quarter
+Investment: 1d8
+- base, shipyard, customshouse, palace
+- Gold: 50..400 gold earned this turn
+RareBook: 1d20
+- theatre, museum, library, school, university, observatory, society
+- Item: worth 20..400 gold, (#ACADEMIC)/20 chance of magical
+Lecture: 2d6
+- museum, school, university, society
+- Hero: 50% (1..6)-th level mage, 50% (1..6)-th level illusionist
+CelestialEvent: 2d4
+- observatory
+- Riot: settlement tickers (gr/bu/go) @ 50% for 10..40 steps
+- Hero: (2..8)-th level mage
+Strike: 3d8
+- guildhall, university
+- Riot: quarter tickers (gr/bu/go) @ 0% for 3..24 steps
+- Damage: building takes 3..24 damage
+Artifact: 1d100
+- society
+- Item: worth 500..50,000 gold, always magical
+Masterwork: 5d4
+- grandtemple, museum, palace
+- Item: worth 500..2,000 gold, (#ACADEMIC)/10 chance of magical
+Performance: 1d6
+- theatre, society
+- Grow: 5..30% increase for quarter
+- Hero: (1..6)-th level bard
+Heresy: 2d6
+- shrine, temple, grandtemple
+- Riot: quarter tickers (gr/bu/go) @ 25% for 2..24 steps
+- Hero: 50% (1..6)-th level cleric, 50% (1..6)-th level paladin
+Revelation: 4d6
+- shrine, temple, garden, grandtemple, lazaretto
+- Grow: 4..24% increase for quarter
+- Hero: 25% (1..6)-th level cleric, 25% (1..6)-th level paladin, 25% (1..6)-th level
+  druid, 25% (1..6)-th level monk
+Observance: 1d10
+- temple, grandtemple
+- Grow: 5..50% increase for settlement
+FineCraft: 1d10
+- museum, forge, workshop, guildhall, armoury, fortress
+- Item: worth 40..400 gold, (#ACADEMIC)/20 chance of magical
+Merchants: 1d6
+- market, inn, guildhall, harbour, warehouse, customshouse
+- Gold: 40..240 gold earned this turn
+- Hero: (1..6)-th level merchant
+Tax: 1d10
+- mint, customshouse
+- Riot: quarter tickers (gr/bu/go) @ 50% for 1..10 steps
+- Gold: +20% gold earned per turn for 5..50 steps
+Embargo: 2d4
+- shipyard, customshouse
+- Riot: settlement tickers (gr/bu/go) @ 50% for 8..32 steps
+- Hero: (2..8)-th level thief
+Outlaws: 2d6
+- market, inn, mint, lighthouse, harbour, walls--, assembly--, prison--
+- Riot: quarter tickers (gr/bu/go) @ 75% for 2..12 steps
+- Hero: 50% (1..6)-th level thief, 50% (1..6)-th level assassin
+Architect: 1d8
+- guildhall, university
+- Build: 10..80% increase for settlement
+Plague: 2d6
+- harbour, warehouse, customshouse, lazaretto--
+- Kill: 10..60% of quarter; if >=50%, check another quarter
+- Riot: settlement tickers (gr/bu/go) @ 0% for 6..36 steps
+Skirmish: 2d6
+- shipyard, walls, barracks, armoury, fortress, prison--
+- Kill: 2..12% of quarter
+- Hero: 50% (1..6)-th level fighter, 50% (1..6)-th level ranger
+Coup: 2d4
+- fortress
+- Kill: 16..32% of quarter
+- Damage: building takes 24..48 damage; if >=40, check other buildings in quarter
+- Hero: (2..8)-th level fighter
+Trial: 1d6
+- assembly, prison
+- Kill: 0..3 heroes
+- Riot: quarter tickers (gr/bu/go) @ 50% for 2..12 steps
+Diplomat: 5d8
+- palace
+- Grow: 5..40% increase for settlement
+- Build: 5..40% increase for quarter
+- Gold: +20% gold earned per turn for 5..40 steps
