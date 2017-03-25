@@ -29,77 +29,79 @@ There are eight different event effects.
 
 KILL effect:
 When an event has a KILL effect, it has a risk of killing some of the
-settlement's population, based on the intensity of the effect. There are two
-levels of the KILL effect, KILL_1 and KILL_2.
-The KILL effect has an associated roll
-KILL_1: kill a small portion of the population of the quarter; this is a set
-number as opposed to a percentage.
-KILL_2: kill a percentage of the population of the quarter; if a high enough
-roll is obtained, subsequent rolls must be made in the other quarters.
+settlement's population, based on the intensity of the effect.
+The KILL effect has three fields:
+- dead: dice expr - the number of dead for the specified kill area.
+- viralpt: int or null - an optional threshold; if the dead expression is greater
+  than or equal to viralpt, an additional KILL effect is performed for the parent
+  area.
+- area: area expr - the target of the dead expression (Hero, Quarter, Sett);
+  controls how the death toll is subtracted from the population.
 
 DAMAGE effect:
 When an event has a DAMAGE effect, it has a risk of damaging infrastructure in
 the quarter or settlement as a whole, based on the intensity of the effect.
-There are two levels of the DAMAGE effect, DAMAGE_1 and DAMAGE_2.
-DAMAGE_1: damage a single building in the quarter, possibly destroying it
-entirely (i.e. the building's condition is Ruined).
-DAMAGE_2: damage multiple buildings in the quarter, possibly destroying them
-entirely. On a high enough roll, subsequent rolls must be made in the other
-quarters.
+The DAMAGE effect has three fields:
+- crumbled: dice expr - the damage taken by the area expression's building(s).
+  Note: if a building is in progress, it is reset to -100 instead of adding damage.
+- viralpt: int or null - an optional threshold; if the crumbled expression is
+  greater than or equal to viralpt, an additional DAMAGE effect is performed for the
+  parent area.
+- area: area expr -  the target of the crumbled expression (Building, Quarter,
+  Sett); controls how the crumbled damage is added to the building(s).
 
 RIOT effect:
 When an event has a RIOT effect, it has a risk of temporarily halting all
 growth and building progress in the quarter or settlement as a whole, based
-on the intensity of the effect. There are three levels of the RIOT effect,
-RIOT_1, RIOT_2 and RIOT_3.
-RIOT_1: growth and building progress are slowed to a fraction of usual speed.
-RIOT_2: growth and building progress are halted (i.e. speed is 0) for the
-quarter for some length of time.
-RIOT_3: growth and building progress are halted (i.e. speed is 0) for the
-entire settlement for some length of time.
+on the intensity of the effect.
+The RIOT effect has three fields:
+- steps: dice expr - the number of steps the effect will last.
+- prod: float - the percent rate which is multiplied against the "tickers" (growth,
+  build speed, gold gain) for the settlement and reduces them.
+- area: area expr - the target of the riot (Quarter, Sett); controls the extent of
+  the decrease.
 
 GROW effect:
 When an event has a GROW effect, it increases the growth rate of the quarter
-or the entire settlement, based on the intensity of the effect. There are two
-levels of the GROW effect, GROW_1 and GROW_2.
-GROW_1: growth increases by some percentage for the quarter.
-GROW_2: growth increases by some percentage for the entire settlement.
+or the entire settlement, based on the intensity of the effect.
+The GROW effect has two fields:
+- bonus: dice expr - the percent increase to the settlement's growth this step
+- area: area expr - the target of the growth (Quarter, Sett); controls the extent
+  of the increase.
 
 BUILD effect:
 When an event has a BUILD effect, it increases the build speed of the quarter
-or the entire settlement, based on the intensity of the effect. There are two
-levels of the BUILD effect, BUILD_1 and BUILD_2.
-BUILD_1: build speed increases by some percentage for the quarter.
-BUILD_2: build speed increases by some percentage for the entire settlement.
+or the entire settlement, based on the intensity of the effect.
+The BUILD effect has two fields:
+- bonus: dice expr - the percent increase to the settlement's build speed this step
+- area: area expr - the target of the build speed increase (Building, Quarter,
+  Sett); controls the extent of the increase.
 
 GOLD effect:
 When an event has a GOLD effect, it increases the amount of gold earned by the
-settlement per timestep, based on the intensity of the effect. There are two
-levels of the GOLD effect, GOLD_1 and GOLD_2.
-GOLD_1: a lump sum of gold is earned this one timestep.
-GOLD_2: a lump sum of gold is earned with an additional percentage increase
-for some length of time.
+settlement per timestep, based on the intensity of the effect.
+The GOLD effect has three fields:
+- value: dice expr - the immediate gold payout on the first turn of the effect.
+- bonus: float - the percent rate which is multiplied against gold gain for the
+  settlement for the steps.
+- steps: dice expr - the number of steps that the bonus is active.
 
 HERO effect:
-When an event has a HERO effect, it generates a new notable residing in the
-quarter. The notable's level is based on the intensity of the effect. There
-are six levels of the HERO effect, HERO_MAGE, HERO_BARD, HERO_MERCH,
-HERO_CRIME, HERO_RLG and HERO_WAR.
-HERO_MAGE: the new notable is a mage or illusionist.
-HERO_BARD: the new notable is a bard.
-HERO_MERCH: the new notable is a merchant (any class). Can generate items.
-Increases gold generated per timestep.
-HERO_CRIME: the new notable is a thief or assassin.
-HERO_RLG: the new notable is a cleric, paladin, monk or (rarely) druid.
-HERO_WAR: the new notable is a fighter or (rarely) paladin.
+When an event has a HERO effect, it generates a new hero residing in the
+quarter. The hero's level is based on the intensity of the effect.
+The HERO effect has two fields:
+- level: dice expr - the level of the generated hero
+- classes: list of classes - the classes the effect can generate; each class has an
+  equal chance of being selected by the event.
 
 ITEM effect:
 When an event has an ITEM effect, it generates a new item residing in the
-quarter. The item's power is based on the intensity of the effect. There are
-three levels of the ITEM effect, ITEM_1, ITEM_2 and ITEM_3.
-ITEM_1: the new item is a high-quality non-magical item.
-ITEM_2: the new item is a low-quality magic item.
-ITEM_3: the new item is a high-quality magic item.
+quarter. The item's power is based on the intensity of the effect.
+The ITEM effect has two fields:
+- value: dice expr - the gold value the item could obtain if sold; while it is in
+  the settlement, it generates 1% of this value each timestep.
+- magical: float - the odds that the item is revealed to be magical; while it is in
+  the settlement, it generates 5% of its value each timestep.
 
 List of Events:
 
@@ -127,11 +129,11 @@ Lecture: 2d6
 - Hero: 50% (1..6)-th level mage, 50% (1..6)-th level illusionist
 CelestialEvent: 2d4
 - observatory
-- Riot: settlement tickers (gr/bu/go) @ 50% for 10..40 steps
+- Riot: settlement @ 50% for 10..40 steps
 - Hero: (2..8)-th level mage
 Strike: 3d8
 - guildhall, university
-- Riot: quarter tickers (gr/bu/go) @ 0% for 3..24 steps
+- Riot: quarter @ 0% for 3..24 steps
 - Damage: building takes 3..24 damage
 Artifact: 1d100
 - society
@@ -145,7 +147,7 @@ Performance: 1d6
 - Hero: (1..6)-th level bard
 Heresy: 2d6
 - shrine, temple, grandtemple
-- Riot: quarter tickers (gr/bu/go) @ 25% for 2..24 steps
+- Riot: quarter tickers (gr/bu/go) @ 25% for 4..24 steps
 - Hero: 50% (1..6)-th level cleric, 50% (1..6)-th level paladin
 Revelation: 4d6
 - shrine, temple, garden, grandtemple, lazaretto
@@ -192,7 +194,7 @@ Coup: 2d4
 - Hero: (2..8)-th level fighter
 Trial: 1d6
 - assembly, prison
-- Kill: 0..3 heroes
+- Kill: 0..4 heroes
 - Riot: quarter tickers (gr/bu/go) @ 50% for 2..12 steps
 Diplomat: 5d8
 - palace

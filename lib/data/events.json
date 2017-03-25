@@ -7,12 +7,16 @@
     "event": [
       {
         "Kill": {
-          "scale": 2
+          "dead": "5d6 * 2",
+          "viralpt": 50,
+          "area": "Quarter"
         }
       },
       {
         "Damage": {
-          "scale": 2
+          "crumbled": "max(5d6 * 2 - 20, 0)",
+          "viralpt": 30,
+          "area": "Quarter"
         }
       }
     ]
@@ -25,12 +29,16 @@
     "event": [
       {
         "Kill": {
-          "scale": 1
+          "dead": "1d20",
+          "viralpt": null,
+          "area": "Quarter"
         }
       },
       {
         "Damage": {
-          "scale": 1
+          "crumbled": "1d20 * 5",
+          "viralpt": null,
+          "area": "Building"
         }
       }
     ]
@@ -43,12 +51,14 @@
     "event": [
       {
         "Build": {
-          "all_q": false
+          "bonus": "5d4 * 2",
+          "area": "Quarter"
         }
       },
       {
         "Grow": {
-          "all_q": false
+          "bonus": "5d4",
+          "area": "Quarter"
         }
       }
     ]
@@ -61,7 +71,9 @@
     "event": [
       {
         "Gold": {
-          "scale": 1
+          "value": "1d8 * 50",
+          "bonus": 0,
+          "steps": "1"
         }
       }
     ]
@@ -74,8 +86,8 @@
     "event": [
       {
         "Item": {
-          "quality": 1,
-          "magical": false
+          "value": "1d20 * 10",
+          "magical": 0.05
         }
       }
     ]
@@ -88,6 +100,7 @@
     "event": [
       {
         "Hero": {
+          "level": "1d6",
           "classes": [
             "Mage",
             "Illusionist"
@@ -104,11 +117,14 @@
     "event": [
       {
         "Riot": {
-          "scale": 1
+          "steps": "2d4 * 5",
+          "prod": 0.5,
+          "area": "Sett"
         }
       },
       {
         "Hero": {
+          "level": "2d4",
           "classes": [
             "Mage"
           ]
@@ -124,12 +140,16 @@
     "event": [
       {
         "Riot": {
-          "scale": 3
+          "steps": "3d8",
+          "prod": 0,
+          "area": "Quarter"
         }
       },
       {
         "Damage": {
-          "scale": 1
+          "crumbled": "3d8",
+          "viralpt": null,
+          "area": "Building"
         }
       }
     ]
@@ -142,8 +162,8 @@
     "event": [
       {
         "Item": {
-          "quality": 3,
-          "magical": true
+          "value": "1d100 * 500",
+          "magical": 1
         }
       }
     ]
@@ -156,8 +176,8 @@
     "event": [
       {
         "Item": {
-          "quality": 2,
-          "magical": true
+          "value": "5d4 * 100",
+          "magical": 0.1
         }
       }
     ]
@@ -170,11 +190,13 @@
     "event": [
       {
         "Grow": {
-          "all_q": false
+          "bonus": "1d6 * 5",
+          "area": "Quarter"
         }
       },
       {
         "Hero": {
+          "level": "1d6",
           "classes": [
             "Bard"
           ]
@@ -190,11 +212,14 @@
     "event": [
       {
         "Riot": {
-          "scale": 2
+          "steps": "2d6 * 2",
+          "prod": 0.25,
+          "area": "Quarter"
         }
       },
       {
         "Hero": {
+          "level": "1d6",
           "classes": [
             "Cleric",
             "Paladin"
@@ -211,11 +236,13 @@
     "event": [
       {
         "Grow": {
-          "all_q": false
+          "bonus": "4d6",
+          "area": "Quarter"
         }
       },
       {
         "Hero": {
+          "level": "1d6",
           "classes": [
             "Cleric",
             "Druid",
@@ -234,7 +261,8 @@
     "event": [
       {
         "Grow": {
-          "all_q": true
+          "bonus": "1d10 * 5",
+          "area": "Sett"
         }
       }
     ]
@@ -247,8 +275,8 @@
     "event": [
       {
         "Item": {
-          "quality": 1,
-          "magical": false
+          "value": "1d10 * 40",
+          "magical": 0.05
         }
       }
     ]
@@ -261,6 +289,7 @@
     "event": [
       {
         "Hero": {
+          "level": "1d6",
           "classes": [
             "Merchant"
           ]
@@ -268,7 +297,9 @@
       },
       {
         "Gold": {
-          "scale": 1
+          "value": "1d6 * 40",
+          "bonus": 0,
+          "steps": 1
         }
       }
     ]
@@ -281,12 +312,16 @@
     "event": [
       {
         "Riot": {
-          "scale": 1
+          "steps": "1d10",
+          "prod": 0.5,
+          "area": "Quarter"
         }
       },
       {
         "Gold": {
-          "scale": 2
+          "value": "0",
+          "bonus": "1.2",
+          "steps": "1d10 * 5"
         }
       }
     ]
@@ -299,11 +334,14 @@
     "event": [
       {
         "Riot": {
-          "scale": 2
+          "steps": "2d4 * 4",
+          "prod": 0.5,
+          "area": "Sett"
         }
       },
       {
         "Hero": {
+          "level": "2d4",
           "classes": [
             "Thief"
           ]
@@ -319,11 +357,14 @@
     "event": [
       {
         "Riot": {
-          "scale": 1
+          "steps": "2d6",
+          "prod": 0.75,
+          "area": "Quarter"
         }
       },
       {
         "Hero": {
+          "level": "1d6",
           "classes": [
             "Thief",
             "Assassin"
@@ -340,7 +381,8 @@
     "event": [
       {
         "Build": {
-          "all_q": true
+          "bonus": "1d8 * 10",
+          "area": "Sett"
         }
       }
     ]
@@ -353,12 +395,16 @@
     "event": [
       {
         "Kill": {
-          "scale": 2
+          "dead": "2d6 * 5",
+          "viralpt": 50,
+          "area": "Quarter"
         }
       },
       {
         "Riot": {
-          "scale": 3
+          "steps": "2d6 * 3",
+          "prod": 0,
+          "area": "Sett"
         }
       }
     ]
@@ -371,11 +417,14 @@
     "event": [
       {
         "Kill": {
-          "scale": 1
+          "dead": "2d6",
+          "viralpt": null,
+          "area": "Quarter"
         }
       },
       {
         "Hero": {
+          "level": "1d6",
           "classes": [
             "Fighter",
             "Ranger"
@@ -392,16 +441,21 @@
     "event": [
       {
         "Kill": {
-          "scale": 1
+          "dead": "2d4 * 4",
+          "viralpt": null,
+          "area": "Quarter"
         }
       },
       {
         "Damage": {
-          "scale": 2
+          "crumbled": "2d4 * 6",
+          "viralpt": 40,
+          "area": "Building"
         }
       },
       {
         "Hero": {
+          "level": "2d4",
           "classes": [
             "Fighter"
           ]
@@ -417,12 +471,16 @@
     "event": [
       {
         "Kill": {
-          "scale": 1
+          "dead": "max(1d6 - 2, 0)",
+          "viralpt": 3,
+          "area": "Hero"
         }
       },
       {
         "Riot": {
-          "scale": 1
+          "steps": "1d6 * 2",
+          "prod": 0.5,
+          "area": "Quarter"
         }
       }
     ]
@@ -434,18 +492,22 @@
     "chance": 0,
     "event": [
       {
-        "Gold": {
-          "scale": 2
-        }
-      },
-      {
         "Grow": {
-          "all_q": true
+          "bonus": "5d8",
+          "area": "Sett"
         }
       },
       {
         "Build": {
-          "all_q": false
+          "bonus": "5d8",
+          "area": "Quarter"
+        }
+      },
+      {
+        "Gold": {
+          "value": "0",
+          "bonus": "1.2",
+          "steps": "5d8"
         }
       }
     ]
