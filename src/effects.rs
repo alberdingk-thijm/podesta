@@ -130,8 +130,9 @@ fn event_hero(level: &str, classes: &Vec<people::Class>) {
     // get the roll
     let lvlroll = Roller::new(level);
     // choose the class
-    let r = Range::new(0, classes.len());
+    let r = rand::thread_rng().gen_range(0, classes.len());
     // let h = people::Hero::new(class: classes[r]);
+    // add new hero to building
     unimplemented!()
 }
 
