@@ -4,7 +4,7 @@
     "id": 1,
     "desc": "%s has erupted into flames!",
     "chance": 3,
-    "event": [
+    "effects": [
       {
         "Kill": {
           "dead": "5d6 * 2",
@@ -14,7 +14,7 @@
       },
       {
         "Damage": {
-          "crumbled": "max(5d6 * 2 - 20, 0)",
+          "crumbled": "5d6 * 2 - 20",
           "viralpt": 30,
           "area": "Quarter"
         }
@@ -26,7 +26,7 @@
     "id": 2,
     "desc": "there has been an accident at %s",
     "chance": 3,
-    "event": [
+    "effects": [
       {
         "Kill": {
           "dead": "1d20",
@@ -48,7 +48,7 @@
     "id": 3,
     "desc": "%s is celebrating a breakthrough",
     "chance": 3,
-    "event": [
+    "effects": [
       {
         "Build": {
           "bonus": "5d4 * 2",
@@ -68,7 +68,7 @@
     "id": 4,
     "desc": "%s received a welcome investment",
     "chance": 3,
-    "event": [
+    "effects": [
       {
         "Gold": {
           "value": "1d8 * 50",
@@ -83,7 +83,7 @@
     "id": 11,
     "desc": "%s has acquired a rare book",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Item": {
           "value": "1d20 * 10",
@@ -97,7 +97,7 @@
     "id": 12,
     "desc": "a lecture was held at %s",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Hero": {
           "level": "1d6",
@@ -114,7 +114,7 @@
     "id": 13,
     "desc": "%s observed an incredible celestial event!",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Riot": {
           "steps": "2d4 * 5",
@@ -137,7 +137,7 @@
     "id": 14,
     "desc": "members of %s are striking",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Riot": {
           "steps": "3d8",
@@ -159,7 +159,7 @@
     "id": 15,
     "desc": "a precious artifact has arrived at %s",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Item": {
           "value": "1d100 * 500",
@@ -173,7 +173,7 @@
     "id": 21,
     "desc": "%s has received a beautiful masterwork",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Item": {
           "value": "5d4 * 100",
@@ -187,7 +187,7 @@
     "id": 22,
     "desc": "a performance has been mounted at %s",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Grow": {
           "bonus": "1d6 * 5",
@@ -209,7 +209,7 @@
     "id": 23,
     "desc": "%s has uncovered heretics",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Riot": {
           "steps": "2d6 * 2",
@@ -233,7 +233,7 @@
     "id": 24,
     "desc": "a visitor to %s experienced a revelation!",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Grow": {
           "bonus": "4d6",
@@ -258,7 +258,7 @@
     "id": 25,
     "desc": "the community of %s is observing a religious holiday",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Grow": {
           "bonus": "1d10 * 5",
@@ -272,7 +272,7 @@
     "id": 31,
     "desc": "%s has produced a fine piece of work",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Item": {
           "value": "1d10 * 40",
@@ -286,7 +286,7 @@
     "id": 32,
     "desc": "rich merchants have arrived at %s",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Hero": {
           "level": "1d6",
@@ -309,7 +309,7 @@
     "id": 33,
     "desc": "%s has established a new tax",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Riot": {
           "steps": "1d10",
@@ -331,7 +331,7 @@
     "id": 34,
     "desc": "an embargo was established by %s",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Riot": {
           "steps": "2d4 * 4",
@@ -354,7 +354,7 @@
     "id": 35,
     "desc": "outlaws have been harassing travellers!",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Riot": {
           "steps": "2d6",
@@ -378,7 +378,7 @@
     "id": 36,
     "desc": "a talented architect has arrived at %s",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Build": {
           "bonus": "1d8 * 10",
@@ -392,7 +392,7 @@
     "id": 37,
     "desc": "a terrible plague has claimed us!",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Kill": {
           "dead": "2d6 * 5",
@@ -414,7 +414,7 @@
     "id": 41,
     "desc": "soldiers at %s have returned from a skirmish",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Kill": {
           "dead": "2d6",
@@ -438,7 +438,7 @@
     "id": 42,
     "desc": "disgruntled forces have siezed control of %s!",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Kill": {
           "dead": "2d4 * 4",
@@ -468,10 +468,10 @@
     "id": 43,
     "desc": "a trial is being held at %s",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Kill": {
-          "dead": "max(1d6 - 2, 0)",
+          "dead": "1d6 - 2",
           "viralpt": 3,
           "area": "Hero"
         }
@@ -490,7 +490,7 @@
     "id": 44,
     "desc": "a dignitary is visiting at %s",
     "chance": 0,
-    "event": [
+    "effects": [
       {
         "Grow": {
           "bonus": "5d8",

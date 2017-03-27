@@ -33,20 +33,19 @@ pub struct Event {
     pub id: i32,
     pub desc: String,
     pub chance: i32,
-    #[serde(rename = "event")]
     pub effects: Vec<String>,
     // TODO: convert to Vec<event effect>
 }
 
 pub enum EventEffect {
-    Kill(i32, i32),
-    Damage(i32, i32),
-    Riot(i32, i32, i32),
-    Grow(i32, i32),
-    Build(i32, i32),
-    Gold(i32, i32),
-    Hero { mage: i32, bard: i32, merch: i32, crime: i32, rlg: i32, war: i32 },
-    Item(i32, i32, i32),
+    Kill { dead: Roll, viralpt: Option<i32>, area: Area },
+    Damage { crumbled: Roll, viralpt: Option<i32>, area: Area },
+    Riot { steps: Roll, prod: f64, area: Area },
+    Grow { bonus: Roll, area: Area },
+    Build { bonus: Roll, area: Area },
+    Gold { value: Roll, bonus: f64, steps: Roll },
+    Hero { level: Roll, classes: Vec<people::Class> },
+    Item { value: Roll, magical: f64 },
 }
 
 impl str::FromStr for EventEffect {
