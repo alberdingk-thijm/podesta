@@ -54,7 +54,7 @@ impl Sett {
     /// Move a fraction of the sett's population to the new quarter,
     /// times the growth bonus.
     pub fn add_quarter(&self,
-                       n: String
+                       n: String,
                        qt: quarters::QType,
                        r: people::Race,
     ) -> Result<Self, quarters::BuildErr>

@@ -2,6 +2,8 @@
 extern crate serde_derive;
 extern crate serde_json;
 extern crate serde;
+extern crate rouler;
+extern crate rand;
 
 pub mod parser;
 pub mod events;
@@ -10,6 +12,7 @@ pub mod buildings;
 pub mod regions;
 pub mod quarters;
 pub mod people;
+pub mod effects;
 
 #[allow(unused_variables)]
 #[test]

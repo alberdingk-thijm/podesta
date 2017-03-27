@@ -21,7 +21,7 @@
 //! assert_eq!(de.id, ev.id)
 //! # }
 //! ```
-use std::str;
+use effects;
 
 /// A struct representing an event that occurs in a quarter.
 /// Events have a name, identifier and description.
@@ -33,27 +33,7 @@ pub struct Event {
     pub id: i32,
     pub desc: String,
     pub chance: i32,
-    pub effects: Vec<String>,
-    // TODO: convert to Vec<event effect>
-}
-
-pub enum EventEffect {
-    Kill { dead: Roll, viralpt: Option<i32>, area: Area },
-    Damage { crumbled: Roll, viralpt: Option<i32>, area: Area },
-    Riot { steps: Roll, prod: f64, area: Area },
-    Grow { bonus: Roll, area: Area },
-    Build { bonus: Roll, area: Area },
-    Gold { value: Roll, bonus: f64, steps: Roll },
-    Hero { level: Roll, classes: Vec<people::Class> },
-    Item { value: Roll, magical: f64 },
-}
-
-impl str::FromStr for EventEffect {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // first term is eventeffect name,
-        // second is which value to use
-    }
+    pub effects: Vec<effects::EventEffect>
 }
 
 impl Event {
