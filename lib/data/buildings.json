@@ -3,9 +3,11 @@
     "name": "Shrine",
     "id": 1,
     "type": "Residential",
-    "preq": null,
-    "cost": 100,
-    "build": 10,
+    "plans": {
+      "preq": null,
+      "cost": 100,
+      "build": 10
+    },
     "events": [
       {
         "name": "Heresy",
@@ -21,11 +23,13 @@
     "name": "Temple",
     "id": 2,
     "type": "Residential",
-    "preq": [
-      "Shrine"
-    ],
-    "cost": 300,
-    "build": 8,
+    "plans": {
+      "preq": [
+        "Shrine"
+      ],
+      "cost": 300,
+      "build": 8
+    },
     "events": [
       {
         "name": "Heresy",
@@ -45,11 +49,13 @@
     "name": "Garden",
     "id": 3,
     "type": "Residential",
-    "preq": [
-      "Shrine"
-    ],
-    "cost": 500,
-    "build": 5,
+    "plans": {
+      "preq": [
+          "Shrine"
+        ],
+      "cost": 500,
+      "build": 5
+    },
     "events": [
       {
         "name": "Revelation",
@@ -61,11 +67,13 @@
     "name": "GrandTemple",
     "id": 4,
     "type": "Residential",
-    "preq": [
-      "Temple"
-    ],
-    "cost": 1500,
-    "build": 3,
+    "plans": {
+      "preq": [
+          "Temple"
+        ],
+      "cost": 1500,
+      "build": 3
+    },
     "events": [
       {
         "name": "Heresy",
@@ -89,12 +97,14 @@
     "name": "Theatre",
     "id": 5,
     "type": "Residential",
-    "preq": [
-      "Library",
-      "Garden"
-    ],
-    "cost": 1000,
-    "build": 4,
+    "plans": {
+      "preq": [
+        "Library",
+        "Garden"
+      ],
+      "cost": 1000,
+      "build": 4
+    },
     "events": [
       {
         "name": "RareBook",
@@ -110,12 +120,14 @@
     "name": "Museum",
     "id": 6,
     "type": "Residential",
-    "preq": [
-      "University",
-      "Theatre"
-    ],
-    "cost": 4000,
-    "build": 3,
+    "plans": {
+      "preq": [
+        "University",
+        "Theatre"
+      ],
+      "cost": 4000,
+      "build": 3
+    },
     "events": [
       {
         "name": "RareBook",
@@ -139,9 +151,11 @@
     "name": "Market",
     "id": 101,
     "type": "Industrial",
-    "preq": null,
-    "cost": 100,
-    "build": 10,
+    "plans": {
+      "preq": null,
+      "cost": 100,
+      "build": 10
+    },
     "events": [
       {
         "name": "Merchants",
@@ -157,11 +171,13 @@
     "name": "Inn",
     "id": 102,
     "type": "Industrial",
-    "preq": [
-      "Market"
-    ],
-    "cost": 300,
-    "build": 8,
+    "plans": {
+      "preq": [
+        "Market"
+      ],
+      "cost": 300,
+      "build": 8
+    },
     "events": [
       {
         "name": "Merchants",
@@ -177,9 +193,11 @@
     "name": "Forge",
     "id": 103,
     "type": "Industrial",
-    "preq": null,
-    "cost": 200,
-    "build": 10,
+    "plans": {
+      "preq": null,
+      "cost": 200,
+      "build": 10
+    },
     "events": [
       {
         "name": "Breakthrough",
@@ -199,12 +217,14 @@
     "name": "Mint",
     "id": 104,
     "type": "Industrial",
-    "preq": [
-      "Forge",
-      "Market"
-    ],
-    "cost": 700,
-    "build": 5,
+    "plans": {
+      "preq": [
+        "Forge",
+        "Market"
+      ],
+      "cost": 700,
+      "build": 5
+    },
     "events": [
       {
         "name": "Outlaws",
@@ -220,9 +240,11 @@
     "name": "Workshop",
     "id": 105,
     "type": "Industrial",
-    "preq": null,
-    "cost": 400,
-    "build": 8,
+    "plans": {
+      "preq": null,
+      "cost": 400,
+      "build": 8
+    },
     "events": [
       {
         "name": "Accident",
@@ -238,12 +260,14 @@
     "name": "GuildHall",
     "id": 106,
     "type": "Industrial",
-    "preq": [
-      "Market",
-      "Workshop"
-    ],
-    "cost": 1000,
-    "build": 4,
+    "plans": {
+      "preq": [
+        "Market",
+        "Workshop"
+      ],
+      "cost": 1000,
+      "build": 4
+    },
     "events": [
       {
         "name": "Breakthrough",
@@ -271,9 +295,11 @@
     "name": "Lighthouse",
     "id": 201,
     "type": "Port",
-    "preq": null,
-    "cost": 200,
-    "build": 10,
+    "plans": {
+      "preq": null,
+      "cost": 200,
+      "build": 10
+    },
     "events": [
       {
         "name": "Outlaws",
@@ -289,11 +315,13 @@
     "name": "Harbour",
     "id": 202,
     "type": "Port",
-    "preq": [
-      "Lighthouse"
-    ],
-    "cost": 600,
-    "build": 5,
+    "plans": {
+      "preq": [
+        "Lighthouse"
+      ],
+      "cost": 600,
+      "build": 5
+    },
     "events": [
       {
         "name": "Outlaws",
@@ -313,11 +341,13 @@
     "name": "Warehouse",
     "id": 203,
     "type": "Port",
-    "preq": [
-      "Harbour"
-    ],
-    "cost": 900,
-    "build": 4,
+    "plans": {
+      "preq": [
+        "Harbour"
+      ],
+      "cost": 900,
+      "build": 4
+    },
     "events": [
       {
         "name": "Plague",
@@ -333,12 +363,14 @@
     "name": "Shipyard",
     "id": 204,
     "type": "Port",
-    "preq": [
-      "Harbour",
-      "Workshop"
-    ],
-    "cost": 1500,
-    "build": 3,
+    "plans": {
+      "preq": [
+        "Harbour",
+        "Workshop"
+      ],
+      "cost": 1500,
+      "build": 3
+    },
     "events": [
       {
         "name": "Investment",
@@ -358,12 +390,14 @@
     "name": "CustomsHouse",
     "id": 205,
     "type": "Port",
-    "preq": [
-      "Market",
-      "Warehouse"
-    ],
-    "cost": 2000,
-    "build": 2,
+    "plans": {
+      "preq": [
+        "Market",
+        "Warehouse"
+      ],
+      "cost": 2000,
+      "build": 2
+    },
     "events": [
       {
         "name": "Merchants",
@@ -391,12 +425,14 @@
     "name": "Lazaretto",
     "id": 206,
     "type": "Port",
-    "preq": [
-      "Temple",
-      "Harbour"
-    ],
-    "cost": 1200,
-    "build": 3,
+    "plans": {
+      "preq": [
+        "Temple",
+        "Harbour"
+      ],
+      "cost": 1200,
+      "build": 3
+    },
     "events": [
       {
         "name": "Plague",
@@ -412,9 +448,11 @@
     "name": "Library",
     "id": 301,
     "type": "Academic",
-    "preq": null,
-    "cost": 400,
-    "build": 8,
+    "plans": {
+      "preq": null,
+      "cost": 400,
+      "build": 8
+    },
     "events": [
       {
         "name": "RareBook",
@@ -430,12 +468,14 @@
     "name": "School",
     "id": 302,
     "type": "Academic",
-    "preq": [
-      "Library",
-      "Temple"
-    ],
-    "cost": 1200,
-    "build": 3,
+    "plans": {
+      "preq": [
+        "Library",
+        "Temple"
+      ],
+      "cost": 1200,
+      "build": 3
+    },
     "events": [
       {
         "name": "RareBook",
@@ -451,11 +491,13 @@
     "name": "University",
     "id": 303,
     "type": "Academic",
-    "preq": [
-      "School"
-    ],
-    "cost": 3000,
-    "build": 2,
+    "plans": {
+      "preq": [
+        "School"
+      ],
+      "cost": 3000,
+      "build": 2
+    },
     "events": [
       {
         "name": "RareBook",
@@ -483,11 +525,13 @@
     "name": "Observatory",
     "id": 304,
     "type": "Academic",
-    "preq": [
-      "School"
-    ],
-    "cost": 2500,
-    "build": 2,
+    "plans": {
+      "preq": [
+        "School"
+      ],
+      "cost": 2500,
+      "build": 2
+    },
     "events": [
       {
         "name": "RareBook",
@@ -503,11 +547,13 @@
     "name": "Society",
     "id": 305,
     "type": "Academic",
-    "preq": [
-      "University"
-    ],
-    "cost": 5000,
-    "build": 2,
+    "plans": {
+      "preq": [
+        "University"
+      ],
+      "cost": 5000,
+      "build": 2
+    },
     "events": [
       {
         "name": "RareBook",
@@ -535,9 +581,11 @@
     "name": "Walls",
     "id": 401,
     "type": "Administrative",
-    "preq": null,
-    "cost": 100,
-    "build": 10,
+    "plans": {
+      "preq": null,
+      "cost": 100,
+      "build": 10
+    },
     "events": [
       {
         "name": "Skirmish",
@@ -553,11 +601,13 @@
     "name": "Barracks",
     "id": 402,
     "type": "Administrative",
-    "preq": [
-      "Walls"
-    ],
-    "cost": 300,
-    "build": 8,
+    "plans": {
+      "preq": [
+        "Walls"
+      ],
+      "cost": 300,
+      "build": 8
+    },
     "events": [
       {
         "name": "Skirmish",
@@ -569,12 +619,14 @@
     "name": "Armoury",
     "id": 403,
     "type": "Administrative",
-    "preq": [
-      "Barracks",
-      "Forge"
-    ],
-    "cost": 1000,
-    "build": 4,
+    "plans": {
+      "preq": [
+        "Barracks",
+        "Forge"
+      ],
+      "cost": 1000,
+      "build": 4
+    },
     "events": [
       {
         "name": "Skirmish",
@@ -590,11 +642,13 @@
     "name": "Fortress",
     "id": 404,
     "type": "Administrative",
-    "preq": [
-      "Armoury"
-    ],
-    "cost": 2000,
-    "build": 2,
+    "plans": {
+      "preq": [
+        "Armoury"
+      ],
+      "cost": 2000,
+      "build": 2
+    },
     "events": [
       {
         "name": "Skirmish",
@@ -614,9 +668,11 @@
     "name": "Assembly",
     "id": 405,
     "type": "Administrative",
-    "preq": null,
-    "cost": 200,
-    "build": 10,
+    "plans": {
+      "preq": null,
+      "cost": 200,
+      "build": 10
+    },
     "events": [
       {
         "name": "Trial",
@@ -632,12 +688,14 @@
     "name": "Prison",
     "id": 406,
     "type": "Administrative",
-    "preq": [
-      "Assembly",
-      "Barracks"
-    ],
-    "cost": 800,
-    "build": 5,
+    "plans": {
+      "preq": [
+        "Assembly",
+        "Barracks"
+      ],
+      "cost": 800,
+      "build": 5
+    },
     "events": [
       {
         "name": "Trial",
@@ -657,12 +715,14 @@
     "name": "Palace",
     "id": 407,
     "type": "Administrative",
-    "preq": [
-      "Walls",
-      "Assembly"
-    ],
-    "cost": 5000,
-    "build": 2,
+    "plans": {
+      "preq": [
+        "Walls",
+        "Assembly"
+      ],
+      "cost": 5000,
+      "build": 2
+    },
     "events": [
       {
         "name": "Investment",

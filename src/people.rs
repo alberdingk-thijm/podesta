@@ -1,8 +1,10 @@
+use buildings;
 
 #[allow(dead_code)]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Hero {
     pub name: String,
+    pub hq: buildings::Building,
     pub age: i32,
     pub race: Race,
     pub class: Class,
@@ -35,6 +37,7 @@ pub enum Class {
     Thief,
     Monk,
     Bard,
+    Merchant,
 }
 
 #[allow(dead_code)]

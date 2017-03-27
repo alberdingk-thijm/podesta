@@ -1,6 +1,8 @@
 use rand;
+use rand::Rng;
 use rouler::Roller;
 use people;
+use buildings;
 use std::str;
 use serde::de;
 
@@ -34,7 +36,7 @@ impl Area {
     /// let a = effects::Area::Building;
     /// assert_eq!(a.target(b).name , 'foo')
     /// ```
-    pub fn target(&self, &mut caller: buildings::Building) {
+    pub fn target(&self, caller: &mut buildings::Building) {
         unimplemented!()
     }
 }
@@ -66,7 +68,7 @@ impl<'a> de::Deserialize for Roller<'a> {
 */
 impl EventEffect {
     pub fn activate(&self, caller: &mut buildings::Building) {
-        match *effect {
+        match *self {
             EventEffect::Kill { ref dead, viralpt, ref area } =>
                 event_kill(dead, viralpt, area),
             EventEffect::Damage { ref crumbled, viralpt, ref area } =>

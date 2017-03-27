@@ -299,7 +299,7 @@
         "Gold": {
           "value": "1d6 * 40",
           "bonus": 0,
-          "steps": 1
+          "steps": "1"
         }
       }
     ]
