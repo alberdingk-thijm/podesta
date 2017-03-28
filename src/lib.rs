@@ -1,9 +1,11 @@
+extern crate libc;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
 extern crate serde;
 extern crate rouler;
 extern crate rand;
+//extern crate termion;
 
 pub mod parser;
 pub mod events;
