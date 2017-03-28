@@ -36,11 +36,26 @@ impl Area {
     /// let a = effects::Area::Building;
     /// assert_eq!(a.target(b).name , 'foo')
     /// ```
-    pub fn target(&self, caller: &mut buildings::Building) {
+    pub fn target<T>(&self, caller: &mut buildings::Building) -> &mut T
+    where T: HasTarget
+    {
         unimplemented!()
     }
 }
 
+/// A trait for targeting areas with effects
+pub trait HasTarget {
+
+    fn kill(&mut self, num: i32);
+
+    fn damage(&mut self, num: i32);
+
+    fn riot(&mut self, num: i32);
+
+    fn grow(&mut self);
+
+    fn build(&mut self);
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum EventEffect {
@@ -69,16 +84,26 @@ impl<'a> de::Deserialize for Roller<'a> {
 impl EventEffect {
     pub fn activate(&self, caller: &mut buildings::Building) {
         match *self {
-            EventEffect::Kill { ref dead, viralpt, ref area } =>
-                event_kill(dead, viralpt, area),
-            EventEffect::Damage { ref crumbled, viralpt, ref area } =>
-                event_damage(crumbled, viralpt, area),
-            EventEffect::Riot { ref steps, prod, ref area } =>
-                event_riot(steps, prod, area),
-            EventEffect::Grow { ref bonus, ref area } =>
-                event_grow(bonus, area),
-            EventEffect::Build { ref bonus, ref area } =>
-                event_build(bonus, area),
+            EventEffect::Kill { ref dead, viralpt, ref area } => {
+                let ref mut tgt = area.target(caller);
+                event_kill(tgt, dead, viralpt)
+            },
+            EventEffect::Damage { ref crumbled, viralpt, ref area } => {
+                let ref mut tgt = area.target(caller);
+                event_damage(tgt, crumbled, viralpt)
+            },
+            EventEffect::Riot { ref steps, prod, ref area } => {
+                let ref mut tgt = area.target(caller);
+                event_riot(tgt, steps, prod)
+            },
+            EventEffect::Grow { ref bonus, ref area } => {
+                let ref mut tgt = area.target(caller);
+                event_grow(tgt, bonus)
+            },
+            EventEffect::Build { ref bonus, ref area } => {
+                let ref mut tgt = area.target(caller);
+                event_build(tgt, bonus)
+            },
             EventEffect::Gold { ref value, bonus, ref steps } =>
                 event_gold(value, bonus, steps),
             EventEffect::Hero { ref level, ref classes } =>
@@ -89,33 +114,41 @@ impl EventEffect {
     }
 }
 
-fn event_kill(dead: &str, viralpt: Option<i32>, area: &Area) {
+fn event_kill<T: HasTarget>(tgt: &mut T, dead: &str, viralpt: Option<i32>) {
     // get the roll
     let mut roll = Roller::new(dead);
-    // perform it on the area
-    // if roll >= viralpt,
-    // run again for another area
+    let mut x : i32 = roll.total();
+    if x >= viralpt {
+        x += roll.reroll().total();
+    }
+    // perform it on the target
+    // tgt.kill(x)
     unimplemented!()
 }
 
-fn event_damage(crumbled: &str, viralpt: Option<i32>, area: &Area) {
+fn event_damage<T: HasTarget>(tgt: &mut T, crumbled: &str, viralpt: Option<i32>) {
     // get the roll
     let mut roll = Roller::new(crumbled);
+    let mut x : i32 = roll.total();
+    if x >= viralpt {
+        x += roll.reroll().total();
+    }
     // perform it on the area
+    // tgt.damage(x);
     unimplemented!()
 }
 
-fn event_riot(steps: &str, prod: f64, area: &Area) {
+fn event_riot<T: HasTarget>(tgt: &mut T, steps: &str, prod: f64) {
     // get the roll
     let mut roll = Roller::new(steps);
     unimplemented!()
 }
 
-fn event_grow(bonus: &str, area: &Area) {
+fn event_grow<T: HasTarget>(tgt: &mut T, bonus: &str) {
     unimplemented!()
 }
 
-fn event_build(bonus: &str, area: &Area) {
+fn event_build<T: HasTarget>(tgt: &mut T, bonus: &str) {
     unimplemented!()
 }
 
@@ -139,6 +172,7 @@ fn event_hero(level: &str, classes: &Vec<people::Class>) {
 }
 
 fn event_item(value: &str, magical: f64) {
+    let roll = Roller::new(value);
     unimplemented!()
 }
 
