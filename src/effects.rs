@@ -8,7 +8,6 @@ use serde::de;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Area {
-    Hero,
     Building,
     Quarter,
     Sett,
@@ -37,20 +36,26 @@ impl Area {
     /// assert_eq!(a.target(b).name , 'foo')
     /// ```
     pub fn target<T>(&self, caller: &mut buildings::Building) -> &mut T
-    where T: HasTarget
+    where T: Targeted
     {
         unimplemented!()
+        /*
+        match *self {
+            Area::Building => caller,
+            Area::Quarter => caller.loc,
+            Area::Sett => caller.loc.sett,
+        }
+        */
     }
 }
 
-/// A trait for targeting areas with effects
-pub trait HasTarget {
+/// A trait for targeting Areas with effects
+pub trait Targeted {
+    fn kill(&mut self, num: i64);
 
-    fn kill(&mut self, num: i32);
+    fn damage(&mut self, num: i64);
 
-    fn damage(&mut self, num: i32);
-
-    fn riot(&mut self, num: i32);
+    fn riot(&mut self, num: i64);
 
     fn grow(&mut self);
 
@@ -59,8 +64,8 @@ pub trait HasTarget {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum EventEffect {
-    Kill { dead: String, viralpt: Option<i32>, area: Area },
-    Damage { crumbled: String, viralpt: Option<i32>, area: Area },
+    Kill { dead: String, viralpt: Option<i64>, area: Area },
+    Damage { crumbled: String, viralpt: Option<i64>, area: Area },
     Riot { steps: String, prod: f64, area: Area },
     Grow { bonus: String, area: Area },
     Build { bonus: String, area: Area },
@@ -114,41 +119,45 @@ impl EventEffect {
     }
 }
 
-fn event_kill<T: HasTarget>(tgt: &mut T, dead: &str, viralpt: Option<i32>) {
+fn event_kill<T: Targeted>(tgt: T, dead: &str, viralpt: Option<i64>) {
     // get the roll
     let mut roll = Roller::new(dead);
-    let mut x : i32 = roll.total();
-    if x >= viralpt {
-        x += roll.reroll().total();
+    let mut x : i64 = roll.total();
+    if let Some(v) = viralpt {
+        if x >= v {
+            x += roll.reroll();
+        }
     }
     // perform it on the target
     // tgt.kill(x)
     unimplemented!()
 }
 
-fn event_damage<T: HasTarget>(tgt: &mut T, crumbled: &str, viralpt: Option<i32>) {
+fn event_damage<T: Targeted>(tgt: T, crumbled: &str, viralpt: Option<i64>) {
     // get the roll
     let mut roll = Roller::new(crumbled);
-    let mut x : i32 = roll.total();
-    if x >= viralpt {
-        x += roll.reroll().total();
+    let mut x: i64 = roll.total();
+    if let Some(v) = viralpt {
+        if x >= v {
+            x += roll.reroll();
+        }
     }
     // perform it on the area
     // tgt.damage(x);
     unimplemented!()
 }
 
-fn event_riot<T: HasTarget>(tgt: &mut T, steps: &str, prod: f64) {
+fn event_riot<T: Targeted>(tgt: T, steps: &str, prod: f64) {
     // get the roll
     let mut roll = Roller::new(steps);
     unimplemented!()
 }
 
-fn event_grow<T: HasTarget>(tgt: &mut T, bonus: &str) {
+fn event_grow<T: Targeted>(tgt: T, bonus: &str) {
     unimplemented!()
 }
 
-fn event_build<T: HasTarget>(tgt: &mut T, bonus: &str) {
+fn event_build<T: Targeted>(tgt: T, bonus: &str) {
     unimplemented!()
 }
 

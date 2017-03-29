@@ -1,26 +1,31 @@
 use std::default;
 use quarters;
 use people;
+use events;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Debug)]
 pub struct Building {
     pub name: String,
     pub id: i32,
-    #[serde(rename = "type")]
-    pub btype: quarters::QType,  // use serde macro to match type
-    pub plans: Plans,
-    pub events: Vec<EventChance>,
-    #[serde(default)]
+    pub btype: quarters::QType,
+    pub events: Vec<events::Event>,
+    pub bspeed: i32,
     pub condition: BldgCond,
-    #[serde(default)]
     pub occupants: Vec<people::Hero>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Plans {
+/// Plan for a building.
+/// Generated from lib/data/buildings.json
+pub struct BuildingPlan {
+    pub name: String,
+    pub id: i32,
+    #[serde(rename = "type")]
+    pub btype: quarters::QType,
     pub preq: Option<Vec<String>>,
     pub cost: f32,
     pub build: f32,
+    pub events: Vec<EventChance>,
 }
 
 /// Enum representing condition of a building.

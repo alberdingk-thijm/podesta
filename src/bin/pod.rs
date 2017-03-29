@@ -4,7 +4,6 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate serde;
 extern crate rouler;
-//extern crate termion;
 
 extern crate podesta;
 
@@ -15,10 +14,10 @@ fn main() {
 
     println!("Loaded events.json! {} events found", events.len());
 
-    let buildings : Vec<podesta::buildings::Building> = podesta::parser::get_data("buildings.json")
+    let plans : Vec<podesta::buildings::BuildingPlan> = podesta::parser::get_data("buildings.json")
         .expect("Error parsing JSON!");
 
-    println!("Loaded buildings.json! {} buildings found", buildings.len());
+    println!("Loaded buildings.json! {} buildings found", plans.len());
 
     let regions : Vec<podesta::regions::Region> = podesta::parser::get_data("regions.json")
         .expect("Error parsing JSON!");
@@ -26,6 +25,5 @@ fn main() {
     println!("Loaded regions.json! {} regions found", regions.len());
 
     podesta::init();
-
 
 }

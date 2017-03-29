@@ -59,11 +59,25 @@ impl Sett {
                        r: people::Race,
     ) -> Result<Self, quarters::BuildErr>
     {
+        // make sure quarter is not already present
+        if let Some(_) = self.find_quarter(n) {
+            return Err(quarters::BuildErr);
+        }
         // ensure pop is high enough
         // remove pop from existing quarters equally
         // multiply number by growth bonus => newpop
         // call quarter::Quarter::new(n, qt, newpop, r);
         // receive gold bonus
         unimplemented!()
+    }
+
+    /// Find a quarter in the settlement based on its name.
+    pub fn find_quarter(&self, name: String) -> Option<&quarters::Quarter> {
+        for q in &self.qrtrs {
+            if q.name == name {
+                return Some(q);
+            }
+        }
+        None
     }
 }

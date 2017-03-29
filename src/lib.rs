@@ -5,7 +5,6 @@ extern crate serde_json;
 extern crate serde;
 extern crate rouler;
 extern crate rand;
-//extern crate termion;
 
 pub mod parser;
 pub mod events;
@@ -23,7 +22,7 @@ fn get_datafiles() {
     let events : Vec<events::Event> =
         parser::get_data("events.json").expect("Error parsing JSON!");
 
-    let buildings : Vec<buildings::Building> =
+    let plans : Vec<buildings::BuildingPlan> =
         parser::get_data("buildings.json").expect("Error parsing JSON!");
 
     let regions : Vec<regions::Region> =
