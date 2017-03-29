@@ -22,6 +22,7 @@
 //! # }
 //! ```
 use effects;
+use std::collections::HashMap;
 
 /// A struct representing an event that occurs in a quarter.
 /// Events have a name, identifier and description.
@@ -34,6 +35,17 @@ pub struct Event {
     pub desc: String,
     pub chance: i32,
     pub effects: Vec<effects::EventEffect>
+}
+
+/// A struct for tracking potential events in the settlement.
+/// While this is tracked at the settlement level, events will trigger
+/// at varying levels depending on its effects.
+/// When an event is activated, the EventManager helps its effects know
+/// which area should be affected thanks to the format of the ID key.
+pub struct EventManager {
+    // K = reference to quarter-building-ID
+    // V = an event that can trigger at that quarter-building-ID
+    pub evmap<&str, Event>,
 }
 
 impl Event {
