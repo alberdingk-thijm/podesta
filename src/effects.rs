@@ -74,18 +74,20 @@ pub enum EventEffect {
     Item { value: String, magical: f64 },
 }
 
-
-/*
-impl<'a> de::Deserialize for Roller<'a> {
-    fn deserialize<D>(deserializer: D) -> Result<Roller<'a>, D::Error>
-    where D: de::Deserializer
-    {
-        // Return a new roller based on the deserialized string
-        let r = try!(Roller::new(de::Deserialize::deserialize(deserializer)));
-        Ok(r)
-    }
+pub struct Effect<T: Targeted> {
+    pub target: T,
 }
-*/
+
+/// A struct for tracking potential effects in the settlement.
+/// While this is tracked at the settlement level, effects will trigger
+/// at varying levels depending on their targets.
+pub struct EffectManager {
+    // K = reference to quarter-building-ID
+    // V = an event that can trigger at that quarter-building-ID
+    pub efmap: HashMap<&str, Effect>,
+}
+
+
 impl EventEffect {
     pub fn activate(&self, caller: &mut buildings::Building) {
         match *self {

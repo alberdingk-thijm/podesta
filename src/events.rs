@@ -37,17 +37,6 @@ pub struct Event {
     pub effects: Vec<effects::EventEffect>
 }
 
-/// A struct for tracking potential events in the settlement.
-/// While this is tracked at the settlement level, events will trigger
-/// at varying levels depending on its effects.
-/// When an event is activated, the EventManager helps its effects know
-/// which area should be affected thanks to the format of the ID key.
-pub struct EventManager {
-    // K = reference to quarter-building-ID
-    // V = an event that can trigger at that quarter-building-ID
-    pub evmap<&str, Event>,
-}
-
 impl Event {
 
     /// Attempt to activate the event's effects with a provided roll.
