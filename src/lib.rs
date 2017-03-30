@@ -7,20 +7,22 @@ extern crate rouler;
 extern crate rand;
 
 pub mod parser;
-pub mod events;
+pub mod regions;
 pub mod sett;
 pub mod buildings;
-pub mod regions;
 pub mod quarters;
 pub mod people;
-pub mod effects;
+//pub mod events;
+//pub mod effects;
 
 #[allow(unused_variables)]
 #[test]
 fn get_datafiles() {
 
+    /*
     let events : Vec<events::Event> =
         parser::get_data("events.json").expect("Error parsing JSON!");
+        */
 
     let plans : Vec<buildings::BuildingPlan> =
         parser::get_data("buildings.json").expect("Error parsing JSON!");

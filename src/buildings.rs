@@ -1,14 +1,13 @@
 use std::default;
 use quarters;
 use people;
-use events;
 
 #[derive(Debug)]
 pub struct Building {
     pub name: String,
     pub id: i32,
     pub btype: quarters::QType,
-    pub events: Vec<events::Event>,
+    pub events: Vec<EventChance>,
     pub bspeed: i32,
     pub condition: BldgCond,
     pub occupants: Vec<people::Hero>,

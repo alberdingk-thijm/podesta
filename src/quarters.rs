@@ -2,42 +2,27 @@ use std::fmt;
 use std::str;
 use buildings;
 use people;
-use effects;
+//use effects;
 use sett;
+use std::error;
 
 #[allow(dead_code)]
 #[derive(Debug)]
 pub struct Quarter {
     /// The unique name of the quarter.
     pub name: String,
+    /// The quarter's "type" (what kind of activities take place here).
     pub qtype: QType,
+    /// The total population of the quarter.
     pub pop: i32,
+    /// The total age in steps of the quarter.
     pub age: i32,
+    /// The majority race of the quarter.
     pub race: people::Race,
+    /// The buildings constructed in the quarter.
     pub bldgs: Vec<buildings::Building>,
 }
 
-impl effects::Targeted for Quarter {
-    fn kill(&mut self, num: i64) {
-        unimplemented!()
-    }
-
-    fn damage(&mut self, num: i64) {
-        unimplemented!()
-    }
-
-    fn riot(&mut self, num: i64) {
-        unimplemented!()
-    }
-
-    fn grow(&mut self) {
-        unimplemented!()
-    }
-
-    fn build(&mut self) {
-        unimplemented!()
-    }
-}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum QType {
@@ -48,36 +33,31 @@ pub enum QType {
     Administrative,
 }
 
-impl fmt::Display for QType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", match *self {
-            QType::Residential => "Residential",
-            QType::Industrial => "Industrial",
-            QType::Port => "Port",
-            QType::Academic => "Academic",
-            QType::Administrative => "Administrative",
-        })
-    }
+#[derive(Debug)]
+pub enum BuildError {
+    NotEnoughPop,
+    NotEnoughGold,
+    AlreadyExists,
 }
 
-impl str::FromStr for QType {
-    type Err = ();
+/*
+impl error::Error for BuildError {
+    fn description(&self) -> &str {
+        match *self {
+            BuildError::NotEnoughPop => "Population not high enough to build",
+            BuildError::NotEnoughGold => "Gold not high enough to build",
+            BuildError::AlreadyExists => "Building already exists!",
+        }
+    }
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Residential" => Ok(QType::Residential),
-            "Industrial" => Ok(QType::Industrial),
-            "Port" => Ok(QType::Port),
-            "Academic" => Ok(QType::Academic),
-            "Administrative" => Ok(QType::Administrative),
-            _ => Err(()),
+    fn cause(&self) -> Option<&error::Error> {
+        match *self {
         }
     }
 }
+*/
 
-pub type BuildErr = String;  // TODO: convert to actual error
 impl Quarter {
-
     /// Create a new Quarter with a given name, population, type and racial
     /// majority. Age is set to zero and no buildings exist initially.
     pub fn new(n: &str, qt: QType, p: i32, r: people::Race) -> Quarter {
@@ -97,7 +77,7 @@ impl Quarter {
     }
 
     /// Add a building
-    pub fn add_building(&self, bname: &str) -> Result<Self, BuildErr> {
+    pub fn add_building(&self, bname: &str) -> Result<Self, BuildError> {
         unimplemented!()
     }
 
