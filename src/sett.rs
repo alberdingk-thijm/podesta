@@ -13,7 +13,6 @@ pub struct Sett {
     pub reg: regions::Region,
     pub qrtrs: Vec<quarters::Quarter>,
     pub flags: SettFlags,
-    pub em: events::EventManager,
 }
 
 #[derive(Debug)]

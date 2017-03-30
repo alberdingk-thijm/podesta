@@ -5,6 +5,7 @@ use people;
 use buildings;
 use std::str;
 use serde::de;
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Area {
@@ -91,40 +92,40 @@ pub struct EffectManager {
 
 impl EventEffect {
     pub fn activate(&self, caller: &mut buildings::Building) {
-        let e = Effect
+        //let e = Effect::new(caller, self);
         match *self {
             EventEffect::Kill { ref dead, viralpt, ref area } => {
                 let ref mut tgt = area.target(caller);
-                event_kill(tgt, dead, viralpt)
+                //event_kill(tgt, dead, viralpt)
             },
             EventEffect::Damage { ref crumbled, viralpt, ref area } => {
                 let ref mut tgt = area.target(caller);
-                event_damage(tgt, crumbled, viralpt)
+                //event_damage(tgt, crumbled, viralpt)
             },
             EventEffect::Riot { ref steps, prod, ref area } => {
                 let ref mut tgt = area.target(caller);
-                event_riot(tgt, steps, prod)
+                //event_riot(tgt, steps, prod)
             },
             EventEffect::Grow { ref bonus, ref area } => {
                 let ref mut tgt = area.target(caller);
-                event_grow(tgt, bonus)
+                //event_grow(tgt, bonus)
             },
             EventEffect::Build { ref bonus, ref area } => {
                 let ref mut tgt = area.target(caller);
-                event_build(tgt, bonus)
+                //event_build(tgt, bonus)
             },
-            EventEffect::Gold { ref value, bonus, ref steps } =>
-                event_gold(value, bonus, steps),
-            EventEffect::Hero { ref level, ref classes } =>
-                event_hero(level, classes),
-            EventEffect::Item { ref value, magical } =>
-                event_item(value, magical),
+            EventEffect::Gold { ref value, bonus, ref steps } => (),
+                //event_gold(value, bonus, steps),
+            EventEffect::Hero { ref level, ref classes } => (),
+                //event_hero(level, classes),
+            EventEffect::Item { ref value, magical } => (),
+                //event_item(value, magical),
         }
     }
 }
 
-impl Effect<T: Targeted> {
-    pub fn new<T: Targeted>(tgt: T, etype: EventEffect) -> Effect<T: Targeted>{
+impl Effect {
+    pub fn new<T: Targeted>(tgt: T, etype: EventEffect) -> Effect {
         Effect { tgt: tgt, etype: etype }
     }
 
