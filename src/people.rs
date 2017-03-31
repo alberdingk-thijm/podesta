@@ -80,6 +80,20 @@ pub enum Class {
     Merchant,
 }
 
+impl Class {
+
+    /// Return a number representing the youngest age of a member of this Class.
+    fn get_age(&self) -> i32 {
+        match *self {
+            //TODO
+            Class::Cleric => 0,
+            Class::Druid => 0,
+            Class::Fighter => 0,
+            _ => 0,
+        }
+    }
+}
+
 #[allow(dead_code)]
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Activity {
@@ -99,6 +113,14 @@ impl Activity {
 
     /// Return a String describing the cause of death based on the
     /// Activity last performed.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use podesta::people::Activity;
+    /// let a = Activity::Working;
+    /// assert_eq!(a.autopsy(), "overworked".to_string())
+    /// ```
     pub fn autopsy(&self) -> String {
         match *self {
             Activity::Working => "overworked",
@@ -120,6 +142,17 @@ impl Hero {
     // Heroes die naturally at AGEMOD * Race::max_age() steps.
     // const AGEMOD: i32 = 25;
     fn agemod() -> i32 { 25 }
+
+    pub fn new(n: &str, lvl: i32, race: Race, class: Class) -> Hero {
+        Hero {
+            name: n.to_string(),
+            age: class.get_age() * Hero::agemod(),
+            level: lvl,
+            race: race,
+            class: class,
+            activity: Activity::Working,
+        }
+    }
 
     #[allow(dead_code)]
     pub fn execute_timestep(&mut self) {
@@ -198,6 +231,21 @@ impl Hero {
 
     #[allow(dead_code)]
     /// Promote a hero to the Governing activity.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use podesta::people;
+    /// let h = Hero::new(
+    ///     "George",
+    ///     1,
+    ///     people::Race::Human,
+    ///     people::Class::Fighter
+    /// );
+    /// assert_eq!(h.activity, people::Activity::Working);
+    /// h.make_governor();
+    /// assert_eq(h.activity, people::Activity::Governing);
+    /// ```
     fn make_governor(&self) {
         unimplemented!()
     }
