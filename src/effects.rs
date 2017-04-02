@@ -63,6 +63,27 @@ pub trait Targeted {
     fn build(&mut self);
 }
 
+/*
+#[derive(Serialize, Deserialize, Debug)]
+pub enum EventEffect {
+    KillHeroes { dead: String },
+    KillQuarter { dead: String, viralpt: Option<i64> },
+    KillSett { dead: String },
+    DamageBuilding { crumbled: String, viralpt: Option<i64> },
+    DamageQuarter { crumbled: String, viralpt: Option<i64> },
+    DamageSett { crumbled: String },
+    RiotQuarter { steps: String, prod: f64 },
+    RiotSett { steps: String, prod: f64 },
+    GrowQuarter { bonus: String },
+    GrowSett { bonus: String },
+    BuildQuarter { bonus: String },
+    BuildSett { bonus: String },
+    Gold { value: String, bonus: f64, steps: String },
+    Hero { level: String, classes: Vec<people::Class> },
+    Item { value: String, magical: f64 },
+}
+*/
+
 #[derive(Serialize, Deserialize, Debug)]
 pub enum EventEffect {
     Kill { dead: String, viralpt: Option<i64>, area: Area },

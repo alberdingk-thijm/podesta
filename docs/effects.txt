@@ -1,0 +1,28 @@
+--------------------
+EFFECTS IN PODESTA
+--------------------
+
+Every event has one or more associated effects. These are essentially a
+lower-level description of the results of an event being called. For instance,
+an event like Fire should kill some percentage of the population and damage
+a number of buildings. This can then be represented by a Kill effect and a
+Damage effect.
+Effects roll dice on behalf of events, and return a Request struct with the
+results of those rolls and their interpretation. Requests are then stored by
+the Event caller (the host building) until they can be read by the Manager.
+At each step, the existing Request struct is overwritten and a new one is
+created to detail the results of this turn's events.
+
+Example
+
+The Library building has a RareBook event which creates a new Item and stores
+it in the building. The Item's value is variable and it may or may not be
+magical, depending on the number of mages in the settlement.
+When the RareBook event triggers, each effect of the event is activated. In
+this case, RareBook has one effect, which is creating an item.
+The Library then receives the return of the event trigger, which is a Request
+for an Item of variable value and magical quality, and stores this information
+in its Requests field.
+When the manager performs the event update step, it can then examine each
+building and check for requests. It accepts the RareBook event and then creates
+the new Item, which it places in the Library.
