@@ -39,7 +39,8 @@ where
 /// Return the PathBuf to the directory where the data is stored.
 /// This is $CARGO_MANIFEST_DIR/lib/data/.
 fn get_data_dir() -> path::PathBuf {
-    let head = env::var_os("CARGO_MANIFEST_DIR").unwrap();
+    let head = env::var_os("CARGO_MANIFEST_DIR")
+        .expect("Must run using Cargo!");
     let p = path::Path::new(&head).join("lib").join("data");
 
     p

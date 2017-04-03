@@ -48,3 +48,19 @@ pub fn init() {
     let s = sett::Sett::new("Amsterdam", reg, qtype, race, sett::SettFlags::Coastal);
     println!("Generated a settlement: {:?}", s);
 }
+
+pub const WELCOME_MINI : &'static str = r#"
+Welcome to Podesta v0.1!
+Type "help" or "license" for more info.
+Type "q" to exit.
+"#;
+
+/// Display the help file
+pub fn help() {
+    unimplemented!()
+}
+
+/// Display the license file
+pub fn license() {
+    unimplemented!()
+}
