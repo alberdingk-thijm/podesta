@@ -1,16 +1,18 @@
 use std::default;
 use quarters;
-use people;
+//use people;
+use sett;
 
 #[derive(Debug)]
 pub struct Building {
     pub name: String,
     pub id: i32,
+    pub loc: Box<quarters::Quarter>,
     pub btype: quarters::QType,
     pub events: Vec<EventChance>,
-    pub bspeed: i32,
+    pub bspeed: f64,
     pub condition: BldgCond,
-    pub occupants: Vec<people::Hero>,
+    //pub occupants: Vec<people::Hero>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -22,8 +24,8 @@ pub struct BuildingPlan {
     #[serde(rename = "type")]
     pub btype: quarters::QType,
     pub preq: Option<Vec<String>>,
-    pub cost: f32,
-    pub build: f32,
+    pub cost: f64,
+    pub build: f64,
     pub events: Vec<EventChance>,
 }
 
@@ -55,4 +57,21 @@ pub struct EventChance {
 
 impl Building {
 
+    pub fn new(plans: BuildingPlan, loc: Box<quarters::Quarter>) -> Building {
+        Building {
+            name: plans.name,
+            id: plans.id,
+            loc: loc,
+            btype: plans.btype,
+            events: plans.events,
+            bspeed: plans.build,
+            condition: BldgCond::InProgress,
+        }
+    }
+}
+
+impl sett::HasName for Building {
+    fn get_name(&self) -> &str {
+        &self.name
+    }
 }

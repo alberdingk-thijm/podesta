@@ -3,7 +3,7 @@
 //! ### Serializing and deserializing an Event
 //! Uses serde_json
 //!
-//! ```
+//! ```ignore
 //! # extern crate serde_json;
 //! # extern crate podesta;
 //! # fn main() {

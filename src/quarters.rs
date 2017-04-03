@@ -1,10 +1,7 @@
-use std::fmt;
-use std::str;
-use buildings;
+//use buildings;
 use people;
 //use effects;
 use sett;
-use std::error;
 
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -19,10 +16,15 @@ pub struct Quarter {
     pub age: i32,
     /// The majority race of the quarter.
     pub race: people::Race,
-    /// The buildings constructed in the quarter.
-    pub bldgs: Vec<buildings::Building>,
+    // The buildings constructed in the quarter.
+    //pub bldgs: Vec<buildings::Building>,
 }
 
+impl sett::HasName for Quarter {
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum QType {
@@ -67,7 +69,7 @@ impl Quarter {
             pop: p,
             age: 0,
             race: r,
-            bldgs: vec!(),
+            //bldgs: vec!(),
         }
     }
 
@@ -76,6 +78,7 @@ impl Quarter {
         unimplemented!()
     }
 
+    /*
     /// Add a building
     pub fn add_building(&self, bname: &str) -> Result<Self, BuildError> {
         unimplemented!()
@@ -85,4 +88,5 @@ impl Quarter {
     pub fn find_building(&self, bname: &str) -> Option<&buildings::Building> {
         unimplemented!()
     }
+    */
 }

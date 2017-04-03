@@ -1,6 +1,7 @@
 //! The sett module contains the information governing the sett struct,
 //! the basic object which represents the growing settlement.
 use quarters;
+use buildings;
 use regions;
 use people;
 
@@ -11,8 +12,13 @@ pub struct Sett {
     pub pop: i32,
     pub gold: f64,
     pub reg: regions::Region,
+    /// List of quarters in the settlement.
     pub qrtrs: Vec<quarters::Quarter>,
+    pub bldgs: Vec<buildings::Building>,
+    pub heroes: Vec<people::Hero>,
+    /// Population needed before a new quarter is added.
     pub nextqrtr: i32,
+    /// Flags for settlement info.
     pub flags: SettFlags,
 }
 
@@ -23,6 +29,7 @@ pub enum SettFlags {
 }
 
 impl Sett {
+
     /// Create a new Settlement
     pub fn new(n: &str,
                reg: regions::Region,
@@ -39,6 +46,8 @@ impl Sett {
             gold: reg.starting_gold,
             reg: reg,
             qrtrs: vec!(quarters::Quarter::new("main", qt, pop, r)),
+            bldgs: vec!(),
+            heroes: vec!(),  // TODO: get a starting governor
             nextqrtr: pop * 2,
             flags: f,
         }
@@ -62,7 +71,7 @@ impl Sett {
     ) -> Result<String, quarters::BuildError>
     {
         // make sure quarter is not already present
-        if let Some(_) = self.find_quarter(&n) {
+        if let Some(_) = find_by_name(&self.qrtrs, &n) {
             return Err(quarters::BuildError::AlreadyExists);
         }
         // ensure pop is high enough
@@ -87,11 +96,28 @@ impl Sett {
 
     /// Find a quarter in the settlement based on its name.
     pub fn find_quarter(&self, name: &str) -> Option<&quarters::Quarter> {
-        for q in &self.qrtrs {
-            if q.name == name {
-                return Some(q);
-            }
-        }
-        None
+        (&self.qrtrs).into_iter().skip_while(|q| q.name != name).next()
     }
+
+    /// Add a building
+    pub fn add_building(&self, name: &str, q: Box<quarters::Quarter>)
+    -> Result<String, quarters::BuildError>{
+        // Get the plans for the building
+        // Check that self has enough gold to pay the cost
+        unimplemented!()
+    }
+
+    pub fn find_building(&self, name: &str) -> Option<&buildings::Building> {
+        (&self.bldgs).into_iter().skip_while(|b| b.name != name).next()
+    }
+
+}
+
+pub trait HasName {
+    fn get_name(&self) -> &str;
+}
+
+pub fn find_by_name<'a, 'b, T: HasName>(v: &'a [T], name: &'b str)
+-> Option<&'a T> {
+    v.into_iter().skip_while(|x| x.get_name() != name).next()
 }

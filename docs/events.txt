@@ -23,7 +23,7 @@ There are eight different event effects.
 - Slow growth and building (RIOT)
 - Grow the settlement (GROW)
 - Build more quickly (BUILD)
-- Earn gold faster (GOLD) (NEW)
+- Earn gold faster (GOLD)
 - Add a new notable (HERO)
 - Add a new item (ITEM)
 
