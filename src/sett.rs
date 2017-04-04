@@ -4,6 +4,7 @@ use quarters;
 use buildings;
 use regions;
 use people;
+use std::cell::RefCell;
 
 #[derive(Debug)]
 pub struct Sett {
@@ -13,9 +14,11 @@ pub struct Sett {
     pub gold: f64,
     pub reg: regions::Region,
     /// List of quarters in the settlement.
-    pub qrtrs: Vec<quarters::Quarter>,
-    pub bldgs: Vec<buildings::Building>,
-    pub heroes: Vec<people::Hero>,
+    pub qrtrs: RefCell<Vec<quarters::Quarter>>,
+    /// List of buildings in the settlement
+    pub bldgs: RefCell<Vec<buildings::Building>>,
+    /// List of heroes in the settlement
+    pub heroes: RefCell<Vec<people::Hero>>,
     /// Population needed before a new quarter is added.
     pub nextqrtr: i32,
     /// Flags for settlement info.
@@ -45,9 +48,15 @@ impl Sett {
             pop: pop,
             gold: reg.starting_gold,
             reg: reg,
-            qrtrs: vec!(quarters::Quarter::new("main", qt, pop, r)),
-            bldgs: vec!(),
-            heroes: vec!(),  // TODO: get a starting governor
+            qrtrs: RefCell::new(vec![
+                                quarters::Quarter::new("main",
+                                                       qt,
+                                                       pop,
+                                                       r)]
+                                ),
+            bldgs: RefCell::new(vec!()),
+            // TODO: get a starting governor
+            heroes: RefCell::new(vec!()),
             nextqrtr: pop * 2,
             flags: f,
         }
@@ -70,8 +79,10 @@ impl Sett {
                        r: people::Race,
     ) -> Result<String, quarters::BuildError>
     {
+        let mut qrtrs = self.qrtrs.borrow_mut();
         // make sure quarter is not already present
-        if let Some(_) = find_by_name(&self.qrtrs, &n) {
+        if qrtrs.iter().any(|&x| x.name == n) {
+        //if let Some(_) = find_by_name(&qrtrs, &n) {
             return Err(quarters::BuildError::AlreadyExists);
         }
         // ensure pop is high enough
@@ -79,24 +90,18 @@ impl Sett {
             return Err(quarters::BuildError::NotEnoughPop);
         }
         // remove pop from existing quarters equally
-        let nqrtrs = self.qrtrs.len() as i32;
-        for q in self.qrtrs.iter_mut() {
-            q.pop -= self.nextqrtr / nqrtrs;
-            //TODO: does this actually modify the struct or just a borrowed iterator?
-            //TODO: fix using Rc or Box?
+        let nqrtrs = qrtrs.len() as i32;
+        for q in qrtrs.iter_mut() {
+            // add 1 because we are counting the new quarter
+            q.pop -= self.nextqrtr / (nqrtrs + 1);
         }
-        let newpop = self.nextqrtr;
+        let newpop = self.nextqrtr / nqrtrs;
         // multiply number by growth bonus => newpop?
-        self.qrtrs.push(quarters::Quarter::new(&n, qt, newpop, r));
+        qrtrs.push(quarters::Quarter::new(&n, qt, newpop, r));
         // receive gold bonus
         self.gold += 100.0;
         self.nextqrtr *= 2;
         Ok("New quarter added!".to_string())
-    }
-
-    /// Find a quarter in the settlement based on its name.
-    pub fn find_quarter(&self, name: &str) -> Option<&quarters::Quarter> {
-        (&self.qrtrs).into_iter().skip_while(|q| q.name != name).next()
     }
 
     /// Add a building
@@ -107,10 +112,9 @@ impl Sett {
         unimplemented!()
     }
 
-    pub fn find_building(&self, name: &str) -> Option<&buildings::Building> {
-        (&self.bldgs).into_iter().skip_while(|b| b.name != name).next()
+    pub fn add_pop(&mut self, num: i32) {
+        self.pop += num;
     }
-
 }
 
 pub trait HasName {
@@ -119,5 +123,9 @@ pub trait HasName {
 
 pub fn find_by_name<'a, 'b, T: HasName>(v: &'a [T], name: &'b str)
 -> Option<&'a T> {
-    v.into_iter().skip_while(|x| x.get_name() != name).next()
+    v.iter().find(|&x| x.get_name() == name)
+}
+
+macro_rules! find_named {
+    ($a:expr, $name:ident) => ($a.iter().find(|&x| x.name == $name))
 }

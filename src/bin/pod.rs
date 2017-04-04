@@ -58,6 +58,7 @@ fn parse_input(input: &str) -> ParseResult {
     match input {
         "help" => podesta::help(),
         "license" => podesta::license(),
+        "commands" => println!("{}", podesta::COMMANDS),
         "new" => podesta::init(),
         "q" | "quit" => return ParseResult::Quit,
         _ => return ParseResult::Error(format!("Unknown option \"{}\"", input)),

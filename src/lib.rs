@@ -45,14 +45,32 @@ pub fn init() {
     // Prompt for race?
     let race = people::Race::Human;
     // Generate empty settlement
-    let s = sett::Sett::new("Amsterdam", reg, qtype, race, sett::SettFlags::Coastal);
+    let mut s = sett::Sett::new("Amsterdam", reg, qtype, race, sett::SettFlags::Coastal);
     println!("Generated a settlement: {:?}", s);
+
+    println!("{:?}", s.add_quarter("Jewish Quarter".to_string(),
+                  quarters::QType::Industrial,
+                  people::Race::Human));
+
+    println!("Settlement state: {:?}", s);
 }
+
 
 pub const WELCOME_MINI : &'static str = r#"
 Welcome to Podesta v0.1!
 Type "help" or "license" for more info.
+Type "commands" to list some basic commands.
 Type "q" to exit.
+"#;
+
+pub const COMMANDS : &'static str = r#"
+help            -   view help file
+license         -   view license file
+new [term]      -   create a new [term]
+step, n, next   -   execute a step
+p, print [term] -   print [term]
+save [file]     -   save the settlement to file
+load [file]     -   load a settlement from a file
 "#;
 
 /// Display the help file
