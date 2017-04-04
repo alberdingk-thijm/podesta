@@ -42,7 +42,7 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::Error(s) => println!("{}", s),
+            ParseResult::Info(s) => println!("{}", s),
             ParseResult::Quit => break,
         }
     }
@@ -50,7 +50,7 @@ fn main() {
 
 enum ParseResult {
     Success,
-    Error(String),
+    Info(String),
     Quit,
 }
 
@@ -58,10 +58,12 @@ fn parse_input(input: &str) -> ParseResult {
     match input {
         "help" => podesta::help(),
         "license" => podesta::license(),
-        "commands" => println!("{}", podesta::COMMANDS),
+        "commands" => return ParseResult::Info(podesta::COMMANDS.to_string()),
         "new" => podesta::init(),
+        "print" => (),
         "q" | "quit" => return ParseResult::Quit,
-        _ => return ParseResult::Error(format!("Unknown option \"{}\"", input)),
+        "" => (),
+        _ => return ParseResult::Info(format!("Unknown option \"{}\"", input)),
     }
     ParseResult::Success
 }

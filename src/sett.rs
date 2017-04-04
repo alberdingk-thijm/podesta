@@ -81,7 +81,7 @@ impl Sett {
     {
         let mut qrtrs = self.qrtrs.borrow_mut();
         // make sure quarter is not already present
-        if qrtrs.iter().any(|&x| x.name == n) {
+        if qrtrs.iter().any(|ref x| x.name == n) {
         //if let Some(_) = find_by_name(&qrtrs, &n) {
             return Err(quarters::BuildError::AlreadyExists);
         }
