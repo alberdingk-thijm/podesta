@@ -6,26 +6,13 @@ extern crate rouler;
 extern crate podesta;
 
 use std::io::{self, Write};
+use std::rc::Rc;
 
 fn main() {
-
     /*
-    let events : Vec<podesta::events::Event> = podesta::parser::get_data("events.json")
-        .expect("Error parsing JSON!");
-
     println!("Loaded events.json! {} events found", events.len());
     */
-
-    let plans : Vec<podesta::buildings::BuildingPlan> = podesta::parser::get_data("buildings.json")
-        .expect("Error parsing JSON!");
-
-    println!("Loaded buildings.json! {} buildings found", plans.len());
-
-    let regions : Vec<podesta::regions::Region> = podesta::parser::get_data("regions.json")
-        .expect("Error parsing JSON!");
-
-    println!("Loaded regions.json! {} regions found", regions.len());
-
+    let data = Rc::new(podesta::DataFiles::new("regions.json", "buildings.json"));
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
     let mut input = String::new();
@@ -42,6 +29,7 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
+            ParseResult::Init => podesta::init(data.clone()),
             ParseResult::Info(s) => println!("{}", s),
             ParseResult::Quit => break,
         }
@@ -50,6 +38,7 @@ fn main() {
 
 enum ParseResult {
     Success,
+    Init,
     Info(String),
     Quit,
 }
@@ -59,7 +48,7 @@ fn parse_input(input: &str) -> ParseResult {
         "help" => podesta::help(),
         "license" => podesta::license(),
         "commands" => return ParseResult::Info(podesta::COMMANDS.to_string()),
-        "new" => podesta::init(),
+        "new" => return ParseResult::Init,
         "print" => (),
         "q" | "quit" => return ParseResult::Quit,
         "" => (),

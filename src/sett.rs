@@ -12,7 +12,7 @@ pub struct Sett {
     pub age: i32,
     pub pop: i32,
     pub gold: f64,
-    pub reg: regions::Region,
+    pub reg: Box<regions::Region>,
     /// List of quarters in the settlement.
     pub qrtrs: RefCell<Vec<quarters::Quarter>>,
     /// List of buildings in the settlement
@@ -35,7 +35,7 @@ impl Sett {
 
     /// Create a new Settlement
     pub fn new(n: &str,
-               reg: regions::Region,
+               reg: Box<regions::Region>,
                qt: quarters::QType,
                r: people::Race,
                f: SettFlags,
