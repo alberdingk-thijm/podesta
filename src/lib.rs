@@ -23,26 +23,29 @@ use std::rc::Rc;
 //use std::error;
 
 pub struct DataFiles {
-    regions: Rc<Vec<regions::Region>>,
-    plans: Rc<Vec<buildings::BuildingPlan>>,
+    regions: Vec<Rc<regions::Region>>,
+    plans: Vec<Rc<buildings::BuildingPlan>>,
     //events: Vec<events::Event>,
 }
 
 impl DataFiles {
-    pub fn new(building_path: &str, region_path: &str) -> DataFiles {
+    /// Create a new DataFiles struct to track regions, buildings, and
+    /// (eventually) events.
+    /// NOTE: Be mindful of the order when providing the parameters!
+    pub fn new(region_path: &str, building_path: &str) -> DataFiles {
         DataFiles {
-            regions: Rc::new(parser::get_data(region_path)
+            regions: parser::get_data(region_path)
                 .and_then(|d| {
                     println!("Loaded {}! {} regions found.",
                                        region_path, d.len());
                     Ok(d)
-                }).expect("Error parsing regions JSON!")),
-            plans: Rc::new(parser::get_data(building_path)
+                }).expect("Error parsing regions JSON!"),
+            plans: parser::get_data(building_path)
                 .and_then(|d| {
                     println!("Loaded {}! {} buildings found.",
                                        building_path, d.len());
                     Ok(d)
-                }).expect("Error parsing buildings JSON!")),
+                }).expect("Error parsing buildings JSON!"),
         }
     }
 }
@@ -57,19 +60,19 @@ fn get_datafiles() {
 }
 
 /// Create a new settlement, prompting for user input occasionally.
-pub fn init(data: Rc<DataFiles>) {
+pub fn init(data: &DataFiles) {
     // Prompt for region (max 2 tries)
     let regchoice = prompt_or_rand(&(data.regions), 2);
-    let reg = data.regions
+    let reg = data.regions[regchoice].clone();
         //TODO: cannot move elements inside data.regions (wrap with Box?)
-        .into_iter().nth(regchoice).expect("Unable to get region!");
+        //.into_iter().nth(regchoice).expect("Unable to get region!");
     // Prompt for quarter type
     let qtype = quarters::QType::Port;
     // Prompt for race?
     let race = people::Race::Human;
     // Generate empty settlement
     let mut s = sett::Sett::new("Amsterdam",
-                                Box::new(reg),
+                                reg,
                                 qtype,
                                 race,
                                 sett::SettFlags::Coastal);
@@ -92,7 +95,7 @@ enum PromptError {
 /// otherwise return Err(PromptError).
 fn prompt_choice<T: fmt::Display>(a: &[T]) -> Result<usize, PromptError> {
     // Remember to decrement the choice by 1 to get the actual index
-    for choice in 1..a.len() {
+    for choice in 1..a.len()+1 {
         println!("{}: {}", choice, a[choice-1]);
     }
     print!("Choose a number from 1 to {}: ", a.len());
@@ -103,7 +106,7 @@ fn prompt_choice<T: fmt::Display>(a: &[T]) -> Result<usize, PromptError> {
         Ok(_) => input.trim().parse::<usize>().map(|x| x - 1)
             .map_err(PromptError::Parse),
         Err(e) => Err(PromptError::Io(e)),
-    }.and_then(|x| if x > 0 && x < a.len() {
+    }.and_then(|x| if x < a.len() {
         Ok(x)
     } else {
         Err(PromptError::InvalidNum)

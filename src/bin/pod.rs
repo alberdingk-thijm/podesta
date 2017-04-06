@@ -12,7 +12,7 @@ fn main() {
     /*
     println!("Loaded events.json! {} events found", events.len());
     */
-    let data = Rc::new(podesta::DataFiles::new("regions.json", "buildings.json"));
+    let data = podesta::DataFiles::new("regions.json", "buildings.json");
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
     let mut input = String::new();
@@ -29,7 +29,7 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::Init => podesta::init(data.clone()),
+            ParseResult::Init => podesta::init(&data), //.clone()),
             ParseResult::Info(s) => println!("{}", s),
             ParseResult::Quit => break,
         }

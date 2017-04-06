@@ -17,13 +17,14 @@ use std::fs::File;
 use std::io::BufReader;
 use std::env;
 use std::path;
+use std::rc::Rc;
 
 /// Return a Result holding a deserialized vector of podsim data,
 /// where each vector element was stored in a JSON file named by
 /// the **jsonfile** parameter; or an error if the JSON file could
 /// not be parsed. Each element must itself be deserializable.
 /// Panic! if the file cannot be opened.
-pub fn get_data<T>(jsonfile: &str) -> Result<Vec<T>, serde_json::Error>
+pub fn get_data<T>(jsonfile: &str) -> Result<Vec<Rc<T>>, serde_json::Error>
 where
     T: serde::Deserialize + serde::Serialize
 {
@@ -32,7 +33,7 @@ where
     let f = File::open(p)
         .expect("Unable to open file");
     let reader = BufReader::new(f);
-    let e: Vec<T> = try!(serde_json::from_reader(reader));
+    let e: Vec<Rc<T>> = try!(serde_json::from_reader(reader));
     Ok(e)
 }
 
