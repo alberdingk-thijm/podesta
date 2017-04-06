@@ -67,10 +67,9 @@ pub fn init(data: &DataFiles) {
     }
     let name = namechoice.unwrap();
     // Prompt for region (max 2 tries)
+    println!("Please specify {}'s region.", name);
     let regchoice = prompts::choose_or_rand(&(data.regions), 2);
     let reg = data.regions[regchoice].clone();
-        //TODO: cannot move elements inside data.regions (wrap with Box?)
-        //.into_iter().nth(regchoice).expect("Unable to get region!");
     // Prompt for quarter type
     let qtype = quarters::QType::Port;
     // Prompt for race?
