@@ -6,7 +6,7 @@ extern crate rouler;
 extern crate podesta;
 
 use std::io::{self, Write};
-use std::rc::Rc;
+//use std::rc::Rc;
 
 fn main() {
     /*
@@ -29,7 +29,7 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::Init => podesta::init(&data), //.clone()),
+            ParseResult::New => podesta::init(&data), //.clone()),
             ParseResult::Info(s) => println!("{}", s),
             ParseResult::Quit => break,
         }
@@ -38,7 +38,7 @@ fn main() {
 
 enum ParseResult {
     Success,
-    Init,
+    New,
     Info(String),
     Quit,
 }
@@ -48,7 +48,7 @@ fn parse_input(input: &str) -> ParseResult {
         "help" => podesta::help(),
         "license" => podesta::license(),
         "commands" => return ParseResult::Info(podesta::COMMANDS.to_string()),
-        "new" => return ParseResult::Init,
+        "new" => return ParseResult::New,
         "print" => (),
         "q" | "quit" => return ParseResult::Quit,
         "" => (),

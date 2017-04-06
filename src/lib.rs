@@ -12,16 +12,13 @@ pub mod sett;
 pub mod buildings;
 pub mod quarters;
 pub mod people;
+mod prompts;
 //pub mod events;
 //pub mod effects;
 
-use std::fmt;
-use rand::Rng;
-use std::io::{self, Write};
-use std::num;
 use std::rc::Rc;
-//use std::error;
 
+#[derive(Debug)]
 pub struct DataFiles {
     regions: Vec<Rc<regions::Region>>,
     plans: Vec<Rc<buildings::BuildingPlan>>,
@@ -61,8 +58,16 @@ fn get_datafiles() {
 
 /// Create a new settlement, prompting for user input occasionally.
 pub fn init(data: &DataFiles) {
+    // Prompt for a name of at least 1 character.
+    let namelen = 1;
+    let mut namechoice = prompts::name(namelen);
+    while namechoice.is_err() {
+        println!("Please enter at least {} letters.", namelen);
+        namechoice = prompts::name(namelen);
+    }
+    let name = namechoice.unwrap();
     // Prompt for region (max 2 tries)
-    let regchoice = prompt_or_rand(&(data.regions), 2);
+    let regchoice = prompts::choose_or_rand(&(data.regions), 2);
     let reg = data.regions[regchoice].clone();
         //TODO: cannot move elements inside data.regions (wrap with Box?)
         //.into_iter().nth(regchoice).expect("Unable to get region!");
@@ -71,7 +76,7 @@ pub fn init(data: &DataFiles) {
     // Prompt for race?
     let race = people::Race::Human;
     // Generate empty settlement
-    let mut s = sett::Sett::new("Amsterdam",
+    let mut s = sett::Sett::new(name,
                                 reg,
                                 qtype,
                                 race,
@@ -83,50 +88,6 @@ pub fn init(data: &DataFiles) {
                   people::Race::Human));
 
     println!("Settlement state: {:?}", s);
-}
-
-enum PromptError {
-    Io(io::Error),
-    Parse(num::ParseIntError),
-    InvalidNum,
-}
-/// Prompt the user for a choice from the given list of displayable items.
-/// Return Ok(item index) if the chosen **item** was successfully picked,
-/// otherwise return Err(PromptError).
-fn prompt_choice<T: fmt::Display>(a: &[T]) -> Result<usize, PromptError> {
-    // Remember to decrement the choice by 1 to get the actual index
-    for choice in 1..a.len()+1 {
-        println!("{}: {}", choice, a[choice-1]);
-    }
-    print!("Choose a number from 1 to {}: ", a.len());
-    io::stdout().flush()
-        .expect("Failed to flush to stdout!");
-    let mut input = String::new();
-    match io::stdin().read_line(&mut input) {
-        Ok(_) => input.trim().parse::<usize>().map(|x| x - 1)
-            .map_err(PromptError::Parse),
-        Err(e) => Err(PromptError::Io(e)),
-    }.and_then(|x| if x < a.len() {
-        Ok(x)
-    } else {
-        Err(PromptError::InvalidNum)
-    })
-}
-
-/// Prompt the user for a choice from the given list of displayable items,
-/// and return the index of the chosen item. If the user fails to make a
-/// choice maxprompts times, pick a random item index.
-fn prompt_or_rand<T: fmt::Display>(a: &[T], maxprompts: i32) -> usize {
-    let mut numprompts = 0;
-    while numprompts < maxprompts {
-        match prompt_choice(a) {
-            Ok(c) => return c,
-            Err(PromptError::Io(e)) => println!("{}", e),
-            Err(_) => println!("Please choose a valid number."),
-        }
-        numprompts += 1;
-    }
-    rand::thread_rng().gen_range(0, a.len())
 }
 
 pub const WELCOME_MINI : &'static str = r#"

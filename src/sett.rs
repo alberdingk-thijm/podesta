@@ -35,7 +35,7 @@ pub enum SettFlags {
 impl Sett {
 
     /// Create a new Settlement
-    pub fn new(n: &str,
+    pub fn new(n: String,
                reg: Rc<regions::Region>,
                qt: quarters::QType,
                r: people::Race,
@@ -44,7 +44,7 @@ impl Sett {
         // get the starting population based on the region's growth
         let pop : i32 = 50 * reg.growth;
         Sett {
-            name: n.to_string(),
+            name: n,
             age: 0,
             pop: pop,
             gold: reg.starting_gold,
@@ -105,6 +105,7 @@ impl Sett {
         Ok("New quarter added!".to_string())
     }
 
+    #[allow(unused_variables)]
     /// Add a building
     pub fn add_building(&self, name: &str, q: Box<quarters::Quarter>)
     -> Result<String, quarters::BuildError>{
