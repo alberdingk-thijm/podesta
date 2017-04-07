@@ -22,7 +22,6 @@
 //! # }
 //! ```
 use effects;
-use std::collections::HashMap;
 
 /// A struct representing an event that occurs in a quarter.
 /// Events have a name, identifier and description.

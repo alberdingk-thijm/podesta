@@ -4,8 +4,6 @@ use rouler::Roller;
 use people;
 use buildings;
 use std::str;
-use serde::de;
-use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Area {
@@ -53,13 +51,9 @@ impl Area {
 /// A trait for targeting Areas with effects
 pub trait Targeted {
     fn kill(&mut self, num: i64);
-
     fn damage(&mut self, num: i64);
-
     fn riot(&mut self, num: i64);
-
     fn grow(&mut self);
-
     fn build(&mut self);
 }
 
@@ -101,38 +95,28 @@ pub struct Effect<T: Targeted> {
     pub etype: EventEffect,
 }
 
-/// A struct for tracking potential effects in the settlement.
-/// While this is tracked at the settlement level, effects will trigger
-/// at varying levels depending on their targets.
-pub struct EffectManager {
-    // K = reference to quarter-building-ID
-    // V = an event that can trigger at that quarter-building-ID
-    pub efmap: HashMap<String, Effect>,
-}
-
-
 impl EventEffect {
     pub fn activate(&self, caller: &mut buildings::Building) {
         //let e = Effect::new(caller, self);
         match *self {
             EventEffect::Kill { ref dead, viralpt, ref area } => {
-                let ref mut tgt = area.target(caller);
+                //let ref mut tgt = area.target(caller);
                 //event_kill(tgt, dead, viralpt)
             },
             EventEffect::Damage { ref crumbled, viralpt, ref area } => {
-                let ref mut tgt = area.target(caller);
+                //let ref mut tgt = area.target(caller);
                 //event_damage(tgt, crumbled, viralpt)
             },
             EventEffect::Riot { ref steps, prod, ref area } => {
-                let ref mut tgt = area.target(caller);
+                //let ref mut tgt = area.target(caller);
                 //event_riot(tgt, steps, prod)
             },
             EventEffect::Grow { ref bonus, ref area } => {
-                let ref mut tgt = area.target(caller);
+                //let ref mut tgt = area.target(caller);
                 //event_grow(tgt, bonus)
             },
             EventEffect::Build { ref bonus, ref area } => {
-                let ref mut tgt = area.target(caller);
+                //let ref mut tgt = area.target(caller);
                 //event_build(tgt, bonus)
             },
             EventEffect::Gold { ref value, bonus, ref steps } => (),
@@ -145,9 +129,9 @@ impl EventEffect {
     }
 }
 
-impl Effect {
-    pub fn new<T: Targeted>(tgt: T, etype: EventEffect) -> Effect {
-        Effect { tgt: tgt, etype: etype }
+impl<T: Targeted> Effect<T> {
+    pub fn new(tgt: T, etype: EventEffect) -> Effect<T> {
+        Effect { target: tgt, etype: etype }
     }
 
     fn event_kill(&self, dead: &str, viralpt: Option<i64>) {

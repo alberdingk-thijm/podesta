@@ -14,8 +14,8 @@ pub mod buildings;
 pub mod quarters;
 pub mod people;
 mod prompts;
-//pub mod events;
-//pub mod effects;
+pub mod events;
+pub mod effects;
 
 use std::rc::Rc;
 
@@ -23,14 +23,16 @@ use std::rc::Rc;
 pub struct DataFiles {
     regions: Vec<Rc<regions::Region>>,
     plans: Vec<Rc<buildings::BuildingPlan>>,
-    //events: Vec<events::Event>,
+    events: Vec<Rc<events::Event>>,
 }
 
 impl DataFiles {
     /// Create a new DataFiles struct to track regions, buildings, and
     /// (eventually) events.
     /// NOTE: Be mindful of the order when providing the parameters!
-    pub fn new(region_path: &str, building_path: &str) -> DataFiles {
+    pub fn new(region_path: &str,
+               building_path: &str,
+               event_path: &str) -> DataFiles {
         DataFiles {
             regions: parser::get_data(region_path)
                 .and_then(|d| {
@@ -44,17 +46,20 @@ impl DataFiles {
                                        building_path, d.len());
                     Ok(d)
                 }).expect("Error parsing buildings JSON!"),
+            events: parser::get_data(event_path)
+                .and_then(|d| {
+                    println!("Loaded {}! {} events found.",
+                             event_path, d.len());
+                    Ok(d)
+                }).expect("Error parsing events JSON!"),
         }
     }
 }
 
 #[test]
 fn get_datafiles() {
-    /*
-    let _events : Vec<events::Event> =
-        parser::get_data("events.json").expect("Error parsing JSON!");
-        */
-    let _data = DataFiles::new("regions.json", "buildings.json");
+    let _data = DataFiles::new("regions.json", "buildings.json",
+                               "events.json");
 }
 
 /// Create a new settlement, prompting for user input occasionally.

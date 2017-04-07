@@ -9,10 +9,8 @@ use std::io::{self, Write};
 //use std::rc::Rc;
 
 fn main() {
-    /*
-    println!("Loaded events.json! {} events found", events.len());
-    */
-    let data = podesta::DataFiles::new("regions.json", "buildings.json");
+    let data = podesta::DataFiles::new("regions.json", "buildings.json",
+                                       "events.json");
     let mut automate = false;
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);

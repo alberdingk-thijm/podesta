@@ -473,7 +473,7 @@
         "Kill": {
           "dead": "1d6 - 2",
           "viralpt": 3,
-          "area": "Hero"
+          "area": "Building"
         }
       },
       {
