@@ -58,7 +58,7 @@ fn get_datafiles() {
 }
 
 /// Create a new settlement, prompting for user input occasionally.
-pub fn init(data: &DataFiles, auto: bool) {
+pub fn new_sett(data: &DataFiles, auto: bool) {
     let numprompts = if auto { 0 } else { 2 };
     // Name
     let namelen = 1;  // at least one character
@@ -120,12 +120,46 @@ save [file]     -   save the settlement to file
 load [file]     -   load a settlement from a file
 "#;
 
-/// Display the help file
-pub fn help() {
-    unimplemented!()
-}
+pub mod filedisp {
+    use std::process::Command;
 
-/// Display the license file
-pub fn license() {
-    unimplemented!()
+    /// Display the help file in a child process.
+    /// Will fail if help.txt is moved, renamed or deleted.
+    pub fn help() {
+        let mut output = if cfg!(target_os = "windows") {
+            Command::new("notepad")
+                .arg("docs\\help.txt")
+                .spawn().unwrap_or_else(|e| {
+                    panic!("Failed to execute process: {}", e)
+                })
+        } else {
+            Command::new("less")
+                .arg("docs/HELP")
+                .spawn().unwrap_or_else(|e| {
+                    panic!("Failed to execute process: {}", e)
+                })
+        };
+
+        output.wait().expect("Failed to wait on help process");
+    }
+
+    /// Display the license file
+    /// Will fail if LICENSE is moved, renamed or deleted.
+    pub fn license() {
+        let mut output = if cfg!(target_os = "windows") {
+            Command::new("notepad")
+                .arg("LICENSE")
+                .spawn().unwrap_or_else(|e| {
+                    panic!("Failed to execute process: {}", e)
+                })
+        } else {
+            Command::new("less")
+                .arg("LICENSE")
+                .spawn().unwrap_or_else(|e| {
+                    panic!("Failed to execute process: {}", e)
+                })
+        };
+
+        output.wait().expect("Failed to wait on help process");
+    }
 }

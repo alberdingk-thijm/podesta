@@ -30,7 +30,7 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::New => podesta::init(&data, automate),
+            ParseResult::New => podesta::new_sett(&data, automate),
             ParseResult::ToggleAuto => {
                 automate = !automate;
                 println!("automate = {}", automate);
@@ -51,8 +51,8 @@ enum ParseResult {
 
 fn parse_input(input: &str) -> ParseResult {
     match input {
-        "help" => podesta::help(),
-        "license" => podesta::license(),
+        "help" => podesta::filedisp::help(),
+        "license" => podesta::filedisp::license(),
         "commands" => return ParseResult::Info(podesta::COMMANDS.to_string()),
         "new" => return ParseResult::New,
         "step" | "n" | "next" => (),
