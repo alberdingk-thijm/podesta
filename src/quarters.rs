@@ -26,19 +26,33 @@ impl sett::HasName for Quarter {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub enum QType {
-    Residential,
-    Industrial,
-    Port,
-    Academic,
-    Administrative,
+macro_attr! {
+    #[derive(Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq,
+             IterVariants!(QTypeVariants),
+             IterVariantNames!(QTypeVariantNames))]
+    /// The focus of the quarter.
+    pub enum QType {
+        /// Mostly residences
+        Residential,
+        /// Mostly artisans and shops
+        Industrial,
+        /// Waterfront buildings
+        Port,
+        /// Educational institutions
+        Academic,
+        /// Military and government buildings
+        Administrative,
+    }
 }
 
 #[derive(Debug)]
+/// Possible errors when trying to construct a new quarter or building
 pub enum BuildError {
+    /// Not enough population to construct a quarter
     NotEnoughPop,
+    /// Not enough gold to construct a building
     NotEnoughGold,
+    /// A building of that name already exists
     AlreadyExists,
 }
 

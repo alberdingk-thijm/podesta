@@ -1,10 +1,11 @@
 extern crate libc;
-#[macro_use]
-extern crate serde_derive;
+#[macro_use] extern crate serde_derive;
 extern crate serde_json;
 extern crate serde;
 extern crate rouler;
 extern crate rand;
+#[macro_use] extern crate macro_attr;
+#[macro_use] extern crate enum_derive;
 
 pub mod parser;
 pub mod regions;
@@ -71,29 +72,31 @@ pub fn init(data: &DataFiles) {
     let regchoice = prompts::choose_or_rand(&(data.regions), 2);
     let reg = data.regions[regchoice].clone();
     // Prompt for quarter type
-    let qtype = quarters::QType::Port;
-    // Prompt for race?
-    let race = people::Race::Human;
+    println!("Please specify the focus of {}'s main quarter.", name);
+    let qtypenames = quarters::QType::iter_variant_names();
+    let qchoice = prompts::choose_or_rand(
+        &(qtypenames.collect::<Vec<_>>()), 2);
+    let qtype = quarters::QType::iter_variants().nth(qchoice).unwrap();
+    // Prompt for race
+    println!("Please specify the majority race of {}'s main quarter.", name);
+    let racenames = people::Race::iter_variant_names();
+    let racechoice = prompts::choose_or_rand(
+        &(racenames.collect::<Vec<_>>()), 2);
+    let race = people::Race::iter_variants().nth(racechoice).unwrap();
     // Generate empty settlement
-    let mut s = sett::Sett::new(name,
+    let s = sett::Sett::new(name,
                                 reg,
                                 qtype,
                                 race,
                                 sett::SettFlags::Coastal);
-    println!("Generated a settlement: {:?}", s);
-
-    println!("{:?}", s.add_quarter("Jewish Quarter".to_string(),
-                  quarters::QType::Industrial,
-                  people::Race::Human));
-
-    println!("Settlement state: {:?}", s);
+    println!("Generated a settlement: {}", s);
 }
 
 pub const WELCOME_MINI : &'static str = r#"
 Welcome to Podesta v0.1!
 Type "help" or "license" for more info.
 Type "commands" to list some basic commands.
-Type "q" to exit.
+Type "q" to quit.
 "#;
 
 pub const COMMANDS : &'static str = r#"

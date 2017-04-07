@@ -1,6 +1,7 @@
 use rand;
 use rand::Rng;
 use buildings;
+use std::fmt;
 
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -17,25 +18,28 @@ pub struct Hero {
     pub home: Box<buildings::Building>,
 }
 
-#[allow(dead_code)]
-#[derive(Serialize, Deserialize, Debug)]
-/// The race of a person.
-/// Different races get different bonuses to their activities.
-pub enum Race {
-    /// Dwarves are hardy adventurers and strong builders.
-    Dwarf,
-    /// Elves are keen adventurers and good governors.
-    Elf,
-    /// Gnomes are hardy adventurers and fine traders.
-    Gnome,
-    /// Half elves are fertile and good governors.
-    Halfelf,
-    /// Halflings are fine traders and fertile.
-    Halfling,
-    /// Half orcs are strong builders and fertile.
-    Halforc,
-    /// Humans are fertile and hardy adventurers.
-    Human,
+macro_attr! {
+    #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq,
+             IterVariants!(RaceVariants),
+             IterVariantNames!(RaceVariantNames))]
+    /// The race of a person.
+    /// Different races get different bonuses to their activities.
+    pub enum Race {
+        /// Dwarves are hardy adventurers and strong builders.
+        Dwarf,
+        /// Elves are keen adventurers and good governors.
+        Elf,
+        /// Gnomes are hardy adventurers and fine traders.
+        Gnome,
+        /// Half elves are fertile and good governors.
+        Halfelf,
+        /// Halflings are fine traders and fertile.
+        Halfling,
+        /// Half orcs are strong builders and fertile.
+        Halforc,
+        /// Humans are fertile and hardy adventurers.
+        Human,
+    }
 }
 
 impl Race {
@@ -132,6 +136,17 @@ impl Activity {
             Activity::Resting(_) => "succumbed to illness",
             Activity::Dead(_) => "old age",
         }.to_string()
+    }
+}
+
+impl fmt::Display for Hero {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}, a {}{} level {:?} {:?} - currently {:?}",
+               self.name, self.level,
+               match self.level { 1 => "st", 2 => "nd", 3 => "rd", _ => "th" },
+               self.race,
+               self.class,
+               self.activity)
     }
 }
 

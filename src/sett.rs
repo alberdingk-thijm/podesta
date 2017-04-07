@@ -6,6 +6,7 @@ use regions;
 use people;
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::fmt;
 
 #[derive(Debug)]
 pub struct Sett {
@@ -128,6 +129,9 @@ pub fn find_by_name<'a, 'b, T: HasName>(v: &'a [T], name: &'b str)
     v.iter().find(|&x| x.get_name() == name)
 }
 
-macro_rules! find_named {
-    ($a:expr, $name:ident) => ($a.iter().find(|&x| x.name == $name))
+impl fmt::Display for Sett {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}, step {} and pop {}.",
+               self.name, self.age, self.pop)
+    }
 }
