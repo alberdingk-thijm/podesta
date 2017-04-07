@@ -58,37 +58,47 @@ fn get_datafiles() {
 }
 
 /// Create a new settlement, prompting for user input occasionally.
-pub fn init(data: &DataFiles) {
-    // Prompt for a name of at least 1 character.
-    let namelen = 1;
+pub fn init(data: &DataFiles, auto: bool) {
+    let numprompts = if auto { 0 } else { 2 };
+    // Name
+    let namelen = 1;  // at least one character
     let mut namechoice = prompts::name(namelen);
     while namechoice.is_err() {
         println!("Please enter at least {} letters.", namelen);
         namechoice = prompts::name(namelen);
     }
     let name = namechoice.unwrap();
-    // Prompt for region (max 2 tries)
-    println!("Please specify {}'s region.", name);
-    let regchoice = prompts::choose_or_rand(&(data.regions), 2);
+    // Region
+    println!("Choos{} {}'s region...",
+             if auto { "ing" } else { "e" }, name);
+    let regchoice = prompts::choose_or_rand(&(data.regions), numprompts);
     let reg = data.regions[regchoice].clone();
-    // Prompt for quarter type
-    println!("Please specify the focus of {}'s main quarter.", name);
+
+    // Quarter type
+    println!("Choos{} the focus of {}'s main quarter...",
+             if auto { "ing" } else { "e" }, name);
     let qtypenames = quarters::QType::iter_variant_names();
     let qchoice = prompts::choose_or_rand(
-        &(qtypenames.collect::<Vec<_>>()), 2);
+        &(qtypenames.collect::<Vec<_>>()), numprompts);
     let qtype = quarters::QType::iter_variants().nth(qchoice).unwrap();
-    // Prompt for race
-    println!("Please specify the majority race of {}'s main quarter.", name);
+
+    // Race
+    println!("Choos{} the majority race of {}'s main quarter...",
+             if auto { "ing" } else { "e" }, name);
     let racenames = people::Race::iter_variant_names();
     let racechoice = prompts::choose_or_rand(
-        &(racenames.collect::<Vec<_>>()), 2);
+        &(racenames.collect::<Vec<_>>()), numprompts);
     let race = people::Race::iter_variants().nth(racechoice).unwrap();
+    // Flags
+    println!("Choos{} if {} is coastal...",
+             if auto { "ing" } else { "e" }, name);
+
     // Generate empty settlement
     let s = sett::Sett::new(name,
-                                reg,
-                                qtype,
-                                race,
-                                sett::SettFlags::Coastal);
+                            reg,
+                            qtype,
+                            race,
+                            sett::SettFlags::Coastal);
     println!("Generated a settlement: {}", s);
 }
 
@@ -102,6 +112,7 @@ Type "q" to quit.
 pub const COMMANDS : &'static str = r#"
 help            -   view help file
 license         -   view license file
+a, auto         -   toggle automatic creation and stepping
 new [term]      -   create a new [term]
 step, n, next   -   execute a step
 p, print [term] -   print [term]

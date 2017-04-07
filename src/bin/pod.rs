@@ -13,6 +13,7 @@ fn main() {
     println!("Loaded events.json! {} events found", events.len());
     */
     let data = podesta::DataFiles::new("regions.json", "buildings.json");
+    let mut automate = false;
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
     let mut input = String::new();
@@ -29,7 +30,11 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::New => podesta::init(&data), //.clone()),
+            ParseResult::New => podesta::init(&data, automate),
+            ParseResult::ToggleAuto => {
+                automate = !automate;
+                println!("automate = {}", automate);
+            },
             ParseResult::Info(s) => println!("{}", s),
             ParseResult::Quit => break,
         }
@@ -40,6 +45,7 @@ enum ParseResult {
     Success,
     New,
     Info(String),
+    ToggleAuto,
     Quit,
 }
 
@@ -49,7 +55,9 @@ fn parse_input(input: &str) -> ParseResult {
         "license" => podesta::license(),
         "commands" => return ParseResult::Info(podesta::COMMANDS.to_string()),
         "new" => return ParseResult::New,
-        "print" => (),
+        "step" | "n" | "next" => (),
+        "p" | "print" => (),
+        "a" | "auto" => return ParseResult::ToggleAuto,
         "q" | "quit" => return ParseResult::Quit,
         "" => (),
         _ => return ParseResult::Info(format!("Unknown option \"{}\"", input)),
