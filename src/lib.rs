@@ -18,6 +18,7 @@ pub mod events;
 pub mod effects;
 
 use std::rc::Rc;
+use std::io;
 
 #[derive(Debug)]
 pub struct DataFiles {
@@ -106,6 +107,17 @@ pub fn new_sett(data: &DataFiles, auto: bool) -> sett::Sett {
                             sett::SettFlags::Coastal);
     println!("Generated a settlement: {}", s);
     s
+}
+
+//TODO: how to know what datafiles were used?
+/// Save the settlement and its associated information to the given file name.
+pub fn save(sett: sett::Sett, fname: String) -> io::Result<String> {
+    Ok(format!("Saved to {}!", fname))
+}
+
+/// Load the settlement and its associated information from the given file name.
+pub fn load(fname: String) -> io::Result<Sett> {
+    unimplemented!()
 }
 
 pub const WELCOME_MINI : &'static str = r#"

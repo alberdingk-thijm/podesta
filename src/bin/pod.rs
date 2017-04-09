@@ -14,9 +14,8 @@ fn main() {
     let mut automate = false;
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
-    // Prompt for a new settlement
-    let mut sett = podesta::new_sett(&data, automate);
-
+    // Allow the program to start without a settlement
+    let mut sett : Option<sett::Sett> = None;
 
     let mut input = String::new();
     loop {
@@ -32,12 +31,19 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::Step => sett.step(), // make sure initialized
-            ParseResult::New => sett = podesta::new_sett(&data, automate),
+            ParseResult::Step(n) => match sett {
+                // Make sure a sett exists
+                Some(s) => s.step(n),
+                None => println!("No settlement found \
+                                 (first run 'new' or 'load')!"),
+            },
+            ParseResult::New => sett = Some(podesta::new_sett(&data, automate)),
             ParseResult::ToggleAuto => {
                 automate = !automate;
                 println!("automate = {}", automate);
             },
+            ParseResult::Save => podesta::save(sett, format!("{}.urbs", sett.name)),
+            ParseResult::Load(file) => podesta::load(file),
             ParseResult::Print(s) => println!("{}", s),
             ParseResult::Quit => break,
         }
@@ -46,9 +52,11 @@ fn main() {
 
 enum ParseResult {
     Success,
-    Step,
+    Step(i64),
     New,
     Print(String),
+    Save,
+    Load(String),
     ToggleAuto,
     Quit,
 }
@@ -59,10 +67,13 @@ fn parse_input(input: &str) -> ParseResult {
         "license" => podesta::filedisp::license(),
         "commands" => return ParseResult::Print(podesta::COMMANDS.to_string()),
         "new" => return ParseResult::New,
-        "step" | "n" | "next" => return ParseResult::Step,
+        "step" | "n" | "next" => return ParseResult::Step(1),
+            //TODO: add # of steps opt
         "p" | "print" => (),
         "a" | "auto" => return ParseResult::ToggleAuto,
         "q" | "quit" => return ParseResult::Quit,
+        "save" => return ParseResult::Save,
+        "load" => return ParseResult::Load("foo"),
         "" => (),
         _ => return ParseResult::Print(format!("Unknown option \"{}\"", input)),
     }
