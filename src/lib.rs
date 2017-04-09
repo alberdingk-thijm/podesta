@@ -63,7 +63,7 @@ fn get_datafiles() {
 }
 
 /// Create a new settlement, prompting for user input occasionally.
-pub fn new_sett(data: &DataFiles, auto: bool) {
+pub fn new_sett(data: &DataFiles, auto: bool) -> sett::Sett {
     let numprompts = if auto { 0 } else { 2 };
     // Name
     let namelen = 1;  // at least one character
@@ -105,6 +105,7 @@ pub fn new_sett(data: &DataFiles, auto: bool) {
                             race,
                             sett::SettFlags::Coastal);
     println!("Generated a settlement: {}", s);
+    s
 }
 
 pub const WELCOME_MINI : &'static str = r#"

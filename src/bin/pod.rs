@@ -14,6 +14,10 @@ fn main() {
     let mut automate = false;
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
+    // Prompt for a new settlement
+    let mut sett = podesta::new_sett(&data, automate);
+
+
     let mut input = String::new();
     loop {
         // Generate the settlement
@@ -28,12 +32,13 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::New => podesta::new_sett(&data, automate),
+            ParseResult::Step => sett.step(), // make sure initialized
+            ParseResult::New => sett = podesta::new_sett(&data, automate),
             ParseResult::ToggleAuto => {
                 automate = !automate;
                 println!("automate = {}", automate);
             },
-            ParseResult::Info(s) => println!("{}", s),
+            ParseResult::Print(s) => println!("{}", s),
             ParseResult::Quit => break,
         }
     }
@@ -41,8 +46,9 @@ fn main() {
 
 enum ParseResult {
     Success,
+    Step,
     New,
-    Info(String),
+    Print(String),
     ToggleAuto,
     Quit,
 }
@@ -51,14 +57,14 @@ fn parse_input(input: &str) -> ParseResult {
     match input {
         "help" => podesta::filedisp::help(),
         "license" => podesta::filedisp::license(),
-        "commands" => return ParseResult::Info(podesta::COMMANDS.to_string()),
+        "commands" => return ParseResult::Print(podesta::COMMANDS.to_string()),
         "new" => return ParseResult::New,
-        "step" | "n" | "next" => (),
+        "step" | "n" | "next" => return ParseResult::Step,
         "p" | "print" => (),
         "a" | "auto" => return ParseResult::ToggleAuto,
         "q" | "quit" => return ParseResult::Quit,
         "" => (),
-        _ => return ParseResult::Info(format!("Unknown option \"{}\"", input)),
+        _ => return ParseResult::Print(format!("Unknown option \"{}\"", input)),
     }
     ParseResult::Success
 }

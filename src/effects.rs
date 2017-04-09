@@ -34,6 +34,7 @@ impl Area {
     /// let a = effects::Area::Building;
     /// assert_eq!(a.target(b).name , 'foo')
     /// ```
+    #[allow(unused_variables)]
     pub fn target<T>(&self, caller: &mut buildings::Building) -> &mut T
     where T: Targeted
     {
@@ -95,6 +96,7 @@ pub struct Effect<T: Targeted> {
     pub etype: EventEffect,
 }
 
+#[allow(dead_code, unused_variables)]
 impl EventEffect {
     pub fn activate(&self, caller: &mut buildings::Building) {
         //let e = Effect::new(caller, self);
@@ -129,12 +131,13 @@ impl EventEffect {
     }
 }
 
+#[allow(dead_code, unused_variables)]
 impl<T: Targeted> Effect<T> {
     pub fn new(tgt: T, etype: EventEffect) -> Effect<T> {
         Effect { target: tgt, etype: etype }
     }
 
-    fn event_kill(&self, dead: &str, viralpt: Option<i64>) {
+    fn event_kill(&mut self, dead: &str, viralpt: Option<i64>) {
         // get the roll
         let mut roll = Roller::new(dead);
         let mut x : i64 = roll.total();
@@ -144,11 +147,10 @@ impl<T: Targeted> Effect<T> {
             }
         }
         // perform it on the target
-        // self.target.kill(x)
-        unimplemented!()
+        self.target.kill(x)
     }
 
-    fn event_damage(&self, crumbled: &str, viralpt: Option<i64>) {
+    fn event_damage(&mut self, crumbled: &str, viralpt: Option<i64>) {
         // get the roll
         let mut roll = Roller::new(crumbled);
         let mut x: i64 = roll.total();
@@ -158,25 +160,24 @@ impl<T: Targeted> Effect<T> {
             }
         }
         // perform it on the area
-        // self.target.damage(x);
-        unimplemented!()
+        self.target.damage(x);
     }
 
-    fn event_riot(&self, steps: &str, prod: f64) {
+    fn event_riot(&mut self, steps: &str, prod: f64) {
         // get the roll
-        let mut roll = Roller::new(steps);
+        let roll = Roller::new(steps);
         unimplemented!()
     }
 
-    fn event_grow(&self, bonus: &str) {
+    fn event_grow(&mut self, bonus: &str) {
         unimplemented!()
     }
 
-    fn event_build(&self, bonus: &str) {
+    fn event_build(&mut self, bonus: &str) {
         unimplemented!()
     }
 
-    fn event_gold(&self, value: &str, bonus: f64, steps: &str) {
+    fn event_gold(&mut self, value: &str, bonus: f64, steps: &str) {
         // get the rolls
         let valroll = Roller::new(value);
         let steproll = Roller::new(steps);
@@ -185,7 +186,7 @@ impl<T: Targeted> Effect<T> {
         unimplemented!()
     }
 
-    fn event_hero(&self, level: &str, classes: &Vec<people::Class>) {
+    fn event_hero(&mut self, level: &str, classes: &Vec<people::Class>) {
         // get the roll
         let lvlroll = Roller::new(level);
         // choose the class
@@ -195,17 +196,8 @@ impl<T: Targeted> Effect<T> {
         unimplemented!()
     }
 
-    fn event_item(&self, value: &str, magical: f64) {
+    fn event_item(&mut self, value: &str, magical: f64) {
         let roll = Roller::new(value);
-        unimplemented!()
-    }
-}
-
-impl str::FromStr for EventEffect {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // first term is eventeffect name,
-        // second is which value to use
         unimplemented!()
     }
 }
