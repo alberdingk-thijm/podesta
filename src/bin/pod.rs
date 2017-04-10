@@ -40,9 +40,10 @@ fn main() {
             ParseResult::New => sett = Some(podesta::new_sett(&data, automate)),
             ParseResult::ToggleAuto => {
                 automate = !automate;
-                println!("automate = {}", automate);
+                println!("Automation set to {}", automate);
             },
-            ParseResult::Save => podesta::save(sett, format!("{}.urbs", sett.name)),
+            ParseResult::Save => podesta::save(sett,
+                                               format!("{}.rgs", sett.name)),
             ParseResult::Load(file) => podesta::load(file),
             ParseResult::Print(s) => println!("{}", s),
             ParseResult::Quit => break,
