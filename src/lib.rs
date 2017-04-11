@@ -16,6 +16,7 @@ pub mod people;
 mod prompts;
 pub mod events;
 pub mod effects;
+pub mod interpreter;
 
 use std::rc::Rc;
 use std::io;
@@ -116,7 +117,7 @@ pub fn save(sett: sett::Sett, fname: String) -> io::Result<String> {
 }
 
 /// Load the settlement and its associated information from the given file name.
-pub fn load(fname: String) -> io::Result<Sett> {
+pub fn load(fname: String) -> io::Result<sett::Sett> {
     unimplemented!()
 }
 

@@ -15,7 +15,7 @@ fn main() {
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
     // Allow the program to start without a settlement
-    let mut sett : Option<sett::Sett> = None;
+    let mut sett : Option<podesta::sett::Sett> = None;
 
     let mut input = String::new();
     loop {
@@ -31,20 +31,19 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::Step(n) => match sett {
+            ParseResult::Step(n) => (), /*match sett {
                 // Make sure a sett exists
-                Some(s) => s.step(n),
+                Some(s) => (), //s.step(),
                 None => println!("No settlement found \
                                  (first run 'new' or 'load')!"),
-            },
+            },*/
             ParseResult::New => sett = Some(podesta::new_sett(&data, automate)),
             ParseResult::ToggleAuto => {
                 automate = !automate;
                 println!("Automation set to {}", automate);
             },
-            ParseResult::Save => podesta::save(sett,
-                                               format!("{}.rgs", sett.name)),
-            ParseResult::Load(file) => podesta::load(file),
+            ParseResult::Save => (), //podesta::save(sett, format!("{}.rgs", sett.name)),
+            ParseResult::Load(file) => (), //podesta::load(file),
             ParseResult::Print(s) => println!("{}", s),
             ParseResult::Quit => break,
         }
@@ -74,7 +73,7 @@ fn parse_input(input: &str) -> ParseResult {
         "a" | "auto" => return ParseResult::ToggleAuto,
         "q" | "quit" => return ParseResult::Quit,
         "save" => return ParseResult::Save,
-        "load" => return ParseResult::Load("foo"),
+        "load" => return ParseResult::Load("foo".to_string()),
         "" => (),
         _ => return ParseResult::Print(format!("Unknown option \"{}\"", input)),
     }
