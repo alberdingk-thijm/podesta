@@ -31,19 +31,19 @@ fn main() {
         let input = input.trim();
         match parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::Step(n) => (), /*match sett {
+            ParseResult::Step(n) => match sett {
                 // Make sure a sett exists
-                Some(s) => (), //s.step(),
+                Some(ref mut s) => for _ in 1..n { s.step() },
                 None => println!("No settlement found \
                                  (first run 'new' or 'load')!"),
-            },*/
+            },
             ParseResult::New => sett = Some(podesta::new_sett(&data, automate)),
             ParseResult::ToggleAuto => {
                 automate = !automate;
                 println!("Automation set to {}", automate);
             },
             ParseResult::Save => (), //podesta::save(sett, format!("{}.rgs", sett.name)),
-            ParseResult::Load(file) => (), //podesta::load(file),
+            ParseResult::Load(file) => println!("{:?}", podesta::load(file)),
             ParseResult::Print(s) => println!("{}", s),
             ParseResult::Quit => break,
         }

@@ -113,7 +113,7 @@ pub fn new_sett(data: &DataFiles, auto: bool) -> sett::Sett {
 //TODO: how to know what datafiles were used?
 /// Save the settlement and its associated information to the given file name.
 pub fn save(sett: sett::Sett, fname: String) -> io::Result<String> {
-    Ok(format!("Saved to {}!", fname))
+    Ok(format!("Saved {} to {}!", sett.name, fname))
 }
 
 /// Load the settlement and its associated information from the given file name.
