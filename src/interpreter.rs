@@ -50,16 +50,25 @@ impl<'a> Iterator for Command<'a> {
     }
 }
 
+/// List of possible user commands
 pub enum ParseResult {
+    /// Succeed without modifying state.
     Success,
+    /// Step some number of times.
     Step(i64),
+    /// Create a new object based on the vector.
     New(Vec<String>),
+    /// Print the given string to the screen.
     Print(String),
+    /// Save the environment to a file.
     Save(Option<String>),
+    /// Load a file into the environment.
     Load(String),
+    /// Toggle user prompting.
     ToggleAuto,
-    Help,
-    License,
+    /// Display a file using the specified program.
+    DispFile(String, String),
+    /// Quit the application.
     Quit,
 }
 
@@ -68,8 +77,20 @@ pub fn parse_input(input: &str) -> ParseResult {
     let action = cmd.next();
     match action {
         Some(s) => match s.as_str() {
-            "help" => ParseResult::Help,
-            "license" => ParseResult::License,
+            "help" => if cfg!(target_os = "windows") {
+                ParseResult::DispFile("notepad".to_string(),
+                    "docs\\help.txt".to_string())
+            } else {
+                ParseResult::DispFile("less".to_string(),
+                    "docs/HELP".to_string())
+            },
+            "license" => if cfg!(target_os = "windows") {
+                ParseResult::DispFile("notepad".to_string(),
+                    "LICENSE".to_string())
+            } else {
+                ParseResult::DispFile("less".to_string(),
+                    "LICENSE".to_string())
+            },
             "commands" => ParseResult::Print(COMMANDS.to_string()),
             "new" => ParseResult::New(cmd.collect::<Vec<_>>()),
             "step" | "n" | "next" => ParseResult::Step(cmd.next().map(|s| s.parse::<i64>().unwrap_or(1)).unwrap_or(1)),

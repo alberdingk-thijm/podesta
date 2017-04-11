@@ -2,6 +2,7 @@
 use people;
 //use effects;
 use sett;
+use std::fmt;
 
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -26,10 +27,23 @@ impl sett::HasName for Quarter {
     }
 }
 
+impl fmt::Display for Quarter {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "The {} Quarter, with a {} focus. {} steps old. \
+               Population {}, mostly {}.",
+               self.name,
+               self.qtype,
+               self.age,
+               self.pop,
+               self.race)
+    }
+}
+
 macro_attr! {
     #[derive(Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq,
              IterVariants!(QTypeVariants),
-             IterVariantNames!(QTypeVariantNames))]
+             IterVariantNames!(QTypeVariantNames),
+             EnumDisplay!, EnumFromStr!)]
     /// The focus of the quarter.
     pub enum QType {
         /// Mostly residences
@@ -54,6 +68,8 @@ pub enum BuildError {
     NotEnoughGold,
     /// A building of that name already exists
     AlreadyExists,
+    /// Port quarter can't be constructed inland
+    InlandPort,
 }
 
 /*

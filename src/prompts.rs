@@ -11,6 +11,7 @@ pub enum PromptError {
     Parse(num::ParseIntError),
     InvalidNum,
     NameTooShort,
+    YesOrNo,
 }
 
 /// Prompt the user to type a name with at least minchars length.
@@ -29,6 +30,45 @@ pub fn name(minchars: usize) -> Result<String, PromptError> {
     } else {
         Ok(x.to_string())
     })
+}
+
+/// Prompt the user with a boolean choice, with a given question,
+/// expected affirmative answers (returning Ok(true)) and
+/// expected negative answers (returning Ok(false)).
+/// Behaviour is undefined if the lists of answers overlap.
+/// Return Err(PromptError) if it was not successfully read.
+pub fn bool_choose(question: &str, aff: &[&str], neg: &[&str])
+    -> Result<bool, PromptError>
+{
+    print!("{}", question);
+    io::stdout().flush()
+        .expect("Failed to flush to stdout!");
+    let mut input = String::new();
+    match io::stdin().read_line(&mut input) {
+        Ok(_) => Ok(input.trim()),
+        Err(e) => Err(PromptError::Io(e)),
+    }.and_then(|x| if aff.contains(&x) {
+        Ok(true)
+    } else if neg.contains(&x) {
+        Ok(false)
+    } else {
+        Err(PromptError::YesOrNo)
+    })
+}
+
+pub fn bool_choose_or_rand(question: &str, aff: &[&str], neg: &[&str],
+                           maxprompts: i32) -> bool {
+    let mut numprompts = 0;
+    while numprompts < maxprompts {
+        match bool_choose(question, aff, neg) {
+            Ok(c) => return c,
+            Err(PromptError::Io(e)) => println!("{}", e),
+            Err(_) => println!("Please make a valid answer."),
+        }
+        numprompts += 1;
+    }
+    // coin flip
+    rand::thread_rng().gen_range(0, 2) == 0
 }
 
 /// Prompt the user for a choice from the given list of displayable items.

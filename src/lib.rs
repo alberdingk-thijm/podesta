@@ -64,6 +64,18 @@ fn get_datafiles() {
                                "events.json");
 }
 
+/// Return Some(a new settlement) but only after prompting for confirmation.
+/// If confirmation is not received, return None.
+/// See new_sett.
+pub fn new_sett_confirm(data: &DataFiles, auto: bool) -> Option<sett::Sett> {
+    if prompts::bool_choose("Overwrite existing settlement? (y/n): ",
+        &["y", "yes"], &["n", "no"]).unwrap_or(false) {
+        Some(new_sett(&data, auto))
+    } else {
+        None
+    }
+}
+
 /// Create a new settlement, prompting for user input occasionally.
 pub fn new_sett(data: &DataFiles, auto: bool) -> sett::Sett {
     let numprompts = if auto { 0 } else { 2 };
@@ -81,13 +93,25 @@ pub fn new_sett(data: &DataFiles, auto: bool) -> sett::Sett {
     let regchoice = prompts::choose_or_rand(&(data.regions), numprompts);
     let reg = data.regions[regchoice].clone();
 
+    // Coastal
+    println!("Choos{} if {} is coastal...",
+             if auto { "ing" } else { "e" }, name);
+    let coastchoice = prompts::bool_choose_or_rand(
+        &format!("Is {} coastal? (y/n): ", name),
+        &["y", "yes"], &["n", "no"], numprompts);
+
     // Quarter type
     println!("Choos{} the focus of {}'s main quarter...",
              if auto { "ing" } else { "e" }, name);
-    let qtypenames = quarters::QType::iter_variant_names();
+    // If the settlement is not coastal, remove the Port option
+    // i.e. if coastal or qtype not Port, keep it
+    let qtypenames = quarters::QType::iter_variant_names()
+        .filter(|&q| coastchoice || q != format!("{}", quarters::QType::Port));
     let qchoice = prompts::choose_or_rand(
         &(qtypenames.collect::<Vec<_>>()), numprompts);
-    let qtype = quarters::QType::iter_variants().nth(qchoice).unwrap();
+    let mut qtypes = quarters::QType::iter_variants()
+        .filter(|&q| coastchoice || q != quarters::QType::Port);
+    let qtype = qtypes.nth(qchoice).unwrap();
 
     // Race
     println!("Choos{} the majority race of {}'s main quarter...",
@@ -96,17 +120,14 @@ pub fn new_sett(data: &DataFiles, auto: bool) -> sett::Sett {
     let racechoice = prompts::choose_or_rand(
         &(racenames.collect::<Vec<_>>()), numprompts);
     let race = people::Race::iter_variants().nth(racechoice).unwrap();
-    // Flags
-    println!("Choos{} if {} is coastal...",
-             if auto { "ing" } else { "e" }, name);
 
     // Generate empty settlement
     let s = sett::Sett::new(name,
                             reg,
                             qtype,
                             race,
-                            sett::SettFlags::Coastal);
-    println!("Generated a settlement: {}", s);
+                            coastchoice);
+    println!("Generated a settlement:\n{}", s);
     s
 }
 

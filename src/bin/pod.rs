@@ -19,6 +19,7 @@ fn main() {
 
     let mut input = String::new();
     loop {
+        use podesta::interpreter::ParseResult as ParseResult;
         // Generate the settlement
         // Ask for user input
         print!("> ");
@@ -29,53 +30,40 @@ fn main() {
         io::stdin().read_line(&mut input)
             .expect("Error reading input!");
         let input = input.trim();
-        match parse_input(input) {
+        match podesta::interpreter::parse_input(input) {
             ParseResult::Success => (),
-            ParseResult::Step(n) => match sett {
-                // Make sure a sett exists
-                Some(ref mut s) => for _ in 1..n { s.step() },
-                None => println!("No settlement found \
-                                 (first run 'new' or 'load')!"),
+            ParseResult::DispFile(app, file) => {
+                use std::process::Command;
+                let mut output = Command::new(app)
+                    .arg(file)
+                    .spawn().unwrap_or_else(|e| {
+                        panic!("Failed to execute process: {}", e)
+                    });
+                output.wait().expect("Failed to wait on process");
             },
-            ParseResult::New => sett = Some(podesta::new_sett(&data, automate)),
+            ParseResult::Step(n) =>
+                match sett {
+                    // Make sure a sett exists
+                    Some(ref mut s) => for _ in 1..n { s.step() },
+                    None => println!("No settlement found \
+                                     (first run 'new' or 'load')!"),
+            },
+            ParseResult::New(_) => {
+                if sett.is_some() {
+                    sett = podesta::new_sett_confirm(&data, automate)
+                        .or(sett);
+                } else {
+                    sett = Some(podesta::new_sett(&data, automate));
+                }
+            },
             ParseResult::ToggleAuto => {
                 automate = !automate;
                 println!("Automation set to {}", automate);
             },
-            ParseResult::Save => (), //podesta::save(sett, format!("{}.rgs", sett.name)),
+            ParseResult::Save(_) => (), //podesta::save(sett, format!("{}.rgs", sett.name)),
             ParseResult::Load(file) => println!("{:?}", podesta::load(file)),
             ParseResult::Print(s) => println!("{}", s),
             ParseResult::Quit => break,
         }
     }
-}
-
-enum ParseResult {
-    Success,
-    Step(i64),
-    New,
-    Print(String),
-    Save,
-    Load(String),
-    ToggleAuto,
-    Quit,
-}
-
-fn parse_input(input: &str) -> ParseResult {
-    match input {
-        "help" => podesta::filedisp::help(),
-        "license" => podesta::filedisp::license(),
-        "commands" => return ParseResult::Print(podesta::COMMANDS.to_string()),
-        "new" => return ParseResult::New,
-        "step" | "n" | "next" => return ParseResult::Step(1),
-            //TODO: add # of steps opt
-        "p" | "print" => (),
-        "a" | "auto" => return ParseResult::ToggleAuto,
-        "q" | "quit" => return ParseResult::Quit,
-        "save" => return ParseResult::Save,
-        "load" => return ParseResult::Load("foo".to_string()),
-        "" => (),
-        _ => return ParseResult::Print(format!("Unknown option \"{}\"", input)),
-    }
-    ParseResult::Success
 }

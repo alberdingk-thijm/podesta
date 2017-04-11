@@ -21,7 +21,8 @@ pub struct Hero {
 macro_attr! {
     #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq,
              IterVariants!(RaceVariants),
-             IterVariantNames!(RaceVariantNames))]
+             IterVariantNames!(RaceVariantNames),
+             EnumDisplay!, EnumFromStr!)]
     /// The race of a person.
     /// Different races get different bonuses to their activities.
     pub enum Race {

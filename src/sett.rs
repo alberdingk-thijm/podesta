@@ -23,14 +23,8 @@ pub struct Sett {
     pub heroes: RefCell<Vec<people::Hero>>,
     /// Population needed before a new quarter is added.
     pub nextqrtr: i32,
-    /// Flags for settlement info.
-    pub flags: SettFlags,
-}
-
-#[derive(Debug)]
-pub enum SettFlags {
-    Coastal,
-    Inland,
+    /// Flag for if settlement is coastal.
+    pub coastal: bool,
 }
 
 impl Sett {
@@ -40,7 +34,7 @@ impl Sett {
                reg: Rc<regions::Region>,
                qt: quarters::QType,
                r: people::Race,
-               f: SettFlags,
+               coast: bool,
     ) -> Sett {
         // get the starting population based on the region's growth
         let pop : i32 = 50 * reg.growth;
@@ -51,7 +45,7 @@ impl Sett {
             gold: reg.starting_gold,
             reg: reg,
             qrtrs: RefCell::new(vec![
-                                quarters::Quarter::new("main",
+                                quarters::Quarter::new("Main",
                                                        qt,
                                                        pop,
                                                        r)]
@@ -60,7 +54,7 @@ impl Sett {
             // TODO: get a starting governor
             heroes: RefCell::new(vec!()),
             nextqrtr: pop * 2,
-            flags: f,
+            coastal: coast,
         }
     }
 
@@ -81,6 +75,9 @@ impl Sett {
                        r: people::Race,
     ) -> Result<String, quarters::BuildError>
     {
+        if qt == quarters::QType::Port && !self.coastal {
+            return Err(quarters::BuildError::InlandPort);
+        }
         let mut qrtrs = self.qrtrs.borrow_mut();
         // make sure quarter is not already present
         if qrtrs.iter().any(|ref x| x.name == n) {
@@ -131,7 +128,12 @@ pub fn find_by_name<'a, 'b, T: HasName>(v: &'a [T], name: &'b str)
 
 impl fmt::Display for Sett {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}, step {} and pop {}.",
-               self.name, self.age, self.pop)
+        write!(f, "{}, located in {} {}. {} steps old. Population {}.\n\
+               Quarters:\n{}",
+               self.name,
+               if self.coastal { "coastal" } else { "inland" },
+               self.reg, self.age, self.pop,
+               self.qrtrs.borrow().iter().map(|q| format!("- {}\n", q))
+                   .collect::<String>())
     }
 }
