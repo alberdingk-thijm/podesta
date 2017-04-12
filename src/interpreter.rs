@@ -1,8 +1,10 @@
 /// Functionality for interpreting user commands.
 
 use std::str;
+use std::collections::HashMap;
 use COMMANDS;
 
+#[derive(Debug)]
 struct Command<'a> {
     terms: &'a str,
     pos: usize,
@@ -12,6 +14,60 @@ impl<'a> Command<'a> {
     fn new(s: &str) -> Command {
         Command { terms: s, pos: 0 }
     }
+
+    /*
+    /// Consume the Command and produce a hash map based on the terms
+    /// Order of terms: (terms in square brackets are optional)
+    /// * new sett [name] [-r region] [-c] [-q type] [-p race]
+    /// * new quarter [name] [-q type] [-p race] in [homeS]
+    /// * new building [name] in [homeQ of homeS]
+    /// * print sett name
+    /// * print quarter name in homeS
+    /// * print building name in homeQ of homeS
+    fn to_hashmap(self) -> HashMap {
+        let mut hashmap = HashMap::New();
+        let action = self.next().0;
+        let target = self.next().0;
+        for term in self {
+            match term {
+                Some(s) => match s.as_str() {
+                    ("-r", reg) if target == "sett" => {
+                        // Next term is a region
+                        hashmap.insert(CommandPart::Region, self.next());
+                    },
+                    ("-c") if target == "sett" => {
+                        // Mark coast true
+                        hashmap.insert(CommandPart::Coastal, s)
+                    },
+                    ("-q", qtype) if target == "sett" || target == "quarter" => {
+                        // Next term is quarter type
+                        hashmap.insert(CommandPart::QType, self.next());
+                    },
+                    ("-p", race) if target == "sett" || target == "quarter" => {
+                        // Next term is race
+                        hashmap.insert(CommandPart::Race, self.next());
+                    },
+                    ("in", homes) => (),
+                    ("in", homeq, "of", homes) => ()
+                },
+                None => (),
+            }
+        }
+    }
+    */
+}
+
+#[derive(Hash, Eq, PartialEq, Debug)]
+enum CommandPart {
+    Action,
+    Target,
+    Name,
+    Region,
+    Coastal,
+    QType,
+    Race,
+    HomeS,
+    HomeQ,
 }
 
 impl<'a> Iterator for Command<'a> {
@@ -74,6 +130,7 @@ pub enum ParseResult {
 
 pub fn parse_input(input: &str) -> ParseResult {
     let mut cmd = Command::new(input);
+    let cmdmap = cmd.to_hashmap();
     let action = cmd.next();
     match action {
         Some(s) => match s.as_str() {
