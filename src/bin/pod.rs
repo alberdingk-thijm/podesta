@@ -48,12 +48,33 @@ fn main() {
                     None => println!("No settlement found \
                                      (first run 'new' or 'load')!"),
             },
-            ParseResult::New(_) => {
-                if sett.is_some() {
-                    sett = podesta::new_sett_confirm(&data, automate)
-                        .or(sett);
-                } else {
-                    sett = Some(podesta::new_sett(&data, automate));
+            ParseResult::New(target, _) => {
+                // TODO: rewrite new_sett to new and take a target and name
+                match target {
+                    Some(t) => match t.as_str() {
+                        "sett" => {
+                            if sett.is_some() {
+                                sett = podesta::new_sett_confirm(&data, automate)
+                                    .or(sett);
+                            } else {
+                                sett = Some(podesta::new_sett(&data, automate));
+                            }
+                        },
+                        "quarter" => {
+                            match sett {
+                                Some(ref mut s) => {
+                                    //s.add_quarter()
+                                },
+                                None => println!("No settlement found \
+                                              (first run 'new' or 'load')!"),
+                            }
+                        },
+                        "building" => { },
+                        _ => println!("Invalid target for 'new' \
+                                      (specify 'sett', 'quarter' or 'building')!"),
+                    },
+                    None => println!("Invalid target for 'new' \
+                                     (specify 'sett', 'quarter' or 'building')!"),
                 }
             },
             ParseResult::ToggleAuto => {

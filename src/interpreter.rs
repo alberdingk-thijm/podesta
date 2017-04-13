@@ -6,17 +6,22 @@ use COMMANDS;
 
 #[derive(Debug)]
 struct Command<'a> {
+    parse: CommandParse<'a>,
+}
+
+#[derive(Debug)]
+struct CommandParse<'a> {
     terms: &'a str,
     pos: usize,
 }
 
-impl<'a> Command<'a> {
-    fn new(s: &str) -> Command {
-        Command { terms: s, pos: 0 }
+impl<'a> CommandParse<'a> {
+    fn new(s: &str) -> CommandParse {
+        CommandParse { terms: s, pos: 0 }
     }
 
     /*
-    /// Consume the Command and produce a hash map based on the terms
+    /// Consume the CommandParse and produce a hash map based on the terms
     /// Order of terms: (terms in square brackets are optional)
     /// * new sett [name] [-r region] [-c] [-q type] [-p race]
     /// * new quarter [name] [-q type] [-p race] in [homeS]
@@ -58,19 +63,15 @@ impl<'a> Command<'a> {
 }
 
 #[derive(Hash, Eq, PartialEq, Debug)]
-enum CommandPart {
-    Action,
-    Target,
-    Name,
-    Region,
-    Coastal,
-    QType,
-    Race,
-    HomeS,
-    HomeQ,
+enum CommandPart<'a, 'b> {
+    Action(&'a str),
+    Target(&'a str),
+    Bool(&'a str),
+    KeyVal(&'a str, &'b str),
+    Param(&'a str),
 }
 
-impl<'a> Iterator for Command<'a> {
+impl<'a> Iterator for CommandParse<'a> {
     type Item = String;
 
     fn next(&mut self) -> Option<String> {
@@ -96,7 +97,6 @@ impl<'a> Iterator for Command<'a> {
                 },
             }
         }
-
         if in_quotes || pos == 0 {
             None
         } else {
@@ -113,7 +113,7 @@ pub enum ParseResult {
     /// Step some number of times.
     Step(i64),
     /// Create a new object based on the vector.
-    New(Vec<String>),
+    New(Option<String>, Option<String>),
     /// Print the given string to the screen.
     Print(String),
     /// Save the environment to a file.
@@ -129,8 +129,7 @@ pub enum ParseResult {
 }
 
 pub fn parse_input(input: &str) -> ParseResult {
-    let mut cmd = Command::new(input);
-    let cmdmap = cmd.to_hashmap();
+    let mut cmd = CommandParse::new(input);
     let action = cmd.next();
     match action {
         Some(s) => match s.as_str() {
@@ -149,7 +148,7 @@ pub fn parse_input(input: &str) -> ParseResult {
                     "LICENSE".to_string())
             },
             "commands" => ParseResult::Print(COMMANDS.to_string()),
-            "new" => ParseResult::New(cmd.collect::<Vec<_>>()),
+            "new" => ParseResult::New(cmd.next(), cmd.next()),
             "step" | "n" | "next" => ParseResult::Step(cmd.next().map(|s| s.parse::<i64>().unwrap_or(1)).unwrap_or(1)),
             "p" | "print" => ParseResult::Success, //ParseResult::Print(cmd.collect::Vec<_>()),
             "a" | "auto" => ParseResult::ToggleAuto,
