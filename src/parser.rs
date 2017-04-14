@@ -12,12 +12,13 @@
 
 use serde;
 use serde_json;
+use bincode;
 use regions::Region;
 use buildings::BuildingPlan;
 use events::Event;
 
 use std::fs::File;
-use std::io::BufReader;
+use std::io::{self, BufReader, BufWriter};
 use std::env;
 use std::path;
 use std::rc::Rc;
@@ -77,6 +78,21 @@ fn get_data_dir() -> path::PathBuf {
     let head = env::var_os("CARGO_MANIFEST_DIR")
         .expect("Must run using Cargo!");
     let p = path::Path::new(&head).join("lib").join("data");
-
     p
+}
+
+pub enum GameDataError {
+    Serde(serde_json::Error),
+    Io(io::Error),
+}
+
+// TODO: remove placeholder and create manager
+type Manager = ();
+// Save the manager to a given .rbs file.
+pub fn save_rbs(man: &Manager, fname: &str) -> Result<usize, GameDataError> {
+    let mut f = try!(File::create(fname).map_err(|e| GameDataError::Io(e)));
+    let writer = BufWriter::new(f);
+    // serialize the manager using bincode
+    //bincode::serialize_into(&writer, man)
+    Ok(0)
 }

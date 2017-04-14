@@ -1,5 +1,6 @@
 extern crate libc;
 #[macro_use] extern crate serde_derive;
+extern crate bincode;
 extern crate serde_json;
 extern crate serde;
 extern crate rouler;
@@ -18,7 +19,6 @@ pub mod events;
 pub mod effects;
 pub mod interpreter;
 
-use std::rc::Rc;
 use std::io;
 
 /// Return Some(a new settlement) but only after prompting for confirmation.
