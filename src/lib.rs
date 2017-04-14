@@ -21,53 +21,10 @@ pub mod interpreter;
 use std::rc::Rc;
 use std::io;
 
-#[derive(Debug)]
-pub struct DataFiles {
-    regions: Vec<Rc<regions::Region>>,
-    plans: Vec<Rc<buildings::BuildingPlan>>,
-    events: Vec<Rc<events::Event>>,
-}
-
-impl DataFiles {
-    /// Create a new DataFiles struct to track regions, buildings, and
-    /// (eventually) events.
-    /// NOTE: Be mindful of the order when providing the parameters!
-    pub fn new(region_path: &str,
-               building_path: &str,
-               event_path: &str) -> DataFiles {
-        DataFiles {
-            regions: parser::get_data(region_path)
-                .and_then(|d| {
-                    println!("Loaded {}! {} regions found.",
-                                       region_path, d.len());
-                    Ok(d)
-                }).expect("Error parsing regions JSON!"),
-            plans: parser::get_data(building_path)
-                .and_then(|d| {
-                    println!("Loaded {}! {} buildings found.",
-                                       building_path, d.len());
-                    Ok(d)
-                }).expect("Error parsing buildings JSON!"),
-            events: parser::get_data(event_path)
-                .and_then(|d| {
-                    println!("Loaded {}! {} events found.",
-                             event_path, d.len());
-                    Ok(d)
-                }).expect("Error parsing events JSON!"),
-        }
-    }
-}
-
-#[test]
-fn get_datafiles() {
-    let _data = DataFiles::new("regions.json", "buildings.json",
-                               "events.json");
-}
-
 /// Return Some(a new settlement) but only after prompting for confirmation.
 /// If confirmation is not received, return None.
 /// See new_sett.
-pub fn new_sett_confirm(data: &DataFiles, auto: bool) -> Option<sett::Sett> {
+pub fn new_sett_confirm(data: &parser::DataFiles, auto: bool) -> Option<sett::Sett> {
     if prompts::bool_choose("Overwrite existing settlement? (y/n): ",
         &["y", "yes"], &["n", "no"]).unwrap_or(false) {
         Some(new_sett(&data, auto))
@@ -77,7 +34,7 @@ pub fn new_sett_confirm(data: &DataFiles, auto: bool) -> Option<sett::Sett> {
 }
 
 /// Create a new settlement, prompting for user input occasionally.
-pub fn new_sett(data: &DataFiles, auto: bool) -> sett::Sett {
+pub fn new_sett(data: &parser::DataFiles, auto: bool) -> sett::Sett {
     let numprompts = if auto { 0 } else { 2 };
     // Name
     let namelen = 1;  // at least one character

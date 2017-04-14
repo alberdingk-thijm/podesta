@@ -12,12 +12,46 @@
 
 use serde;
 use serde_json;
+use regions::Region;
+use buildings::BuildingPlan;
+use events::Event;
 
 use std::fs::File;
 use std::io::BufReader;
 use std::env;
 use std::path;
 use std::rc::Rc;
+
+#[derive(Debug)]
+pub struct DataFiles {
+    pub regions: Vec<Rc<Region>>,
+    pub plans: Vec<Rc<BuildingPlan>>,
+    pub events: Vec<Rc<Event>>,
+}
+
+macro_rules! load_datafile {
+    ($ftype:expr, $path:expr) => {
+        get_data($path).and_then(|d| {
+            println!("Loaded {}! {} {} found.", $path, d.len(), $ftype);
+            Ok(d)
+        }).expect("Error parsing JSON!")
+    };
+}
+
+impl DataFiles {
+    /// Create a new DataFiles struct to track regions, buildings, and
+    /// (eventually) events.
+    /// NOTE: Be mindful of the order when providing the parameters!
+    pub fn new(region_path: &str,
+               building_path: &str,
+               event_path: &str) -> DataFiles {
+        DataFiles {
+            regions: load_datafile!("regions", region_path),
+            plans: load_datafile!("buildings", building_path),
+            events: load_datafile!("events", event_path)
+        }
+    }
+}
 
 /// Return a Result holding a deserialized vector of podsim data,
 /// where each vector element was stored in a JSON file named by
