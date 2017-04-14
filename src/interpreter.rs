@@ -1,7 +1,7 @@
+#[allow(dead_code)]
 /// Functionality for interpreting user commands.
 
 use std::str;
-use std::collections::HashMap;
 use COMMANDS;
 
 #[derive(Debug)]
