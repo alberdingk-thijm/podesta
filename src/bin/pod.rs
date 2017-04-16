@@ -62,14 +62,23 @@ fn main() {
                         },
                         "quarter" => {
                             match sett {
-                                Some(ref mut s) => {
+                                Some(_) => {
                                     //s.add_quarter()
                                 },
                                 None => println!("No settlement found \
                                               (first run 'new' or 'load')!"),
                             }
                         },
-                        "building" => { },
+                        "building" => {
+                            match sett {
+                                Some(_) => {
+                                    // get q
+                                    // q.add_building()
+                                },
+                                None => println!("No settlement found \
+                                              (first run 'new' or 'load')!"),
+                            }
+                        },
                         _ => println!("Invalid target for 'new' \
                                       (specify 'sett', 'quarter' or 'building')!"),
                     },
@@ -81,8 +90,20 @@ fn main() {
                 automate = !automate;
                 println!("Automation set to {}", automate);
             },
-            ParseResult::Save(_) => (), //podesta::save(sett, format!("{}.rgs", sett.name)),
-            ParseResult::Load(file) => println!("{:?}", podesta::load(file)),
+            ParseResult::Save(file) => {
+                match sett {
+                    Some(ref s) => {
+                        podesta::parser::save_rbs(&(), file
+                                                  .unwrap_or(s.name.clone()).as_str())
+                            .unwrap_or_else(|e| {
+                                println!("Failed to save the game file! {:?}", e);
+                            })
+                    },
+                    None => println!("No settlement found \
+                                      (first run 'new' or 'load')!"),
+                }
+            },
+            ParseResult::Load(file) => { podesta::load(file) },
             ParseResult::Print(s) => println!("{}", s),
             ParseResult::Quit => break,
         }

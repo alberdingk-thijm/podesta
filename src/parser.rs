@@ -6,7 +6,8 @@
 //! ```
 //! use podesta::parser;
 //! use podesta::events;
-//! let events : Vec<events::Event> = parser::get_data("events.json").
+//! use std::rc::Rc;
+//! let events : Vec<Rc<events::Event>> = parser::get_data("events.json").
 //!     expect("Failed to get data");
 //! ```
 
@@ -18,7 +19,7 @@ use buildings::BuildingPlan;
 use events::Event;
 
 use std::fs::File;
-use std::io::{self, BufReader, BufWriter};
+use std::io::{self, BufReader, BufWriter, Read, Write};
 use std::env;
 use std::path;
 use std::rc::Rc;
@@ -81,18 +82,41 @@ fn get_data_dir() -> path::PathBuf {
     p
 }
 
+#[derive(Debug)]
 pub enum GameDataError {
     Serde(serde_json::Error),
+    Bincode(bincode::Error),
     Io(io::Error),
 }
 
 // TODO: remove placeholder and create manager
 type Manager = ();
-// Save the manager to a given .rbs file.
-pub fn save_rbs(man: &Manager, fname: &str) -> Result<usize, GameDataError> {
-    let mut f = try!(File::create(fname).map_err(|e| GameDataError::Io(e)));
-    let writer = BufWriter::new(f);
+/// Save the manager to a given .rbs file name.
+///
+/// # Example
+///
+/// ```
+/// use podesta::parser;
+/// parser::save_rbs(&(), "foo.rbs").unwrap()
+/// ```
+pub fn save_rbs(man: &Manager, fname: &str) -> Result<(), GameDataError> {
+    let fullname = format!("{}{}", fname,
+                           if !fname.ends_with(".rbs") { ".rbs" } else { "" });
+    let f = try!(File::create(fullname).map_err(|e| GameDataError::Io(e)));
+    let mut writer = BufWriter::new(f);
     // serialize the manager using bincode
-    //bincode::serialize_into(&writer, man)
-    Ok(0)
+    bincode::serialize_into(&mut writer, man, bincode::Infinite)
+        .map_err(|e| GameDataError::Bincode(e))
+    //writer.write(writer).map_err(|e| GameDataError::Io(e))
+}
+
+/// Load a manager from a given .rbs file.
+pub fn load_rbs(fname: &str) -> Result<Manager, GameDataError> {
+    let fullname = format!("{}{}", fname,
+                           if !fname.ends_with(".rbs") { ".rbs" } else { "" });
+    let f = try!(File::open(fullname).map_err(|e| GameDataError::Io(e)));
+    let mut reader = BufReader::new(f);
+    // deserialize the manager using bincode
+    bincode::deserialize_from(&mut reader, bincode::Infinite)
+        .map_err(|e| GameDataError::Bincode(e))
 }

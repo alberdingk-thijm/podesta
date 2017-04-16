@@ -9,3 +9,6 @@ Cargo.lock
 # ignore vim files
 *.swp
 *~
+
+# ignore game save files
+*.rbs

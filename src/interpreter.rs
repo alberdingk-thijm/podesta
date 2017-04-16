@@ -119,7 +119,7 @@ pub enum ParseResult {
     /// Save the environment to a file.
     Save(Option<String>),
     /// Load a file into the environment.
-    Load(String),
+    Load(Option<String>),
     /// Toggle user prompting.
     ToggleAuto,
     /// Display a file using the specified program.
@@ -154,7 +154,7 @@ pub fn parse_input(input: &str) -> ParseResult {
             "a" | "auto" => ParseResult::ToggleAuto,
             "q" | "quit" => ParseResult::Quit,
             "sv" | "save" => ParseResult::Save(cmd.next()),
-            "ld" | "load" => ParseResult::Load(cmd.next().unwrap()),
+            "ld" | "load" => ParseResult::Load(cmd.next()),
             "" => ParseResult::Success,
             _ => ParseResult::Print(format!("Unknown option \"{}\"", s)),
         },

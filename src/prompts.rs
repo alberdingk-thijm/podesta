@@ -32,6 +32,28 @@ pub fn name(minchars: usize) -> Result<String, PromptError> {
     })
 }
 
+/// Prompt the user to type a name with at least minchars length.
+/// Loop until the name is acceptable, then return it.
+pub fn name_loop(minchars: usize) -> String {
+    let mut name_input = name(minchars);
+    while name_input.is_err() {
+        println!("Please enter at least {} letters.", minchars);
+        name_input = name(minchars);
+    }
+    name_input.unwrap()
+}
+
+/// Prompt the user for a file name.
+pub fn name_file() -> Result<String, PromptError> {
+    print!("Please specify the name of the file to load: ");
+    io::stdout().flush().expect("Failed to flush to stdout!");
+    let mut input = String::new();
+    match io::stdin().read_line(&mut input) {
+        Ok(_) => Ok(input.trim()),
+        Err(e) => Err(PromptError::Io(e)),
+    }.and_then(|x| Ok(x.to_string()))
+}
+
 /// Prompt the user with a boolean choice, with a given question,
 /// expected affirmative answers (returning Ok(true)) and
 /// expected negative answers (returning Ok(false)).

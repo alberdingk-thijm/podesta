@@ -17,22 +17,22 @@ impl Area {
     /// the calling structure.
     ///
     /// # Examples
-    ///
-    /// ```
+    /// TODO: update to new syntax
+    /// ```ignore
     /// use podesta::effects;
     /// use podesta::buildings;
     ///
     /// let mut b = buildings::Building {
-    ///     name: 'foo',
+    ///     name: "foo",
     ///     id: 1,
     ///     btype: quarters::Residential,
     ///     preq: None,
     ///     cost: 100.0,
-    ///     build: 1.0,
+    ///     bspeed: 1.0,
     ///     events: vec!()
     /// };
     /// let a = effects::Area::Building;
-    /// assert_eq!(a.target(b).name , 'foo')
+    /// assert_eq!(a.target(b).name , "foo")
     /// ```
     #[allow(unused_variables)]
     pub fn target<T>(&self, caller: &mut buildings::Building) -> &mut T

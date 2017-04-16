@@ -126,6 +126,12 @@ pub fn find_by_name<'a, 'b, T: HasName>(v: &'a [T], name: &'b str)
     v.iter().find(|&x| x.get_name() == name)
 }
 
+impl HasName for Sett {
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+}
+
 impl fmt::Display for Sett {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}, located in {} {}. {} steps old. Population {}.\n\
