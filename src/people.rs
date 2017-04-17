@@ -4,7 +4,7 @@ use buildings;
 use std::fmt;
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 /// A hero of the settlement.
 pub struct Hero {
     pub name: String,

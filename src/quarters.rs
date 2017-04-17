@@ -5,7 +5,7 @@ use sett;
 use std::fmt;
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Quarter {
     /// The unique name of the quarter.
     pub name: String,

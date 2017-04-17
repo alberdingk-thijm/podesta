@@ -1,8 +1,10 @@
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct History {
     pub entries: Vec<Entry>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Entry {
     pub date: String,
     pub info: String,
@@ -17,8 +19,8 @@ impl History {
         self.entries.push(Entry::new(date, info))
     }
 
-    fn get_date(&self, date: String) -> &[Entry] {
-        self.entries.into_iter().filter(|x| x.date == date).collect()
+    fn get_date(&self, date: String) -> Vec<&Entry> {
+        self.entries.iter().filter(|x| x.date == date).collect::<Vec<_>>()
     }
 }
 

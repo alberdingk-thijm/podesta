@@ -103,7 +103,7 @@ fn main() {
                                       (first run 'new' or 'load')!"),
                 }
             },
-            ParseResult::Load(file) => { podesta::load(file) },
+            ParseResult::Load(file) => { podesta::load(file); },
             ParseResult::Print(s) => println!("{}", s),
             ParseResult::Quit => break,
         }

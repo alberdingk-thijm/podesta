@@ -17,6 +17,7 @@ use bincode;
 use regions::Region;
 use buildings::BuildingPlan;
 use events::Event;
+use manager;
 
 use std::fs::File;
 use std::io::{self, BufReader, BufWriter, Read, Write};
@@ -24,7 +25,7 @@ use std::env;
 use std::path;
 use std::rc::Rc;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DataFiles {
     pub regions: Vec<Rc<Region>>,
     pub plans: Vec<Rc<BuildingPlan>>,
@@ -90,7 +91,7 @@ pub enum GameDataError {
 }
 
 // TODO: remove placeholder and create manager
-type Manager = ();
+//type Manager = ();
 /// Save the manager to a given .rbs file name.
 ///
 /// # Example
@@ -99,7 +100,7 @@ type Manager = ();
 /// use podesta::parser;
 /// parser::save_rbs(&(), "foo.rbs").unwrap()
 /// ```
-pub fn save_rbs(man: &Manager, fname: &str) -> Result<(), GameDataError> {
+pub fn save_rbs(man: &manager::Manager, fname: &str) -> Result<(), GameDataError> {
     let fullname = format!("{}{}", fname,
                            if !fname.ends_with(".rbs") { ".rbs" } else { "" });
     let f = try!(File::create(fullname).map_err(|e| GameDataError::Io(e)));
@@ -111,7 +112,7 @@ pub fn save_rbs(man: &Manager, fname: &str) -> Result<(), GameDataError> {
 }
 
 /// Load a manager from a given .rbs file.
-pub fn load_rbs(fname: &str) -> Result<Manager, GameDataError> {
+pub fn load_rbs(fname: &str) -> Result<manager::Manager, GameDataError> {
     let fullname = format!("{}{}", fname,
                            if !fname.ends_with(".rbs") { ".rbs" } else { "" });
     let f = try!(File::open(fullname).map_err(|e| GameDataError::Io(e)));

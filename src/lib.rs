@@ -18,6 +18,8 @@ mod prompts;
 pub mod events;
 pub mod effects;
 pub mod interpreter;
+pub mod history;
+pub mod manager;
 
 use std::io;
 use std::rc::Rc;
@@ -94,18 +96,19 @@ pub fn new_sett(data: &parser::DataFiles, auto: bool) -> sett::Sett {
 }
 
 /// Load a file from the given name; if None is given, prompt the user for one.
-pub fn load(file: Option<String>) {
+pub fn load(file: Option<String>) -> Option<manager::Manager> {
     let fres = match file {
         Some(filename) => Ok(filename),
         None => prompts::name_file(),
     };
     match fres {
         Ok(f) => parser::load_rbs(f.as_str())
-            .unwrap_or_else(|e| {
-                println!("Failed to load the game file! {:?}", e)
-            }),
+            .map_err(|e| {
+                println!("Failed to load the game file! {:?}", e);
+            }).ok(),
         Err(e) => {
             println!("Please specify a file to load!");
+            None
         }
     }
 }

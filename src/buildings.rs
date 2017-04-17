@@ -3,7 +3,7 @@ use quarters;
 //use people;
 use sett;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Building {
     pub name: String,
     pub id: i32,
