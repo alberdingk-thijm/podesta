@@ -121,3 +121,4 @@ pub fn load_rbs(fname: &str) -> Result<manager::Manager, GameDataError> {
     bincode::deserialize_from(&mut reader, bincode::Infinite)
         .map_err(|e| GameDataError::Bincode(e))
 }
+

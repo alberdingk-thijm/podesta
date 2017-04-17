@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct History {

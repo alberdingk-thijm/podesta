@@ -16,11 +16,11 @@ pub struct Sett {
     pub gold: f64,
     pub reg: Rc<regions::Region>,
     /// List of quarters in the settlement.
-    pub qrtrs: RefCell<Vec<quarters::Quarter>>,
+    pub qrtrs: Vec<Rc<RefCell<quarters::Quarter>>>,
     /// List of buildings in the settlement
-    pub bldgs: RefCell<Vec<buildings::Building>>,
+    pub bldgs: Vec<Rc<RefCell<buildings::Building>>>,
     /// List of heroes in the settlement
-    pub heroes: RefCell<Vec<people::Hero>>,
+    pub heroes: Vec<Rc<RefCell<people::Hero>>>,
     /// Population needed before a new quarter is added.
     pub nextqrtr: i32,
     /// Flag for if settlement is coastal.
@@ -44,15 +44,11 @@ impl Sett {
             pop: pop,
             gold: reg.starting_gold,
             reg: reg,
-            qrtrs: RefCell::new(vec![
-                                quarters::Quarter::new("Main",
-                                                       qt,
-                                                       pop,
-                                                       r)]
-                                ),
-            bldgs: RefCell::new(vec!()),
+            qrtrs: vec![Rc::new(
+                RefCell::new(quarters::Quarter::new("Main", qt, pop, r)))],
+            bldgs: vec!(),
             // TODO: get a starting governor
-            heroes: RefCell::new(vec!()),
+            heroes: vec!(),
             nextqrtr: pop * 2,
             coastal: coast,
         }
@@ -78,9 +74,9 @@ impl Sett {
         if qt == quarters::QType::Port && !self.coastal {
             return Err(quarters::BuildError::InlandPort);
         }
-        let mut qrtrs = self.qrtrs.borrow_mut();
+        let ref mut qrtrs = self.qrtrs; //borrow_mut();
         // make sure quarter is not already present
-        if qrtrs.iter().any(|ref x| x.name == n) {
+        if qrtrs.iter().any(|ref x| x.borrow().name == n) {
         //if let Some(_) = find_by_name(&qrtrs, &n) {
             return Err(quarters::BuildError::AlreadyExists);
         }
@@ -91,12 +87,14 @@ impl Sett {
         // remove pop from existing quarters equally
         let nqrtrs = qrtrs.len() as i32;
         for q in qrtrs.iter_mut() {
+            let mut qb = q.borrow_mut();
             // add 1 because we are counting the new quarter
-            q.pop -= self.nextqrtr / (nqrtrs + 1);
+            qb.pop -= self.nextqrtr / (nqrtrs + 1);
         }
         let newpop = self.nextqrtr / nqrtrs;
         // multiply number by growth bonus => newpop?
-        qrtrs.push(quarters::Quarter::new(&n, qt, newpop, r));
+        qrtrs.push(Rc::new(
+                RefCell::new(quarters::Quarter::new(&n, qt, newpop, r))));
         // receive gold bonus
         self.gold += 100.0;
         self.nextqrtr *= 2;
@@ -105,7 +103,7 @@ impl Sett {
 
     #[allow(unused_variables)]
     /// Add a building
-    pub fn add_building(&self, name: &str, q: Box<quarters::Quarter>)
+    pub fn add_building(&self, name: &str, q: Rc<RefCell<quarters::Quarter>>)
     -> Result<String, quarters::BuildError>{
         // Get the plans for the building
         // Check that self has enough gold to pay the cost
@@ -139,7 +137,8 @@ impl fmt::Display for Sett {
                self.name,
                if self.coastal { "coastal" } else { "inland" },
                self.reg, self.age, self.pop,
-               self.qrtrs.borrow().iter().map(|q| format!("- {}\n", q))
-                   .collect::<String>())
+               self.qrtrs.iter().map(|q| {
+                   format!("- {}\n", *(q.borrow()))
+               }).collect::<String>())
     }
 }

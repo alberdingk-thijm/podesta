@@ -14,6 +14,7 @@ fn main() {
     let mut automate = false;
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
+    let mut man = podesta::manager::Manager::new();
     // Allow the program to start without a settlement
     let mut sett : Option<podesta::sett::Sett> = None;
 
@@ -93,7 +94,7 @@ fn main() {
             ParseResult::Save(file) => {
                 match sett {
                     Some(ref s) => {
-                        podesta::parser::save_rbs(&(), file
+                        podesta::parser::save_rbs(&man, file
                                                   .unwrap_or(s.name.clone()).as_str())
                             .unwrap_or_else(|e| {
                                 println!("Failed to save the game file! {:?}", e);
