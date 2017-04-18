@@ -18,6 +18,14 @@ macro_rules! choose_info {
     };
 }
 
+macro_rules! print_opt {
+    ($opt:expr) => {
+        match $opt {
+            Some(ref x) => println!("{}", x),
+            None => (),
+        }
+    };
+}
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Manager {
     datafiles: parser::DataFiles,
@@ -118,5 +126,19 @@ impl Manager {
     fn confirm_overwrite() -> bool {
         prompts::bool_choose("Overwrite existing data? (y/n): ",
             &["y", "yes"], &["n", "no"]).unwrap_or(false)
+    }
+
+    /// Print information from the named term.
+    /// If term is None, print the sett's information.
+    pub fn print(&self, term: Option<String>) {
+        match term {
+            Some(t) => match t.as_str() {
+                "sett" => print_opt!(self.sett),
+                "quarter" => (),
+                "building" => (),
+                _ => (),
+            },
+            None => print_opt!(self.sett),
+        }
     }
 }

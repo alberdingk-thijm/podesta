@@ -2,7 +2,6 @@
 /// Functionality for interpreting user commands.
 
 use std::str;
-use COMMANDS;
 
 #[derive(Debug)]
 struct Command<'a> {
@@ -114,16 +113,20 @@ pub enum ParseResult {
     Step(i64),
     /// Create a new object based on the vector.
     New(Option<String>, Option<String>),
-    /// Print the given string to the screen.
-    Print(String),
+    /// Print the named object to the screen.
+    Print(Option<String>),
     /// Save the environment to a file.
     Save(Option<String>),
     /// Load a file into the environment.
     Load(Option<String>),
     /// Toggle user prompting.
     ToggleAuto,
+    /// Print list of available commands to the screen.
+    Commands,
     /// Display a file using the specified program.
     DispFile(String, String),
+    /// Display an unknown option message.
+    Unknown(String),
     /// Quit the application.
     Quit,
 }
@@ -147,16 +150,16 @@ pub fn parse_input(input: &str) -> ParseResult {
                 ParseResult::DispFile("less".to_string(),
                     "LICENSE".to_string())
             },
-            "commands" => ParseResult::Print(COMMANDS.to_string()),
+            "commands" => ParseResult::Commands,
             "new" => ParseResult::New(cmd.next(), cmd.next()),
             "step" | "n" | "next" => ParseResult::Step(cmd.next().map(|s| s.parse::<i64>().unwrap_or(1)).unwrap_or(1)),
-            "p" | "print" => ParseResult::Success, //ParseResult::Print(cmd.collect::Vec<_>()),
+            "p" | "print" => ParseResult::Print(cmd.next()),
             "a" | "auto" => ParseResult::ToggleAuto,
             "q" | "quit" => ParseResult::Quit,
             "sv" | "save" => ParseResult::Save(cmd.next()),
             "ld" | "load" => ParseResult::Load(cmd.next()),
             "" => ParseResult::Success,
-            _ => ParseResult::Print(format!("Unknown option \"{}\"", s)),
+            s @ _ => ParseResult::Unknown(s.to_string()),
         },
         None => ParseResult::Success,
     }

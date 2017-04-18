@@ -64,6 +64,7 @@ fn main() {
                 }
             },
             ParseResult::ToggleAuto => man.toggle_auto(),
+            ParseResult::Commands => println!("{}", podesta::COMMANDS),
             ParseResult::Save(file) => {
                 podesta::parser::save_rbs(
                     &man,
@@ -73,11 +74,12 @@ fn main() {
                             println!("Failed to save the game file! {:?}", e);
                         })
             },
-            ParseResult::Load(file) => { match podesta::load(file) {
+            ParseResult::Load(file) => match podesta::load(file) {
                 Some(m) => man = m,
                 None => (),
-            }},
-            ParseResult::Print(s) => println!("{}", s),
+            },
+            ParseResult::Print(s) => man.print(s),
+            ParseResult::Unknown(s) => print!("Unknown option \"{}\"", s),
             ParseResult::Quit => break,
         }
     }
