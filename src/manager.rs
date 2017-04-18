@@ -5,7 +5,7 @@
 use parser;
 use sett;
 use quarters;
-use buildings;
+//use buildings;
 use people;
 use history;
 use events;
@@ -51,6 +51,18 @@ impl Manager {
         }
     }
 
+    /// Load a Manager from a file with the given name; if None is given,
+    /// prompt the user for one.
+    /// Return None if an error occurs.
+    pub fn load(file: Option<String>) -> Result<Self, parser::GameDataError> {
+        match file {
+            Some(filename) => Ok(filename),
+            None => prompts::name_file(),
+        }.map_err(parser::GameDataError::Prompt)
+            .and_then(|f| parser::load_rbs(f.as_str()))
+
+    }
+
     /// Toggle automation of build functions.
     pub fn toggle_auto(&mut self) {
         self.automate = !self.automate;
@@ -93,6 +105,8 @@ impl Manager {
             self.sett = Some(
                 sett::Sett::new(name, reg, qtype, race, coastchoice)
             );
+
+            if self.verbose { println!("{}", self.sett.as_ref().unwrap()) }
         }
     }
 
@@ -102,6 +116,7 @@ impl Manager {
     }
 
     /// Initialize a new quarter and store it in the manager's sett.
+    #[allow(unused_variables)]
     pub fn build_quarter(&mut self, name_input: Option<String>) {
         match self.sett {
             Some(ref s) => {
@@ -112,6 +127,7 @@ impl Manager {
     }
 
     /// Initialize a new building and store it in the manager's sett's quarter.
+    #[allow(unused_variables)]
     pub fn build_building(&mut self, name_input: Option<String>) {
         unimplemented!()
     }

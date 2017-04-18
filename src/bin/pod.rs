@@ -5,16 +5,18 @@ extern crate rouler;
 
 extern crate podesta;
 
+use podesta::manager::Manager as Manager;
+
 use std::io::{self, Write};
 //use std::rc::Rc;
 
 fn main() {
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
-    let mut man = podesta::manager::Manager::new("regions.json",
-                                                 "buildings.json",
-                                                 "events.json",
-                                                 true);
+    let mut man = Manager::new("regions.json",
+                               "buildings.json",
+                               "events.json",
+                               true);
     // Allow the program to start without a settlement
     let mut sett : Option<podesta::sett::Sett> = None;
 
@@ -65,18 +67,15 @@ fn main() {
             },
             ParseResult::ToggleAuto => man.toggle_auto(),
             ParseResult::Commands => println!("{}", podesta::COMMANDS),
-            ParseResult::Save(file) => {
-                podesta::parser::save_rbs(
-                    &man,
-                    file.unwrap_or(
-                        man.get_sett_name().unwrap_or("pod".to_string())
-                    ).as_str()).unwrap_or_else(|e| {
-                            println!("Failed to save the game file! {:?}", e);
-                        })
-            },
-            ParseResult::Load(file) => match podesta::load(file) {
-                Some(m) => man = m,
-                None => (),
+            ParseResult::Save(file) => podesta::parser::save_rbs(
+                &man, file.unwrap_or(man.get_sett_name()
+                                     .unwrap_or("pod".to_string()))
+                .as_str()).unwrap_or_else(|e| {
+                    println!("Failed to save the game file! {:?}", e);
+            }),
+            ParseResult::Load(file) => match Manager::load(file) {
+                Ok(m) => man = m,
+                Err(e) => println!("Failed to load the game file! {:?}", e),
             },
             ParseResult::Print(s) => man.print(s),
             ParseResult::Unknown(s) => print!("Unknown option \"{}\"", s),

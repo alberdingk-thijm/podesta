@@ -18,9 +18,10 @@ use regions::Region;
 use buildings::BuildingPlan;
 use events::Event;
 use manager;
+use prompts::PromptError;
 
 use std::fs::File;
-use std::io::{self, BufReader, BufWriter, Read, Write};
+use std::io::{self, BufReader, BufWriter};
 use std::env;
 use std::path;
 use std::rc::Rc;
@@ -88,6 +89,7 @@ pub enum GameDataError {
     Serde(serde_json::Error),
     Bincode(bincode::Error),
     Io(io::Error),
+    Prompt(PromptError),
 }
 
 // TODO: remove placeholder and create manager
