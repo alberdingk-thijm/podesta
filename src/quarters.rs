@@ -50,12 +50,29 @@ macro_attr! {
         Residential,
         /// Mostly artisans and shops
         Industrial,
-        /// Waterfront buildings
+        /// Waterfront buildings (only available in coastal settlements)
         Port,
         /// Educational institutions
         Academic,
         /// Military and government buildings
         Administrative,
+    }
+}
+
+impl QType {
+    /// Return a vec of QTypes, filtering out the Port QType if
+    /// is_coastal is false.
+    pub fn get_qtypes(is_coastal: bool) -> Vec<Self> {
+        Self::iter_variants().filter(|&q| is_coastal || q != QType::Port)
+            .collect::<Vec<_>>()
+    }
+
+    /// Return a vec of QType strings, filtering out the Port QType if
+    /// is_coastal is false.
+    pub fn get_qtype_names(is_coastal: bool) -> Vec<String> {
+        Self::iter_variant_names()
+            .filter(|&q| is_coastal || q != format!("{}", QType::Port))
+            .map(|x| x.to_string()).collect::<Vec<_>>()
     }
 }
 

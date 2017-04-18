@@ -24,6 +24,7 @@ pub mod manager;
 use std::io;
 use std::rc::Rc;
 
+#[allow(unused_variables)]
 pub fn new_quarter(data: &parser::DataFiles, sett: Rc<sett::Sett>, auto: bool) -> quarters::Quarter {
     let numprompts = if auto { 0 } else { 2 };
     // Name
@@ -71,10 +72,10 @@ pub fn new_sett(data: &parser::DataFiles, auto: bool) -> sett::Sett {
     // i.e. if coastal or qtype not Port, keep it
     let qtypenames = quarters::QType::iter_variant_names()
         .filter(|&q| coastchoice || q != format!("{}", quarters::QType::Port));
-    let qchoice = prompts::choose_or_rand(
-        &(qtypenames.collect::<Vec<_>>()), numprompts);
     let mut qtypes = quarters::QType::iter_variants()
         .filter(|&q| coastchoice || q != quarters::QType::Port);
+    let qchoice = prompts::choose_or_rand(
+        &(qtypenames.collect::<Vec<_>>()), numprompts);
     let qtype = qtypes.nth(qchoice).unwrap();
 
     // Race

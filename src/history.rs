@@ -12,15 +12,15 @@ pub struct Entry {
 }
 
 impl History {
-    fn new() -> History {
+    pub fn new() -> History {
         History { entries: vec!() }
     }
 
-    fn add_entry(&mut self, date: String, info: String) {
+    pub fn add_entry(&mut self, date: String, info: String) {
         self.entries.push(Entry::new(date, info))
     }
 
-    fn get_date(&self, date: String) -> Vec<&Entry> {
+    pub fn get_date(&self, date: String) -> Vec<&Entry> {
         self.entries.iter().filter(|x| x.date == date).collect::<Vec<_>>()
     }
 }
