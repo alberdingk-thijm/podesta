@@ -1,0 +1,182 @@
+---------------------
+BUILDINGS IN PODESTA
+---------------------
+
+List of Buildings:
+
+Shrine:
+A basic residential building with no prerequisites, which can generate
+religious heroes and affect the quarter's growth.
+- Heresy: shrines can lead to heretical uprisings in the quarter
+- Revelation: shrines can produce revelations to pious visitors
+
+Temple:
+Follow-up to the shrine, the temple provides more positive bonuses to the
+quarter and valuable settlement-wide growth.
+- Heresy: temples can lead to heretical uprisings in the quarter
+- Revelation: temples can produce revelations to pious visitors
+- Observance: temples can organize and celebrate religious events
+
+Garden:
+A special building available after the temple which boosts religious hero
+generation.
+- Revelation: gardens can produce revelations to pious visitors
+
+GrandTemple:
+Follow-up to the temple, the grand temple ensures religious unity and more
+room for celebrations of devotion.
+- Heresy: grand temples reduce the risk of heretical uprisings in the quarter
+- Revelation: grand temples can produce revelations to pious visitors
+- Observance: grand temples can organize and celebrate religious events
+- Masterwork: grand temples can host divinely-inspired works of art
+
+Theatre:
+Requiring both a garden and a library, the theatre allows residential quarters
+to generate bards and fine works of writing.
+- RareBook: theatres can produce rare books
+- Investment: theatres can receive welcome investments
+- Performance: theatres can host artistic performances
+
+ReligiousOrder:
+A follow-up to the theatre and the library, the religious order is especially
+useful for producing rare items.
+- RareBook: religious orders can produce rare books
+- Revelation: religious orders can produce revelations to pious visitors
+- Masterwork: religious orders can host divinely-inspired works of art
+- Artifact: religious orders can host religious relics of inestimable value
+
+Market:
+A basic industrial building which generates merchants, thieves and assassins.
+- Merchants: markets can encourage the appearance of merchants in town
+- Outlaws: markets can embolden greedy bandits and highwaymen
+
+Forge:
+Another simple industrial building for generating items and improving the
+quarter.
+- Breakthrough: forges can achieve technological breakthroughs in the quarter
+- Fire: forges can put the settlement at risk of fire
+- FineCraft: forges can produce fine examples of craftsmanship
+
+Mint:
+A valuable gold-generating building which follows the construction of a market
+and a forge.
+- Outlaws: mints can embolden greedy bandits and highwaymen
+- Tax: mints can establish new taxes on the settlement
+
+Workshop:
+An industrial building like the forge which also helps reduce accidents.
+- Accident: workshops reduce the risk of building collapse
+- FineCraft: workshops can produce fine examples of craftsmanship
+
+GuildHall:
+A guild hall follows the construction of a market and a workshop and provides
+improvements to building construction and gold generation.
+- Breakthrough: guild halls can achieve technological breakthroughs in the
+  quarter
+- Architect: guild halls can produce specialists in architecture
+- Merchants: guild halls can encourage the appearance of merchants in town
+- Strike: guild halls can organize workers' strikes in the quarter
+- FineCraft: guild halls can produce fine examples of craftsmanship
+
+PrintingHouse:
+A specialized industrial building for producing books and transmitting
+information.
+- Merchants: printing houses can encourage the appearance of merchants in town
+- RareBook: printing houses can produce rare books
+- Investment: printing houses can receive welcome investments
+- Strike: printing houses can spread word of strikes in the quarter
+
+Lighthouse:
+The first building available in port quarters, lighthouses generates merchants
+and pirates.
+- Merchants: lighthouses can encourage the appearance of merchants in town
+- Outlaws: lighthouses can embolden greedy pirates
+
+Harbour:
+A follow-up to the lighthouse, a harbour increases the risk of plague while
+generating merchants and outlaws.
+- Outlaws: harbours can embolden greedy pirates
+- Plague: harbours can expose the settlement to plague
+- Merchants: harbours can encourage the appearance of merchants in town
+
+Warehouse:
+A warehouse gives a large boost to merchant generation while carrying the
+typical port risk of plague.
+- Plague: warehouses can expose the settlement to plague
+- Merchants: warehouses can encourage the appearance of merchants in town
+
+Shipyard:
+The shipyard generates fighters and thieves, and is available once a harbour
+and a workshop are built.
+- Investment: shipyards can receive welcome investments
+- Embargo: shipyards can lead to the settlement being embargoed
+- Skirmish: shipyards can supply ships for naval skirmishes
+
+CustomsHouse:
+- Merchants:
+- Tax:
+- Embargo:
+- Investment:
+- Plague:
+
+Lazaretto:
+- Plague:
+- Revelation:
+
+Library:
+- RareBook:
+- Breakthrough:
+
+School:
+- RareBook:
+- Lecture:
+
+University:
+- RareBook:
+- Lecture:
+- Breakthrough:
+- Strike:
+- Architect:
+
+Observatory:
+- RareBook:
+- CelestialEvent:
+
+Society:
+- RareBook:
+- Lecture:
+- Performance:
+- Heresy:
+- Artifact:
+
+Walls:
+A basic administrative building to keep outlaws out of the settlement and
+generate fighters.
+- Skirmish
+- Outlaws
+
+Barracks:
+- Skirmish
+
+Armoury:
+- Skirmish
+- FineCraft
+
+Fortress:
+- Skirmish
+- FineCraft
+- Coup
+
+Assembly:
+- Trial
+- Outlaws
+
+Prison:
+- Trial
+- Skirmish
+- Outlaws
+
+Palace:
+- Investment
+- Diplomat
+- Masterwork

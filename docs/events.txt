@@ -106,7 +106,7 @@ The ITEM effect has two fields:
 List of Events:
 
 Fire: 5d6
-- base, forge, lighthouse
+- base, forge
 - Kill: 10..60% of quarter: if >=50%, check another quarter
 - Damage: starting building -> ruined; other buildings in quarter 0..40% damage;
   if >=30%, check another quarter
@@ -119,13 +119,13 @@ Breakthrough: 5d4
 - Build: 10..40% increase for quarter
 - Grow: 5..20% increase for quarter
 Investment: 1d8
-- base, shipyard, customshouse, palace
+- base, theatre, printinghouse, shipyard, customshouse, palace
 - Gold: 50..400 gold earned this turn
 RareBook: 1d20
-- theatre, museum, library, school, university, observatory, society
+- theatre, religiousorder, printinghouse, library, school, university, observatory, society
 - Item: worth 20..400 gold, (#ACADEMIC)/20 chance of magical
 Lecture: 2d6
-- museum, school, university, society
+- school, university, society
 - Hero: 50% (1..6)-th level mage, 50% (1..6)-th level illusionist
 CelestialEvent: 2d4
 - observatory
@@ -136,10 +136,10 @@ Strike: 3d8
 - Riot: quarter @ 0% for 3..24 steps
 - Damage: building takes 3..24 damage
 Artifact: 1d100
-- society
+- religiousorder, society
 - Item: worth 500..50,000 gold, always magical
 Masterwork: 5d4
-- grandtemple, museum, palace
+- grandtemple, religiousorder, palace
 - Item: worth 500..2,000 gold, (#ACADEMIC)/10 chance of magical
 Performance: 1d6
 - theatre, society
@@ -147,7 +147,7 @@ Performance: 1d6
 - Hero: (1..6)-th level bard
 Heresy: 2d6
 - shrine, temple, grandtemple
-- Riot: quarter tickers (gr/bu/go) @ 25% for 4..24 steps
+- Riot: quarter @ 25% for 4..24 steps
 - Hero: 50% (1..6)-th level cleric, 50% (1..6)-th level paladin
 Revelation: 4d6
 - shrine, temple, garden, grandtemple, lazaretto
@@ -166,15 +166,15 @@ Merchants: 1d6
 - Hero: (1..6)-th level merchant
 Tax: 1d10
 - mint, customshouse
-- Riot: quarter tickers (gr/bu/go) @ 50% for 1..10 steps
+- Riot: settlement @ 75% for 1..10 steps
 - Gold: +20% gold earned per turn for 5..50 steps
 Embargo: 2d4
 - shipyard, customshouse
-- Riot: settlement tickers (gr/bu/go) @ 50% for 8..32 steps
+- Riot: settlement @ 50% for 8..32 steps
 - Hero: (2..8)-th level thief
 Outlaws: 2d6
 - market, inn, mint, lighthouse, harbour, walls--, assembly--, prison--
-- Riot: quarter tickers (gr/bu/go) @ 75% for 2..12 steps
+- Riot: quarter @ 75% for 2..12 steps
 - Hero: 50% (1..6)-th level thief, 50% (1..6)-th level assassin
 Architect: 1d8
 - guildhall, university
@@ -182,7 +182,7 @@ Architect: 1d8
 Plague: 2d6
 - harbour, warehouse, customshouse, lazaretto--
 - Kill: 10..60% of quarter; if >=50%, check another quarter
-- Riot: settlement tickers (gr/bu/go) @ 0% for 6..36 steps
+- Riot: settlement @ 0% for 6..36 steps
 Skirmish: 2d6
 - shipyard, walls, barracks, armoury, fortress, prison--
 - Kill: 2..12% of quarter
@@ -195,7 +195,7 @@ Coup: 2d4
 Trial: 1d6
 - assembly, prison
 - Kill: 0..4 heroes
-- Riot: quarter tickers (gr/bu/go) @ 50% for 2..12 steps
+- Riot: quarter @ 50% for 2..12 steps
 Diplomat: 5d8
 - palace
 - Grow: 5..40% increase for settlement

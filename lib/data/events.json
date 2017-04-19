@@ -313,8 +313,8 @@
       {
         "Riot": {
           "steps": "1d10",
-          "prod": 0.5,
-          "area": "Quarter"
+          "prod": 0.75,
+          "area": "Sett"
         }
       },
       {
