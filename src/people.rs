@@ -79,7 +79,7 @@ pub enum Class {
     Illusionist,
     /// Thieves steal gold and make keen adventurers.
     Thief,
-    /// Monks make good workers and can travel for longer.
+    /// Monks make good workers and can travel for longer, but cannot govern.
     Monk,
     /// Bards help produce magical items and make good workers.
     Bard,
