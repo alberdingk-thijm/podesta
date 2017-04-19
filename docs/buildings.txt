@@ -61,7 +61,7 @@ Mint:
 A valuable gold-generating building which follows the construction of a market
 and a forge.
 - Outlaws: mints can embolden greedy bandits and highwaymen
-- Tax: mints can establish new taxes on the settlement
+- Tax: mints can levy new taxes on the settlement
 
 Workshop:
 An industrial building like the forge which also helps reduce accidents.
@@ -113,70 +113,96 @@ and a workshop are built.
 - Skirmish: shipyards can supply ships for naval skirmishes
 
 CustomsHouse:
-- Merchants:
-- Tax:
-- Embargo:
-- Investment:
-- Plague:
+Follow-up to the market and the warehouse, the customs house provides
+extensive gold and people generation along with a risk of plague.
+- Merchants: customs houses can encourage the appearance of merchants in town
+- Tax: customs houses can levy new taxes on the settlement
+- Embargo: customs houses can lead to the settlement being embargoed
+- Investment: customs houses can receive welcome investments
+- Plague: customs houses can expose the settlement to plague
 
 Lazaretto:
-- Plague:
-- Revelation:
+A specialized building for reducing plague in the settlement after it has a
+religious order.
+- Plague: lazarettos can expose the settlement to plague
+- Revelation: lazarettos can produce revelations to pious visitors
 
 Library:
-- RareBook:
-- Breakthrough:
+A basic academic building for generating books and improving the quarter.
+- RareBook: libraries can produce rare books
+- Breakthrough: libraries can achieve technological breakthroughs in the
+  quarter
 
 School:
-- RareBook:
-- Lecture:
+A follow-up to the library and temple, which can also generate mages and
+illusionists.
+- RareBook: schools can produce rare books
+- Lecture: schools can host lectures by distinguished scholars
 
 University:
-- RareBook:
-- Lecture:
-- Breakthrough:
-- Strike:
-- Architect:
+An expensive academic building following the school which can generate more
+items and improve the settlement further.
+- RareBook: universities can produce rare books
+- Lecture: universities can host lectures by distinguished scholars
+- Breakthrough: universities can achieve technological breakthroughs in the
+  quarter
+- Strike: universities can organize student strikes in the quarter
+- Architect: universities can produce specialists in architecture
 
 Observatory:
-- RareBook:
-- CelestialEvent:
+A specialized academic building available once a university is built for
+generating powerful mages and technological breakthroughs.
+- Breakthrough: observatories can achieve technological breakthroughs in the
+  quarter
+- CelestialEvent: observatories can observe incredible celestial phenomena
 
 Society:
-- RareBook:
-- Lecture:
-- Performance:
-- Heresy:
-- Artifact:
+Once a university is built, a society can be constructed to generate magical,
+artistic and religious specialists and valuables.
+- RareBook: societies can produce rare books
+- Lecture: societies can host lectures by distinguished scholars
+- Performance: societies can host artistic performances
+- Heresy: societies can lead to heretical uprisings in the quarter
+- Artifact: societies can host magical relics of inestimable value
 
 Walls:
 A basic administrative building to keep outlaws out of the settlement and
 generate fighters.
-- Skirmish
-- Outlaws
+- Skirmish: walls can supply soldiers for military skirmishes
+- Outlaws: walls can dissuade greedy bandits and highwaymen
 
 Barracks:
-- Skirmish
+Follow-up to walls, barracks boost fighter generation.
+- Skirmish: barracks can supply soldiers for military skirmishes
 
 Armoury:
-- Skirmish
-- FineCraft
+Follow-up to barracks, the armoury boosts fighter generation further while
+also generating weapons and armour.
+- Skirmish: armouries can supply soldiers for military skirmishes
+- FineCraft: armouries can store fine examples of craftsmanship
 
 Fortress:
-- Skirmish
-- FineCraft
-- Coup
+An expensive administrative building, the fortress provides troops and
+weapons, while also exposing the settlement to the risk of a military coup.
+- Skirmish: fortresses can supply soldiers for military skirmishes
+- FineCraft: fortresses can store fine examples of craftsmanship
+- Coup: fortresses can lead to military coups to control the settlement
 
 Assembly:
-- Trial
-- Outlaws
+A basic administrative building that defends against outlaws.
+- Trial: assemblies can try criminals and preserve justice in the quarter
+- Outlaws: assemblies can dissuade greedy bandits and highwaymen
 
 Prison:
-- Trial
-- Skirmish
-- Outlaws
+Follow-up to the assembly and barracks, prisons reduce violence and crime in
+the settlement.
+- Trial: prisons can try criminals and preserve justice in the quarter
+- Skirmish: prisons can allay the need for military skirmishes
+- Outlaws: prisons can dissuade greedy bandits and highwaymen
 
 Palace:
-- Investment
-- Diplomat
-- Masterwork
+A grandiose follow-up to walls and an assembly, palaces produce a variety of
+bonuses to the settlement.
+- Investment: palaces can receive welcome investments
+- Diplomat: palaces can host foreign diplomats and arrange trade agreements
+- Masterwork: palaces can host the work of patronized artists

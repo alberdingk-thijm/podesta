@@ -115,14 +115,14 @@ Accident: 1d20
 - Kill: 1..20% of quarter
 - Damage: building takes 5..100 damage
 Breakthrough: 5d4
-- base, forge, guildhall, library, university
+- base, forge, guildhall, library, university, observatory
 - Build: 10..40% increase for quarter
 - Grow: 5..20% increase for quarter
 Investment: 1d8
 - base, theatre, printinghouse, shipyard, customshouse, palace
 - Gold: 50..400 gold earned this turn
 RareBook: 1d20
-- theatre, religiousorder, printinghouse, library, school, university, observatory, society
+- theatre, religiousorder, printinghouse, library, school, university, society
 - Item: worth 20..400 gold, (#ACADEMIC)/20 chance of magical
 Lecture: 2d6
 - school, university, society
