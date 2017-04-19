@@ -2,12 +2,13 @@ use std::default;
 use quarters;
 //use people;
 use sett;
+use std::rc::Rc;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Building {
     pub name: String,
     pub id: i32,
-    pub loc: Box<quarters::Quarter>,
+    pub loc: Rc<quarters::Quarter>,
     pub btype: quarters::QType,
     pub events: Vec<EventChance>,
     pub bspeed: f64,
@@ -48,7 +49,6 @@ impl default::Default for BldgCond {
     fn default() -> BldgCond { BldgCond::InProgress }
 }
 
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct EventChance {
     name: String,
@@ -56,8 +56,7 @@ pub struct EventChance {
 }
 
 impl Building {
-
-    pub fn new(plans: BuildingPlan, loc: Box<quarters::Quarter>) -> Building {
+    pub fn new(plans: BuildingPlan, loc: Rc<quarters::Quarter>) -> Building {
         Building {
             name: plans.name,
             id: plans.id,
@@ -67,6 +66,15 @@ impl Building {
             bspeed: plans.build,
             condition: BldgCond::InProgress,
         }
+    }
+
+    /// Execute a timestep for the building, aging it (or progressing in its
+    /// construction).
+    pub fn step(&mut self) {
+        // add bspeed if still in progress
+        // set bspeed to 1 once built
+        // if condition reaches 0, add events to tracker
+        // if condition reaches 100, remove events from tracker
     }
 }
 
