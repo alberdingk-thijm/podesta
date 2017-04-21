@@ -3,6 +3,7 @@ use people;
 //use effects;
 use sett;
 use std::fmt;
+use std::error;
 
 #[allow(dead_code)]
 #[derive(Debug, Serialize, Deserialize)]
@@ -88,23 +89,34 @@ pub enum BuildError {
     /// Port quarter can't be constructed inland
     InlandPort,
 }
-
-/*
-impl error::Error for BuildError {
-    fn description(&self) -> &str {
+impl fmt::Display for BuildError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            BuildError::NotEnoughPop => "Population not high enough to build",
-            BuildError::NotEnoughGold => "Gold not high enough to build",
-            BuildError::AlreadyExists => "Building already exists!",
-        }
-    }
-
-    fn cause(&self) -> Option<&error::Error> {
-        match *self {
+            BuildError::NotEnoughPop =>
+                write!(f, "Population not high enought to build"),
+            BuildError::NotEnoughGold =>
+                write!(f, "Gold not high enough to build"),
+            BuildError::AlreadyExists =>
+                write!(f, "A structure by that name already exists"),
+            BuildError::InlandPort =>
+                write!(f, "Cannot add a port quarter to an inland sett"),
         }
     }
 }
-*/
+
+impl error::Error for BuildError {
+    fn description(&self) -> &str {
+        match *self {
+            BuildError::NotEnoughPop => "not enough population",
+            BuildError::NotEnoughGold => "not enough gold",
+            BuildError::AlreadyExists => "reused unique name",
+            BuildError::InlandPort => "inland port",
+        }
+    }
+
+    fn cause(&self) -> Option<&error::Error> { None }
+}
+
 
 impl Quarter {
     /// Create a new Quarter with a given name, population, type and racial

@@ -89,13 +89,14 @@ impl Manager {
                 &format!("Is {} coastal? (y/n): ", name),
                 &["y", "yes"], &["n", "no"], nprompts);
             // Quarter type
-            choose_info!("the focus of {}'s main quarter", self.automate, name);
+            choose_info!("the focus of {}'s main quarter...",
+                         self.automate, name);
             let qchoice = prompts::choose_or_rand(
                 &quarters::QType::get_qtype_names(coastchoice),
                 nprompts);
             let qtype = quarters::QType::get_qtypes(coastchoice)[qchoice];
             // Race
-            choose_info!("the majority race of {}'s main quarter",
+            choose_info!("the majority race of {}'s main quarter...",
                          self.automate, name);
             let racenames = people::Race::iter_variant_names();
             let racechoice = prompts::choose_or_rand(
@@ -119,8 +120,33 @@ impl Manager {
     #[allow(unused_variables)]
     pub fn build_quarter(&mut self, name_input: Option<String>) {
         match self.sett {
-            Some(ref s) => {
-                unimplemented!()
+            Some(ref mut s) => {
+                let nprompts = if self.automate { 0 } else { 2 };
+                // Name (prompt for one if name_input is None)
+                let name = match name_input {
+                    Some(n) => n,
+                    None => prompts::name_loop(1),
+                };
+                // Quarter type
+                choose_info!("the focus of {}'s main quarter...",
+                             self.automate, name);
+                let qchoice = prompts::choose_or_rand(
+                    &quarters::QType::get_qtype_names(s.coastal),
+                    nprompts);
+                let qtype = quarters::QType::get_qtypes(s.coastal)[qchoice];
+                // Race
+                choose_info!("the majority race of {}'s main quarter...",
+                             self.automate, name);
+                let racenames = people::Race::iter_variant_names();
+                let racechoice = prompts::choose_or_rand(
+                    &(racenames.collect::<Vec<_>>()), nprompts);
+                let race = people::Race::iter_variants()
+                    .nth(racechoice).unwrap();
+                s.add_quarter(name.clone(), qtype, race)
+                    .unwrap_or_else(|e| {
+                    println!("Failed to construct {} quarter: {}",
+                             name, e);
+                    })
             },
             None => println!("No sett found (first run 'new' or 'load')!"),
         }

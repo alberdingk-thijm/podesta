@@ -69,7 +69,7 @@ impl Sett {
                        n: String,
                        qt: quarters::QType,
                        r: people::Race,
-    ) -> Result<String, quarters::BuildError>
+    ) -> Result<(), quarters::BuildError>
     {
         if qt == quarters::QType::Port && !self.coastal {
             return Err(quarters::BuildError::InlandPort);
@@ -98,7 +98,7 @@ impl Sett {
         // receive gold bonus
         self.gold += 100.0;
         self.nextqrtr *= 2;
-        Ok("New quarter added!".to_string())
+        Ok(())
     }
 
     #[allow(unused_variables)]

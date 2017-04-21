@@ -26,6 +26,7 @@ use std::env;
 use std::path;
 use std::rc::Rc;
 
+/// A structure for storing game data extracted from files
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DataFiles {
     pub regions: Vec<Rc<Region>>,
@@ -77,6 +78,7 @@ where
 
 /// Return the PathBuf to the directory where the data is stored.
 /// This is $CARGO_MANIFEST_DIR/lib/data/.
+/// Will panic if $CARGO_MANIFEST_DIR is not set.
 fn get_data_dir() -> path::PathBuf {
     let head = env::var_os("CARGO_MANIFEST_DIR")
         .expect("Must run using Cargo!");
@@ -92,15 +94,16 @@ pub enum GameDataError {
     Prompt(PromptError),
 }
 
-// TODO: remove placeholder and create manager
-//type Manager = ();
 /// Save the manager to a given .rbs file name.
 ///
 /// # Example
 ///
 /// ```
 /// use podesta::parser;
-/// parser::save_rbs(&(), "foo.rbs").unwrap()
+/// # use podesta::manager::Manager;
+/// # let man = Manager::new("regions.json",
+///     "buildings.json", "events.json", false);
+/// parser::save_rbs(&man, "foo.rbs").unwrap()
 /// ```
 pub fn save_rbs(man: &manager::Manager, fname: &str) -> Result<(), GameDataError> {
     let fullname = format!("{}{}", fname,
@@ -110,10 +113,20 @@ pub fn save_rbs(man: &manager::Manager, fname: &str) -> Result<(), GameDataError
     // serialize the manager using bincode
     bincode::serialize_into(&mut writer, man, bincode::Infinite)
         .map_err(|e| GameDataError::Bincode(e))
-    //writer.write(writer).map_err(|e| GameDataError::Io(e))
 }
 
 /// Load a manager from a given .rbs file.
+///
+/// # Example
+///
+/// ```
+/// use podesta::parser;
+/// # use podesta::manager::Manager;
+/// # let man = Manager::new("regions.json",
+///     "buildings.json", "events.json", false);
+/// # parser::save_rbs(&man, "foo.rbs").unwrap()
+/// let man = parser::load_rbs("foo.rbs").unwrap();
+/// ```
 pub fn load_rbs(fname: &str) -> Result<manager::Manager, GameDataError> {
     let fullname = format!("{}{}", fname,
                            if !fname.ends_with(".rbs") { ".rbs" } else { "" });

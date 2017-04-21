@@ -152,7 +152,7 @@ pub fn parse_input(input: &str) -> ParseResult {
             },
             "commands" => ParseResult::Commands,
             "new" => ParseResult::New(cmd.next(), cmd.next()),
-            "step" | "n" | "next" => ParseResult::Step(cmd.next().map(|s| s.parse::<i64>().unwrap_or(1)).unwrap_or(1)),
+            "step" | "n" | "next" => ParseResult::Step(cmd.next().and_then(|s| s.parse::<i64>().ok()).unwrap_or(1)),
             "p" | "print" => ParseResult::Print(cmd.next()),
             "a" | "auto" => ParseResult::ToggleAuto,
             "q" | "quit" => ParseResult::Quit,
