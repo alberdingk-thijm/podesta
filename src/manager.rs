@@ -158,6 +158,21 @@ impl Manager {
         unimplemented!()
     }
 
+    /// Execute n settlement steps and perform all events sequentially.
+    /// Write any relevant occurrences to the history.
+    pub fn step(&mut self, n: i64) {
+        match self.sett {
+            Some(ref mut s) => {
+                for _ in 0..n {
+                    self.hist.add_entry(format!("Step {}", s.age),
+                                        format!("{}", s));
+                    s.step();
+                }
+            },
+            None => println!("No sett found (first run 'new' or 'load')!"),
+        }
+    }
+
     /// Pop an event and perform its effects on the sett.
     pub fn activate_event(&mut self) {
         unimplemented!()

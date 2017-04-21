@@ -133,8 +133,9 @@ impl Quarter {
     }
 
     /// Execute timestep
-    pub fn step(&self) {
-        unimplemented!()
+    pub fn step(&mut self, growth: i32) {
+        self.age += 1;
+        self.pop += growth;
     }
 
     /*

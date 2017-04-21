@@ -13,22 +13,17 @@ use std::io::{self, Write};
 fn main() {
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
+    // Initialize the manager
     let mut man = Manager::new("regions.json",
                                "buildings.json",
                                "events.json",
                                true);
-    // Allow the program to start without a settlement
-    let mut sett : Option<podesta::sett::Sett> = None;
-
     let mut input = String::new();
     loop {
         use podesta::interpreter::ParseResult as ParseResult;
-        // Generate the settlement
-        // Ask for user input
         print!("> ");
         io::stdout().flush()
             .expect("Failed to flush stdout!");
-
         input.clear();
         io::stdin().read_line(&mut input)
             .expect("Error reading input!");
@@ -44,13 +39,7 @@ fn main() {
                     });
                 output.wait().expect("Failed to wait on process");
             },
-            ParseResult::Step(n) =>
-                match sett {
-                    // Make sure a sett exists
-                    Some(ref mut s) => for _ in 1..n { s.step() },
-                    None => println!("No settlement found \
-                                     (first run 'new' or 'load')!"),
-            },
+            ParseResult::Step(n) => man.step(n),
             ParseResult::New(target, name) => {
                 // TODO: rewrite new_sett to new and take a target and name
                 match target {
