@@ -72,7 +72,7 @@ where
     let f = File::open(p)
         .expect("Unable to open file");
     let reader = BufReader::new(f);
-    let e: Vec<Rc<T>> = try!(serde_json::from_reader(reader));
+    let e: Vec<Rc<T>> = serde_json::from_reader(reader)?;
     Ok(e)
 }
 
@@ -124,11 +124,11 @@ impl From<PromptError> for GameDataError {
 pub fn save_rbs(man: &manager::Manager, fname: &str) -> Result<(), GameDataError> {
     let fullname = format!("{}{}", fname,
                            if !fname.ends_with(".rbs") { ".rbs" } else { "" });
-    let f = File::create(fullname).map_err(|e| GameDataError::Io(e));
+    let f = File::create(fullname)?;
     let mut writer = BufWriter::new(f);
     // serialize the manager using bincode
     bincode::serialize_into(&mut writer, man, bincode::Infinite)
-        .map_err(|e| GameDataError::Bincode(e))
+        .map_err(GameDataError::Bincode)
 }
 
 /// Load a manager from a given .rbs file.
@@ -146,10 +146,10 @@ pub fn save_rbs(man: &manager::Manager, fname: &str) -> Result<(), GameDataError
 pub fn load_rbs(fname: &str) -> Result<manager::Manager, GameDataError> {
     let fullname = format!("{}{}", fname,
                            if !fname.ends_with(".rbs") { ".rbs" } else { "" });
-    let f = try!(File::open(fullname).map_err(|e| GameDataError::Io(e)));
+    let f = File::open(fullname)?;
     let mut reader = BufReader::new(f);
     // deserialize the manager using bincode
     bincode::deserialize_from(&mut reader, bincode::Infinite)
-        .map_err(|e| GameDataError::Bincode(e))
+        .map_err(GameDataError::Bincode)
 }
 
