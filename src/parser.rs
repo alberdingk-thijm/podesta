@@ -94,6 +94,22 @@ pub enum GameDataError {
     Prompt(PromptError),
 }
 
+impl From<io::Error> for GameDataError {
+    fn from(err: io::Error) -> GameDataError { GameDataError::Io(err) }
+}
+
+impl From<serde_json::Error> for GameDataError {
+    fn from(err: serde_json::Error) -> GameDataError { GameDataError::Serde(err) }
+}
+
+impl From<bincode::Error> for GameDataError {
+    fn from(err: bincode::Error) -> GameDataError { GameDataError::Bincode(err) }
+}
+
+impl From<PromptError> for GameDataError {
+    fn from(err: PromptError) -> GameDataError { GameDataError::Prompt(err) }
+}
+
 /// Save the manager to a given .rbs file name.
 ///
 /// # Example
@@ -108,7 +124,7 @@ pub enum GameDataError {
 pub fn save_rbs(man: &manager::Manager, fname: &str) -> Result<(), GameDataError> {
     let fullname = format!("{}{}", fname,
                            if !fname.ends_with(".rbs") { ".rbs" } else { "" });
-    let f = try!(File::create(fullname).map_err(|e| GameDataError::Io(e)));
+    let f = File::create(fullname).map_err(|e| GameDataError::Io(e));
     let mut writer = BufWriter::new(f);
     // serialize the manager using bincode
     bincode::serialize_into(&mut writer, man, bincode::Infinite)
