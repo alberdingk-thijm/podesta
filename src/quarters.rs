@@ -20,6 +20,8 @@ pub struct Quarter {
     pub race: people::Race,
     // The buildings constructed in the quarter.
     //pub bldgs: Vec<buildings::Building>,
+    /// The growth rate of the quarter's population.
+    pub growth: f64,
 }
 
 impl sett::HasName for Quarter {
@@ -129,27 +131,19 @@ impl Quarter {
             age: 0,
             race: r,
             //bldgs: vec!(),
+            growth: 0.01,
         }
     }
 
     /// Execute timestep
-    pub fn step(&mut self) {
+    pub fn step(&mut self, growth: f64) {
         self.age += 1;
         // Calculate quarter growth
-        // self.pop *= (X^2 + 2X * e^(-rt) + 2X * e^(-r(t+1)) + e^(-r(2t+1)))
+        // P(t) = 5000000 * growth * e^(rt) / (99950 + 50 * e^rt)
         // t = self.age
-        // X = approximation of inverse carrying capacity
-        // since initial pop = 50 * growth and carrying cap = 100000 * growth
-        // X ~= 1/2000
-        let x = 2000.0f64.recip();
         let inv_rate = |t: i32| -> f64 { (0.01 * t as f64).exp() };
-        /*self.pop *= (x.powi(2)
-                     + 2.0 * x * inv_rate(self.age)
-                     + 2.0 * x * inv_rate(self.age + 1)
-                     + inv_rate(2 * self.age + 1)) as i32;*/
-        //FIXME!
-        self.pop *= ((x * 2.0).recip() * (inv_rate(self.age) + inv_rate(self.age+1))
-                     + inv_rate(2 * self.age + 1)) as i32;
+        self.pop = (5000000.0 * growth * inv_rate(self.age)
+            / (99950.0 + 50.0 * inv_rate(self.age))) as i32;
     }
 
     /*

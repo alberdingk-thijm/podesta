@@ -49,7 +49,7 @@ impl Sett {
             bldgs: vec!(),
             // TODO: get a starting governor
             heroes: vec!(),
-            nextqrtr: pop * 2,
+            nextqrtr: 50,
             coastal: coast,
         }
     }
@@ -60,7 +60,7 @@ impl Sett {
         self.age += 1;
         // call each quarter's step
         for q in &self.qrtrs {
-            q.borrow_mut().step();
+            q.borrow_mut().step(self.reg.growth as f64);
             newpop += q.borrow().pop;
         }
         self.pop = newpop;
@@ -128,7 +128,7 @@ impl Sett {
     /// state of its quarters.
     pub fn collect_gold(&mut self) {
         //TODO: placeholder incrementer
-        self.gold += 1f64;
+        self.gold += 0.01f64 * self.pop as f64;
     }
 }
 
