@@ -147,6 +147,7 @@ impl Quarter {
                      + 2.0 * x * inv_rate(self.age)
                      + 2.0 * x * inv_rate(self.age + 1)
                      + inv_rate(2 * self.age + 1)) as i32;*/
+        //FIXME!
         self.pop *= ((x * 2.0).recip() * (inv_rate(self.age) + inv_rate(self.age+1))
                      + inv_rate(2 * self.age + 1)) as i32;
     }
