@@ -75,3 +75,26 @@ Birth/death rate:
 track lifetimes of notables, kill after X years (modify with events e.g. fire,
 accident, plague)
 
+Growth:
+Population is calculated using the following function:
+P(t) = K * p * e^(rt) / (K + p * (e^rt - 1))
+P(t) = population at time t
+K = carrying capacity of the settlement (max pop)
+p = initial population at time 0
+r = growth rate
+
+This can be rewritten for calculating growth each step:
+P(t+1) = P(t) * (p + (K - p) * e^(-rt)) / (p + (K - p) * e^(-rt-r))
+The base growth rate r is set by the region and slows for each building
+in the quarter.
+K is controlled by the region.
+p is controlled by the region.
+
+Since K and p are constant, we can simplify further to:
+P(0) = p
+P(t+1) = P(t) * (X^2 + 2X * e^(-rt) + 2X * e^(-r(t+1)) + e^(-r(2t+1)))
+X = p / (K - p)
+
+Furthermore, p = 50 * g and K = 100000 * g, where g is the region's growth.
+This allows us to simplify further:
+X = 50 * g / ( 100000 * g - 50 * g ) = 5 * g / 9995 * g = 1 / 1999 ~= 1/2000

@@ -133,9 +133,22 @@ impl Quarter {
     }
 
     /// Execute timestep
-    pub fn step(&mut self, growth: i32) {
+    pub fn step(&mut self) {
         self.age += 1;
-        self.pop += growth;
+        // Calculate quarter growth
+        // self.pop *= (X^2 + 2X * e^(-rt) + 2X * e^(-r(t+1)) + e^(-r(2t+1)))
+        // t = self.age
+        // X = approximation of inverse carrying capacity
+        // since initial pop = 50 * growth and carrying cap = 100000 * growth
+        // X ~= 1/2000
+        let x = 2000.0f64.recip();
+        let inv_rate = |t: i32| -> f64 { (0.01 * t as f64).exp() };
+        /*self.pop *= (x.powi(2)
+                     + 2.0 * x * inv_rate(self.age)
+                     + 2.0 * x * inv_rate(self.age + 1)
+                     + inv_rate(2 * self.age + 1)) as i32;*/
+        self.pop *= ((x * 2.0).recip() * (inv_rate(self.age) + inv_rate(self.age+1))
+                     + inv_rate(2 * self.age + 1)) as i32;
     }
 
     /*

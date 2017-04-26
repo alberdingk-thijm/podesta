@@ -60,7 +60,7 @@ impl Sett {
         self.age += 1;
         // call each quarter's step
         for q in &self.qrtrs {
-            q.borrow_mut().step(self.reg.growth);
+            q.borrow_mut().step();
             newpop += q.borrow().pop;
         }
         self.pop = newpop;
