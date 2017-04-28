@@ -12,7 +12,7 @@ use std::fmt;
 pub struct Sett {
     pub name: String,
     pub age: i32,
-    pub pop: i32,
+    pub pop: f64,  // use a float for more precise updating (display as an int)
     pub gold: f64,
     pub reg: Rc<regions::Region>,
     /// List of quarters in the settlement.
@@ -21,7 +21,7 @@ pub struct Sett {
     pub bldgs: Vec<Rc<RefCell<buildings::Building>>>,
     /// List of heroes in the settlement
     pub heroes: Vec<Rc<RefCell<people::Hero>>>,
-    /// Population needed before a new quarter is added.
+    /// Turns before a new quarter is added.
     pub nextqrtr: i32,
     /// Flag for if settlement is coastal.
     pub coastal: bool,
@@ -37,7 +37,7 @@ impl Sett {
                coast: bool,
     ) -> Sett {
         // get the starting population based on the region's growth
-        let pop : i32 = 50 * reg.growth;
+        let pop : f64 = 50.0 * reg.growth;
         Sett {
             name: n,
             age: 0,
@@ -56,7 +56,7 @@ impl Sett {
 
     /// Execute settlement timestep
     pub fn step(&mut self) {
-        let mut newpop = 0;
+        let mut newpop = 0f64;
         self.age += 1;
         // call each quarter's step
         for q in &self.qrtrs {
@@ -82,31 +82,12 @@ impl Sett {
             return Err(quarters::BuildError::InlandPort);
         }
         let ref mut qrtrs = self.qrtrs;
-        // make sure quarter is not already present
+        // make sure quarter with same unique name is not already present
         if qrtrs.iter().any(|ref x| x.borrow().name == n) {
             return Err(quarters::BuildError::AlreadyExists);
         }
-        // ensure pop is high enough
-        if self.pop < self.nextqrtr {
-            return Err(quarters::BuildError::NotEnoughPop);
-        }
-        // remove pop from existing quarters equally
-        // TODO:
-        // This method will hollow out older quarters unfairly,
-        // leading to the main quarter risking becoming negative
-        // while newer quarters lose a smaller % of their starting
-        // population (since the population that moved there initially was
-        // much larger, due to self.nextqrtr doubling).
-        // This needs to be changed to fairly and naturally split
-        // the population coming into the new quarter.
-        let nqrtrs = qrtrs.len() as i32;
-        for q in qrtrs.iter_mut() {
-            let mut qb = q.borrow_mut();
-            // add 1 because we are counting the new quarter
-            qb.pop -= self.pop / (nqrtrs + 1);
-        }
-        let newpop = self.pop / (nqrtrs + 1);
-        //TODO?: multiply number by growth bonus => newpop?
+        // TODO: add logic for when new quarter should be added
+        let newpop = 50.0 * self.reg.growth;
         qrtrs.push(Rc::new(
                 RefCell::new(quarters::Quarter::new(&n, qt, newpop, r))));
         // receive gold bonus
@@ -154,7 +135,7 @@ impl fmt::Display for Sett {
                Quarters:\n{}",
                self.name,
                if self.coastal { "coastal" } else { "inland" },
-               self.reg, self.age, self.pop, self.gold,
+               self.reg, self.age, self.pop as i64, self.gold as i64,
                self.qrtrs.iter().map(|q| {
                    format!("- {}\n", *(q.borrow()))
                }).collect::<String>())

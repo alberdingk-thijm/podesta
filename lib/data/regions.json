@@ -2,67 +2,67 @@
 {
     "name": "Tundra",
     "desc": "a cold and treeless plain",
-    "growth": 1,
+    "growth": 1.0,
     "starting_gold": 100
 },
 {
     "name": "Taiga",
     "desc": "a coniferous woodland",
-    "growth": 2,
+    "growth": 2.0,
     "starting_gold": 100
 },
 {
     "name": "Woodland",
     "desc": "an open temperate forest",
-    "growth": 3,
+    "growth": 3.0,
     "starting_gold": 100
 },
 {
     "name": "Parkland",
     "desc": "well-maintained farms and groves",
-    "growth": 6,
+    "growth": 6.0,
     "starting_gold": 100
 },
 {
     "name": "Scrub",
     "desc": "a land of thickets and shrubs",
-    "growth": 4,
+    "growth": 4.0,
     "starting_gold": 100
 },
 {
     "name": "Macchia",
     "desc": "a thick evergreen shrubland",
-    "growth": 5,
+    "growth": 5.0,
     "starting_gold": 100
 },
 {
     "name": "Tropical_Shrubland",
     "desc": "a mixture of thorny grasses and tropical plants",
-    "growth": 4,
+    "growth": 4.0,
     "starting_gold": 100
 },
 {
     "name": "Floodplain",
     "desc": "a wide alluvial plain",
-    "growth": 6,
+    "growth": 6.0,
     "starting_gold": 100
 },
 {
     "name": "Jungle",
     "desc": "a deep and wet forest",
-    "growth": 2,
+    "growth": 2.0,
     "starting_gold": 100
 },
 {
     "name": "Steppe",
     "desc": "a barren, arid plateau",
-    "growth": 2,
+    "growth": 2.0,
     "starting_gold": 100
 },
 {
     "name": "Desert",
     "desc": "sands under the hot sun",
-    "growth": 1,
+    "growth": 1.0,
     "starting_gold": 100
 }
 ]

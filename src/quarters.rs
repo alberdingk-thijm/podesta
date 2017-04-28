@@ -13,7 +13,7 @@ pub struct Quarter {
     /// The quarter's "type" (what kind of activities take place here).
     pub qtype: QType,
     /// The total population of the quarter.
-    pub pop: i32,
+    pub pop: f64,  // Stored as float for added precision, displayed as int
     /// The total age in steps of the quarter.
     pub age: i32,
     /// The majority race of the quarter.
@@ -37,7 +37,7 @@ impl fmt::Display for Quarter {
                self.name,
                self.qtype,
                self.age,
-               self.pop,
+               self.pop as i64,
                self.race)
     }
 }
@@ -123,7 +123,7 @@ impl error::Error for BuildError {
 impl Quarter {
     /// Create a new Quarter with a given name, population, type and racial
     /// majority. Age is set to zero and no buildings exist initially.
-    pub fn new(n: &str, qt: QType, p: i32, r: people::Race) -> Quarter {
+    pub fn new(n: &str, qt: QType, p: f64, r: people::Race) -> Quarter {
         Quarter {
             name: n.to_string(),
             qtype: qt,
@@ -142,8 +142,8 @@ impl Quarter {
         // P(t) = 5000000 * growth * e^(rt) / (99950 + 50 * e^rt)
         // t = self.age
         let inv_rate = |t: i32| -> f64 { (0.01 * t as f64).exp() };
-        self.pop = (5000000.0 * growth * inv_rate(self.age)
-            / (99950.0 + 50.0 * inv_rate(self.age))) as i32;
+        self.pop = 5000000.0 * growth * inv_rate(self.age)
+            / (99950.0 + 50.0 * inv_rate(self.age));
     }
 
     /*

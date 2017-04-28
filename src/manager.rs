@@ -128,14 +128,14 @@ impl Manager {
                     None => prompts::name_loop(1),
                 };
                 // Quarter type
-                choose_info!("the focus of {}'s main quarter...",
+                choose_info!("the focus of the {} quarter...",
                              self.automate, name);
                 let qchoice = prompts::choose_or_rand(
                     &quarters::QType::get_qtype_names(s.coastal),
                     nprompts);
                 let qtype = quarters::QType::get_qtypes(s.coastal)[qchoice];
                 // Race
-                choose_info!("the majority race of {}'s main quarter...",
+                choose_info!("the majority race of the {} quarter...",
                              self.automate, name);
                 let racenames = people::Race::iter_variant_names();
                 let racechoice = prompts::choose_or_rand(

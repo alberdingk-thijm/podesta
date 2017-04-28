@@ -4,7 +4,7 @@ use std::fmt;
 pub struct Region {
     pub name: String,
     pub desc: String,
-    pub growth: i32,
+    pub growth: f64,
     pub starting_gold: f64,
 }
 
