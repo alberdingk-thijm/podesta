@@ -30,6 +30,7 @@ fn main() {
         let input = input.trim();
         // Separate separate terms into chunks
         // TODO: clean out arrow key presses and other key codes
+        // codes: ESC[A, ESC[B, ESC[C, ESC[D
         let terms = input.split(';').map(|s| s.trim());
         'terms: for term in terms {
             println!("{:?}", term);

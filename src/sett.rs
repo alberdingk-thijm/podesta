@@ -110,6 +110,7 @@ impl Sett {
     pub fn collect_gold(&mut self) {
         //TODO: placeholder incrementer
         self.gold += 0.01f64 * self.pop as f64;
+        self.gold += 0.04f64 * self.heroes.len() as f64;
     }
 }
 
