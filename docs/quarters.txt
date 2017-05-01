@@ -20,10 +20,20 @@ the quarter will also affect the settlement's starting population, gold and
 first governor's class. The starting gold will be enough to start construction
 on a basic building in the district (although it could also be spent to INVITE
 TALENT to the settlement).
-After the first quarter, new quarters can be built each time the settlement's
-population doubles. Hence, settlements will acquire their first few quarters
-quickly and then slow over time. There is no limit on the number of quarters
-of a particular type.
+New quarters are automatically built as the settlement grows, based on a
+logistic regression: a random number is generated against the regression
+probability P(Y=1|X_1,...,X_k) to check each step if a new quarter is built.
+The y-intercept alpha (or beta_0) is proportional to the total population of
+the settlement. The regression coefficients represent the desirable
+infrastructure in the settlement: as more infrastructure is constructed, the
+higher the probability of a new quarter.
+Sample coefficients are as follows:
+- beta_1 = 0.001; X_1 = # of residential buildings
+- beta_2 = 0.001; X_2 = # of industrial buildings
+- beta_3 = 0.002; X_3 = # of port buildings
+- beta_4 = 0.002; X_4 = # of academic buildings
+- beta_5 = 0.002; X_5 = # of administrative buildings
+- beta_6 = 0.01; X_6 = age of settlement
 
 New buildings:
 Settlements have a single pool of gold to spread across quarters. This is most

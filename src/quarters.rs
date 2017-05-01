@@ -135,15 +135,25 @@ impl Quarter {
         }
     }
 
-    /// Execute timestep
-    pub fn step(&mut self, growth: f64) {
+    /// Execute timestep.
+    ///
+    /// Growth is calculated using a [logistic function][logif] P(t), expressed
+    /// as follows:
+    /// `P(t) = cap * start * growth * e^(rt) / cap + start * (e^(rt) - 1)`
+    /// where
+    /// `P(t)`: quarter population at time t
+    /// `t`: time, i.e. the age of the quarter
+    /// `cap`: the base carrying capacity of the quarter = 100000
+    /// `start`: the base starting population of the quarter = 50
+    /// `reg_growth`: the growth modifier of the sett's region
+    /// `r`: the growth rate of the quarter
+    /// [logif]: https://en.wikipedia.org/wiki/Logistic_function
+    pub fn step(&mut self, reg_growth: f64) {
         self.age += 1;
-        // Calculate quarter growth
-        // P(t) = 5000000 * growth * e^(rt) / (99950 + 50 * e^rt)
-        // t = self.age
-        let inv_rate = |t: i32| -> f64 { (0.01 * t as f64).exp() };
-        self.pop = 5000000.0 * growth * inv_rate(self.age)
-            / (99950.0 + 50.0 * inv_rate(self.age));
+        let grow_rate = |r: f64, t: i32| -> f64 { (r * t as f64).exp() };
+        // simplify the constants
+        let e_rt = grow_rate(self.growth, self.age);
+        self.pop = 5000000.0 * reg_growth * e_rt / (99950.0 + 50.0 * e_rt);
     }
 
     /*
