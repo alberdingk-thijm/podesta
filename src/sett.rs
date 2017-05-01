@@ -98,10 +98,18 @@ impl Sett {
 
     #[allow(unused_variables)]
     /// Add a building
-    pub fn add_building(&self, name: &str, q: Rc<RefCell<quarters::Quarter>>)
-    -> Result<String, quarters::BuildError>{
-        // Get the plans for the building
+    pub fn add_building(&self,
+                        plan: buildings::BuildingPlan,
+                        q: Rc<RefCell<quarters::Quarter>>)
+    -> Result<(), quarters::BuildError>{
         // Check that self has enough gold to pay the cost
+        if self.gold < plan.cost {
+            return Err(quarters::BuildError::NotEnoughGold);
+        }
+        // Check that quarter does not already contain the planned building
+        if q.borrow().iter().any(|ref x| x.name == plan.name) {
+            return Err(quarters::BuildError::AlreadyExists);
+        }
         unimplemented!()
     }
 
