@@ -107,7 +107,9 @@ impl Sett {
             return Err(quarters::BuildError::NotEnoughGold);
         }
         // Check that quarter does not already contain the planned building
-        if q.borrow().iter().any(|ref x| x.name == plan.name) {
+        let ref mut qrtrbs = self.bldgs.iter()
+            .filter(|ref x| x.borrow().loc.name == q.borrow().name);
+        if qrtrbs.any(|ref x| x.borrow().name == plan.name) {
             return Err(quarters::BuildError::AlreadyExists);
         }
         unimplemented!()

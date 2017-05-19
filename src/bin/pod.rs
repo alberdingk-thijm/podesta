@@ -51,7 +51,8 @@ fn main() {
                         Some(t) => match t.as_str() {
                             "sett" => man.build_sett(name, false),
                             "quarter" => man.build_quarter(name),
-                            "building" => man.build_building(name),
+                            // FIXME: change None to an actual input quarter
+                            "building" => man.build_building(name, None),
                             _ => println!("Invalid target for 'new' \
                                           (specify 'sett', 'quarter' \
                                            or 'building')!"),
@@ -70,7 +71,7 @@ fn main() {
                         println!("Failed to save the game file! {:?}", e);
                 }),
                 ParseResult::Load(file) => match Manager::load(file) {
-                    Ok(m) => man = m,
+                    Ok(m) => { man = m; println!("Loaded {}!", file) },
                     Err(e) => println!("Failed to load the game file! {:?}",
                                        e),
                 },

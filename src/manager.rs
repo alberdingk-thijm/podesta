@@ -154,8 +154,31 @@ impl Manager {
 
     /// Initialize a new building and store it in the manager's sett's quarter.
     #[allow(unused_variables)]
-    pub fn build_building(&mut self, name_input: Option<String>) {
-        unimplemented!()
+    pub fn build_building(&mut self, name_input: Option<String>, quarter_input: Option<String>) {
+        match self.sett {
+            Some(ref mut s) => {
+                // Determine building plan
+                let plannames = self.datafiles.plans.iter().map(|ref p| p.name);
+                let planidx = try!(match name_input {
+                    Some(s) => plannames.position(s)
+                        .ok_or(format!("No plan exists for {}", s)),
+                    None => { prompts::choose(&plannames.collect::<Vec<_>>()) },
+                }.map_err(|e| println!("Error choosing building: {}", e)));
+                let plan = self.datafiles.plans[planidx].clone();
+                // Confirm building
+                // FIXME: get the correct quarter
+                let quarter = s.qrtrs.iter();
+                // Add
+                /*
+                s.add_building(plan, quarter)
+                    .unwrap_or_else(|e| {
+                        println!("Failed to construct {} building: {}",
+                                 plan.name, e);
+                    })
+                */
+            },
+            None => println!("No sett found (first run 'new' or 'load')!"),
+        }
     }
 
     /// Execute n settlement steps and perform all events sequentially.
