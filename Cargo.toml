@@ -5,6 +5,7 @@ authors = ["Tim Alberdingk Thijm <tim.thijm@gmail.com>"]
 
 [dependencies]
 libc = "0.2"
+time = "0.1"
 #rustbox = "*"
 rand = "0.3.0"
 serde = "0.9"

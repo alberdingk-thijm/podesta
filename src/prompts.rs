@@ -44,8 +44,8 @@ pub fn name_loop(minchars: usize) -> String {
 }
 
 /// Prompt the user for a file name.
-pub fn name_file() -> Result<String, PromptError> {
-    print!("Please specify the name of the file to load: ");
+pub fn name_file(phrase: &str) -> Result<String, PromptError> {
+    print!("Please specify the name of the file{}", phrase);
     io::stdout().flush().expect("Failed to flush to stdout!");
     let mut input = String::new();
     match io::stdin().read_line(&mut input) {

@@ -3,6 +3,7 @@
 /// settlement's members.
 
 use parser;
+use time;
 use sett;
 use quarters;
 //use buildings;
@@ -34,6 +35,7 @@ pub struct Manager {
     queue: events::EventQueue,
     automate: bool,
     verbose: bool,
+    savefile: String,
 }
 
 impl Manager {
@@ -48,21 +50,31 @@ impl Manager {
             queue: events::EventQueue::new(32),
             automate: false,
             verbose: verb,
+            savefile: format!("pod-{}.rbs", time::now().ctime()),
         }
     }
 
     /// Load a Manager from a file with the given name; if None is given,
     /// prompt the user for one.
-    /// Return None if an error occurs.
     pub fn load(file: Option<String>) -> Result<Self, parser::GameDataError> {
         match file {
             Some(filename) => Ok(filename),
-            None => prompts::name_file(),
+            None => prompts::name_file(" to load: "),
         }.map_err(parser::GameDataError::Prompt)
             .and_then(|f| parser::load_rbs(f.as_str()))
 
     }
 
+    /// Save a Manager to its save file, optionally prompting the user for a
+    /// file name or accepting one.
+    pub fn save(&self, file: Option<String>) -> Result<(), parser::GameDataError> {
+        // Use the given file, OR prompt for a file, OR use the default
+        let savef = file.unwrap_or(
+            prompts::name_file(&format!(" to save to (default: {}): ",
+                                        self.savefile))
+                               .unwrap_or(self.savefile.clone()));
+        parser::save_rbs(self, &savef)
+    }
     /// Toggle automation of build functions.
     pub fn toggle_auto(&mut self) {
         self.automate = !self.automate;
@@ -103,6 +115,8 @@ impl Manager {
                 &(racenames.collect::<Vec<_>>()), nprompts);
             let race = people::Race::iter_variants().nth(racechoice).unwrap();
 
+            self.savefile = format!("{}.rbs", &name);
+
             self.sett = Some(
                 sett::Sett::new(name, reg, qtype, race, coastchoice)
             );
@@ -111,9 +125,9 @@ impl Manager {
         }
     }
 
-    /// Return the name of the sett, or None if no sett exists.
-    pub fn get_sett_name(&self) -> Option<String> {
-        self.sett.as_ref().map(|ref s| s.name.clone())
+    /// Return the name of the savefile.
+    pub fn get_savefile(&self) -> String {
+        self.savefile.clone()
     }
 
     /// Initialize a new quarter and store it in the manager's sett.
@@ -157,6 +171,8 @@ impl Manager {
     pub fn build_building(&mut self, name_input: Option<String>, quarter_input: Option<String>) {
         match self.sett {
             Some(ref mut s) => {
+                unimplemented!()
+                /*
                 // Determine building plan
                 let plannames = self.datafiles.plans.iter().map(|ref p| p.name);
                 let planidx = try!(match name_input {
@@ -169,7 +185,6 @@ impl Manager {
                 // FIXME: get the correct quarter
                 let quarter = s.qrtrs.iter();
                 // Add
-                /*
                 s.add_building(plan, quarter)
                     .unwrap_or_else(|e| {
                         println!("Failed to construct {} building: {}",

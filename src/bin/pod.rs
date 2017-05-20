@@ -33,7 +33,7 @@ fn main() {
         // codes: ESC[A, ESC[B, ESC[C, ESC[D
         let terms = input.split(';').map(|s| s.trim());
         'terms: for term in terms {
-            println!("{:?}", term);
+            //println!("{:?}", term);
             match podesta::interpreter::parse_input(term) {
                 ParseResult::Success => (),
                 ParseResult::DispFile(app, file) => {
@@ -64,14 +64,11 @@ fn main() {
                 },
                 ParseResult::ToggleAuto => man.toggle_auto(),
                 ParseResult::Commands => println!("{}", podesta::COMMANDS),
-                ParseResult::Save(file) => podesta::parser::save_rbs(
-                    &man, file.unwrap_or(man.get_sett_name()
-                                         .unwrap_or("pod".to_string()))
-                    .as_str()).unwrap_or_else(|e| {
-                        println!("Failed to save the game file! {:?}", e);
+                ParseResult::Save(file) => man.save(file).unwrap_or_else(|e| {
+                    println!("Failed to save the game file! {:?}", e);
                 }),
                 ParseResult::Load(file) => match Manager::load(file) {
-                    Ok(m) => { man = m; println!("Loaded {}!", file) },
+                    Ok(m) => { man = m; println!("Loaded {}!", man.get_savefile()) },
                     Err(e) => println!("Failed to load the game file! {:?}",
                                        e),
                 },

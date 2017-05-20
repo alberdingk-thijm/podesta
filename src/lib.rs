@@ -7,6 +7,7 @@ extern crate rouler;
 extern crate rand;
 #[macro_use] extern crate macro_attr;
 #[macro_use] extern crate enum_derive;
+extern crate time;
 
 pub mod parser;
 pub mod regions;
