@@ -1,5 +1,3 @@
-use rand;
-use rand::Rng;
 use buildings;
 use std::fmt;
 
@@ -88,7 +86,6 @@ pub enum Class {
 }
 
 impl Class {
-
     /// Return a number representing the youngest age of a member of this Class.
     fn get_age(&self) -> i32 {
         match *self {
@@ -96,7 +93,15 @@ impl Class {
             Class::Cleric => 0,
             Class::Druid => 0,
             Class::Fighter => 0,
-            _ => 0,
+            Class::Assassin => 0,
+            Class::Paladin => 0,
+            Class::Ranger => 0,
+            Class::Mage => 0,
+            Class::Illusionist => 0,
+            Class::Thief => 0,
+            Class::Monk => 0,
+            Class::Bard => 0,
+            Class::Merchant => 0,
         }
     }
 }
@@ -112,8 +117,11 @@ pub enum Activity {
     Adventuring(i32),
     /// Resting tracks the gradually shrinking chance of death.
     Resting(i32),
-    /// Dead reports the cause of death.
-    Dead(String),
+    /// Treasure creates a special item or gold.
+    Treasure(i32),
+    /// Dying reports the cause of death.
+    Dying(String),
+    Dead,
 }
 
 impl Activity {
@@ -131,11 +139,12 @@ impl Activity {
     pub fn autopsy(&self) -> String {
         match *self {
             Activity::Working => "overworked",
-            Activity::Governing => "suspicious circumstances",
+            Activity::Governing => "under suspicious circumstances",
             Activity::Trading(_) => "on a trade expedition",
             Activity::Adventuring(_) => "in a deadly dungeon",
-            Activity::Resting(_) => "succumbed to illness",
-            Activity::Dead(_) => "old age",
+            Activity::Resting(_) => "illness",
+            Activity::Treasure(_) => "greed",
+            _ => "old age",
         }.to_string()
     }
 }
@@ -144,7 +153,13 @@ impl fmt::Display for Hero {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}, a {}{} level {:?} {:?} - currently {:?}",
                self.name, self.level,
-               match self.level { 1 => "st", 2 => "nd", 3 => "rd", _ => "th" },
+               // get level suffix
+               match { self.level % 10 } {
+                   1 if self.level % 100 != 11 => "st",
+                   2 if self.level % 100 != 12 => "nd",
+                   3 if self.level % 100 != 13 => "rd",
+                   _ => "th"
+               },
                self.race,
                self.class,
                self.activity)
@@ -175,78 +190,103 @@ impl Hero {
     }
 
     #[allow(dead_code)]
-    pub fn execute_timestep(&mut self) {
+    /// Execute a timestep, aging the hero and changing their activity based on
+    /// a provided percentile roll r (between 1 and 100, inclusive).
+    /// ```
+    /// use podesta::people;
+    /// let h = people::Hero::new {
+    ///     "George",
+    ///     1,
+    ///     people::Race::Human,
+    ///     people::Class::Fighter,
+    /// };
+    /// assert_eq!(h.activity, people::Activity::Working);
+    /// let mut r = 50;
+    /// h.execute_timestep(r);
+    /// assert_eq!(h.activity, people::Activity::Adventuring);
+    /// ```
+    pub fn execute_timestep(&mut self, r: i32) {
         if self.age >= Hero::agemod() * self.race.max_age() {
-            self.activity = Activity::Dead("old age".to_string());
+            self.activity = Activity::Dying("old age".to_string());
             // TODO: Log the death
             // Don't need to do the rest so just return
             return;
         }
-        // The random number r decides how the Activity should change
-        let r = rand::thread_rng().gen_range(1, 101);
-        match self.activity {
+        let next = match self.activity {
             Activity::Working => {
-                self.activity = if r < 2 {
-                    Activity::Dead(self.activity.autopsy()) }
-                    else if r < (self.age / Hero::agemod() + 4) {
-                        Activity::Resting(10) }
+                if r < 2 {
+                    Activity::Dying(self.activity.autopsy())
+                } else if r < (self.age / Hero::agemod() + 4) {
                     // TODO: replace hard-coded numbers
-                    else if r < (self.age / Hero::agemod() + 29) {
-                        let away = Hero::awaymod() * self.level;
-                        match self.class {
-                            Class::Merchant => Activity::Trading(away),
-                            _ => Activity::Adventuring(away),
-                        }
-                    } else { Activity::Working };
+                    Activity::Resting(10)
+                } else if r < (self.age / Hero::agemod() + 29) {
+                    let away = Hero::awaymod() * self.level;
+                    match self.class {
+                        Class::Merchant => Activity::Trading(away),
+                        _ => Activity::Adventuring(away),
+                    }
+                } else {
+                    Activity::Working
+                }
                 // Manager:
                 // Growth and build speed increase
             },
             Activity::Governing => {
-                self.activity = if r < 3 {
-                    Activity::Dead(self.activity.autopsy()) }
-                    else if r < (self.age / Hero::agemod() + 5) {
-                        Activity::Resting(15) }
-                    else { Activity::Governing };
+                if r < 3 {
+                    Activity::Dying(self.activity.autopsy())
+                } else if r < (self.age / Hero::agemod() + 5) {
+                    Activity::Resting(15) }
+                else {
+                    Activity::Governing
+                }
                 // Manager:
                 // Growth and build speed increase
             },
             Activity::Trading(steps) => {
-                self.activity = if steps > 0 {
-                    if r < 3 { Activity::Dead(self.activity.autopsy()) }
-                    else if r < (self.age / Hero::agemod() + 5) {
-                        Activity::Resting(15) }
-                    else { Activity::Trading(steps - 1) }
-                } else { Activity::Working };
+                if steps > 0 {
+                    if r < 3 {
+                        Activity::Dying(self.activity.autopsy())
+                    } else if r < (self.age / Hero::agemod() + 5) {
+                        Activity::Resting(15)
+                    } else {
+                        Activity::Trading(steps - 1)
+                    }
+                } else {
+                    Activity::Working
+                }
                 // Manager:
                 // Growth, build and gold increase
                 // Immune to town effects
             },
             Activity::Adventuring(steps) => {
-                self.activity = if steps > 0 {
-                    if r < 6 { Activity::Dead(self.activity.autopsy()) }
-                    else if r < (self.age / Hero::agemod() + 8) {
+                if steps > 0 {
+                    if r < 6 {
+                        Activity::Dying(self.activity.autopsy())
+                    } else if r < (self.age / Hero::agemod() + 8) {
                         Activity::Resting(20)
-                    } else { Activity::Adventuring(steps - 1) }
+                    } else {
+                        Activity::Adventuring(steps - 1)
+                    }
                 } else {
                     self.level += 1;
-                    self.treasure();
-                    Activity::Working
-                };
+                    Activity::Treasure(self.level)
+                }
                 // Manager:
                 // Immune to town effects
             },
             Activity::Resting(steps) => {
-                self.activity = if steps == 0 || r > 74 {
+                if steps == 0 || r > 74 {
                     Activity::Working
                 } else if r < steps {
-                    Activity::Dead(self.activity.autopsy())
-                } else { Activity::Resting(steps - 1) };
+                    Activity::Dying(self.activity.autopsy())
+                } else {
+                    Activity::Resting(steps - 1)
+                }
             },
-            Activity::Dead(_) => {
-                // Remain dead
-                // Will get cleaned up by manager on next pass
-            },
-        }
+            Activity::Treasure(_) => Activity::Working,
+            _ => Activity::Dead,
+        };
+        self.activity = next;
     }
 
     #[allow(dead_code)]
@@ -254,7 +294,7 @@ impl Hero {
     ///
     /// # Examples
     ///
-    /// ```ignore
+    /// ```
     /// use podesta::people;
     /// let h = people::Hero::new(
     ///     "George",
@@ -266,15 +306,7 @@ impl Hero {
     /// h.make_governor();
     /// assert_eq!(h.activity, people::Activity::Governing);
     /// ```
-    fn make_governor(&self) {
-        unimplemented!()
+    fn make_governor(&mut self) {
+        self.activity = Activity::Governing;
     }
-
-    /// Acquire gold and/or an item from adventuring.
-    fn treasure(&self) {
-        unimplemented!()
-    }
-
-    // TODO:
-    // Report cause of death
 }
