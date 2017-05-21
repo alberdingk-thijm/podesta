@@ -46,13 +46,12 @@ fn main() {
                     output.wait().expect("Failed to wait on process");
                 },
                 ParseResult::Step(n) => man.step(n),
-                ParseResult::New(target, name) => {
+                ParseResult::New(target, name, area) => {
                     match target {
                         Some(t) => match t.as_str() {
                             "sett" => man.build_sett(name, false),
                             "quarter" => man.build_quarter(name),
-                            // FIXME: change None to an actual input quarter
-                            "building" => man.build_building(name, None),
+                            "building" => man.build_building(name, area),
                             _ => println!("Invalid target for 'new' \
                                           (specify 'sett', 'quarter' \
                                            or 'building')!"),

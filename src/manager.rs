@@ -168,23 +168,34 @@ impl Manager {
 
     /// Initialize a new building and store it in the manager's sett's quarter.
     #[allow(unused_variables)]
-    pub fn build_building(&mut self, name_input: Option<String>, quarter_input: Option<String>) {
+    pub fn build_building(&mut self,
+                          name_input: Option<String>,
+                          quarter_input: Option<String>)
+    {
         match self.sett {
             Some(ref mut s) => {
-                unimplemented!()
-                /*
                 // Determine building plan
-                let plannames = self.datafiles.plans.iter().map(|ref p| p.name);
-                let planidx = try!(match name_input {
-                    Some(s) => plannames.position(s)
-                        .ok_or(format!("No plan exists for {}", s)),
-                    None => { prompts::choose(&plannames.collect::<Vec<_>>()) },
-                }.map_err(|e| println!("Error choosing building: {}", e)));
-                let plan = self.datafiles.plans[planidx].clone();
-                // Confirm building
+                let ref plans = self.datafiles.plans;
+                // &String iterator of plan names
+                let mut plannames = plans.iter().map(|ref p| &p.name);
+                // Find index of plan to add
+                let plan = match name_input {
+                    Some(s) => plannames.position(|x| x == &s)
+                        .ok_or(println!("No plan exists for {}", s)),
+                    None => { prompts::choose(&plannames.collect::<Vec<_>>())
+                        .map_err(parser::GameDataError::Prompt).map_err(|e| {
+                            println!("Error choosing building: {:?}", e)
+                        })
+                    },
+                }.map(|i| plans[i].clone());
+                // Next step will fail if Err(())
                 // FIXME: get the correct quarter
-                let quarter = s.qrtrs.iter();
+                let ref quarters = s.qrtrs;
+                let mut qnames = quarters.iter().map(|ref q| (q.borrow()).name.clone());
+                // Check that a quarter exists for the specified plan
+                // Find index of insertion quarter (filtering all unavailable quarters)
                 // Add
+                /*
                 s.add_building(plan, quarter)
                     .unwrap_or_else(|e| {
                         println!("Failed to construct {} building: {}",
