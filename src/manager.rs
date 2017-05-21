@@ -181,27 +181,47 @@ impl Manager {
                 // Find index of plan to add
                 let plan = match name_input {
                     Some(s) => plannames.position(|x| x == &s)
-                        .ok_or(println!("No plan exists for {}", s)),
+                        .ok_or(quarters::BuildError::NoPlanFound),
                     None => { prompts::choose(&plannames.collect::<Vec<_>>())
                         .map_err(parser::GameDataError::Prompt).map_err(|e| {
-                            println!("Error choosing building: {:?}", e)
+                            println!("Error choosing building: {:?}", e);
+                            quarters::BuildError::NoPlanFound
                         })
                     },
                 }.map(|i| plans[i].clone());
-                // Next step will fail if Err(())
-                // FIXME: get the correct quarter
-                let ref quarters = s.qrtrs;
-                let mut qnames = quarters.iter().map(|ref q| (q.borrow()).name.clone());
-                // Check that a quarter exists for the specified plan
-                // Find index of insertion quarter (filtering all unavailable quarters)
-                // Add
-                /*
-                s.add_building(plan, quarter)
-                    .unwrap_or_else(|e| {
-                        println!("Failed to construct {} building: {}",
-                                 plan.name, e);
-                    })
-                */
+                if let Ok(bplan) = plan {
+                    let ref mut quarters = s.qrtrs.iter();
+                    let valid_qrtrs = quarters.by_ref().filter(|ref q| {
+                        bplan.btype == q.borrow().qtype
+                    });
+                    let mut qnames = valid_qrtrs.map(|ref q| q.borrow().name.clone());
+                    let quarter = match quarter_input {
+                        Some(q) => qnames.position(|x| x == q)
+                            .ok_or(quarters::BuildError::NoQuarterFound),
+                        None => {
+                            let qnamesv = qnames.collect::<Vec<_>>();
+                            // Cleanly ask which quarter should host the building
+                            match qnamesv.len() {
+                                0 => Err(quarters::BuildError::NoQuarterFound),
+                                1 => Ok(0),
+                                _ => {
+                                    println!("Please specify where \
+                                             to build the building:");
+                                    prompts::choose(&qnamesv)
+                                    .map_err(|e| {
+                                        println!("Error choosing quarter: {:?}", e);
+                                        quarters::BuildError::NoQuarterFound
+                                    })
+                                },
+                            }
+                        },
+                    }.map(|i| s.qrtrs[i].clone());
+
+                    quarter.and_then(|q| s.add_building(bplan.clone(), q))
+                        .unwrap_or_else(|e| {
+                            println!("Failed to construct building: {}", e)
+                        })
+                }
             },
             None => println!("No sett found (first run 'new' or 'load')!"),
         }

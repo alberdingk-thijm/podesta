@@ -82,6 +82,10 @@ impl QType {
 #[derive(Debug)]
 /// Possible errors when trying to construct a new quarter or building
 pub enum BuildError {
+    /// No plan specifies the given building
+    NoPlanFound,
+    /// No quarter can host the given building
+    NoQuarterFound,
     /// Not enough population to construct a quarter
     NotEnoughPop,
     /// Not enough gold to construct a building
@@ -94,6 +98,10 @@ pub enum BuildError {
 impl fmt::Display for BuildError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
+            BuildError::NoPlanFound =>
+                write!(f, "No plan specifies the given building"),
+            BuildError::NoQuarterFound =>
+                write!(f, "No quarter of the same type as the building exists"),
             BuildError::NotEnoughPop =>
                 write!(f, "Population not high enought to build"),
             BuildError::NotEnoughGold =>
@@ -109,6 +117,8 @@ impl fmt::Display for BuildError {
 impl error::Error for BuildError {
     fn description(&self) -> &str {
         match *self {
+            BuildError::NoPlanFound => "no building plan found",
+            BuildError::NoQuarterFound => "no valid quarter found",
             BuildError::NotEnoughPop => "not enough population",
             BuildError::NotEnoughGold => "not enough gold",
             BuildError::AlreadyExists => "reused unique name",

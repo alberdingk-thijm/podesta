@@ -98,8 +98,8 @@ impl Sett {
 
     #[allow(unused_variables)]
     /// Add a building
-    pub fn add_building(&self,
-                        plan: buildings::BuildingPlan,
+    pub fn add_building(&mut self,
+                        plan: Rc<buildings::BuildingPlan>,
                         q: Rc<RefCell<quarters::Quarter>>)
     -> Result<(), quarters::BuildError>{
         // Check that self has enough gold to pay the cost
@@ -112,7 +112,12 @@ impl Sett {
         if qrtrbs.any(|ref x| x.borrow().name == plan.name) {
             return Err(quarters::BuildError::AlreadyExists);
         }
-        unimplemented!()
+        /*
+        self.bldgs.push(Rc::new(RefCell::new(
+                    buildings::Building::new(plan, Rc::new(q.into_inner()))
+            )));
+            */
+        Ok(())
     }
 
     /// Increment the total amount of gold in the settlement based on the
