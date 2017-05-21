@@ -1,6 +1,6 @@
-/// The manager for a settlement
-/// Tracks metavariables and manages the event queue and its effects on the
-/// settlement's members.
+//! The manager for a settlement
+//! Tracks metavariables and manages the event queue and its effects on the
+//! settlement's members.
 
 use parser;
 use time;
@@ -11,6 +11,8 @@ use people;
 use history;
 use events;
 use prompts;
+use std::fmt;
+use std::error;
 
 macro_rules! choose_info {
     ($printexpr:expr, $auto:expr, $name:expr) => {
@@ -27,6 +29,55 @@ macro_rules! print_opt {
         }
     };
 }
+
+#[derive(Debug)]
+pub enum Error {
+    Data(parser::GameDataError),
+    Build(quarters::BuildError),
+    NoSett,
+    History,
+    Event,
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Error::Data(ref e) => e.fmt(f),
+            Error::Build(ref e) => e.fmt(f),
+            Error::NoSett => write!(f, "No sett found (first run 'new' or 'load')"),
+            Error::History => write!(f, "Failed to update history log"),
+            Error::Event => write!(f, "Failed to perform event"),
+        }
+    }
+}
+
+impl From<parser::GameDataError> for Error {
+    fn from(err: parser::GameDataError) -> Error { Error::Data(err) }
+}
+
+impl error::Error for Error {
+    fn description(&self) -> &str {
+        match *self {
+            Error::Data(ref err) => err.description(),
+            Error::Build(ref err) => err.description(),
+            Error::NoSett => "no sett found",
+            Error::History => "unable to write history",
+            Error::Event => "unable to perform event",
+        }
+    }
+    fn cause(&self) -> Option<&error::Error> {
+        match *self {
+            Error::Data(ref err) => Some(err),
+            Error::Build(ref err) => Some(err),
+            _ => None,
+        }
+    }
+}
+
+impl From<quarters::BuildError> for Error {
+    fn from(err: quarters::BuildError) -> Error { Error::Build(err) }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Manager {
     datafiles: parser::DataFiles,

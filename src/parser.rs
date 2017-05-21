@@ -25,6 +25,8 @@ use std::io::{self, BufReader, BufWriter};
 use std::env;
 use std::path;
 use std::rc::Rc;
+use std::fmt;
+use std::error;
 
 /// A structure for storing game data extracted from files
 #[derive(Debug, Serialize, Deserialize)]
@@ -108,6 +110,12 @@ impl From<bincode::Error> for GameDataError {
 
 impl From<PromptError> for GameDataError {
     fn from(err: PromptError) -> GameDataError { GameDataError::Prompt(err) }
+}
+
+impl fmt::Display for GameDataError {
+}
+
+impl error::Error for GameDataError {
 }
 
 /// Save the manager to a given .rbs file name.
