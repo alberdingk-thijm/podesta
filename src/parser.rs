@@ -113,9 +113,34 @@ impl From<PromptError> for GameDataError {
 }
 
 impl fmt::Display for GameDataError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            GameDataError::Serde(ref err) => err.fmt(f),
+            GameDataError::Bincode(ref err) => err.fmt(f),
+            GameDataError::Io(ref err) => err.fmt(f),
+            GameDataError::Prompt(ref err) => err.fmt(f),
+        }
+    }
 }
 
 impl error::Error for GameDataError {
+    fn description(&self) -> &str {
+        match *self {
+            GameDataError::Serde(ref err) => err.description(),
+            GameDataError::Bincode(ref err) => err.description(),
+            GameDataError::Io(ref err) => err.description(),
+            GameDataError::Prompt(ref err) => err.description(),
+        }
+    }
+
+    fn cause(&self) -> Option<&error::Error> {
+        match *self {
+            GameDataError::Serde(ref err) => err.cause(),
+            GameDataError::Bincode(ref err) => err.cause(),
+            GameDataError::Io(ref err) => err.cause(),
+            GameDataError::Prompt(ref err) => err.cause(),
+        }
+    }
 }
 
 /// Save the manager to a given .rbs file name.

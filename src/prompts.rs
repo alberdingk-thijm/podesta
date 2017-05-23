@@ -4,6 +4,7 @@ use std::io::{self, Write};
 use std::num;
 use rand::{self, Rng};
 use std::fmt;
+use std::error;
 
 #[derive(Debug)]
 pub enum PromptError {
@@ -12,6 +13,38 @@ pub enum PromptError {
     InvalidNum,
     NameTooShort,
     YesOrNo,
+}
+
+impl fmt::Display for PromptError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            PromptError::Io(ref err) => err.fmt(f),
+            PromptError::Parse(ref err) => err.fmt(f),
+            PromptError::InvalidNum => write!(f, "number out of bounds"),
+            PromptError::NameTooShort => write!(f, "given name too short"),
+            PromptError::YesOrNo => write!(f, "answer out of bounds"),
+        }
+    }
+}
+
+impl error::Error for PromptError {
+    fn description(&self) -> &str {
+        match *self {
+            PromptError::Io(ref err) => err.description(),
+            PromptError::Parse(ref err) => err.description(),
+            PromptError::InvalidNum => "invalid number",
+            PromptError::NameTooShort => "name too short",
+            PromptError::YesOrNo => "invalid answer",
+        }
+    }
+
+    fn cause(&self) -> Option<&error::Error> {
+        match *self {
+            PromptError::Io(ref err) => err.cause(),
+            PromptError::Parse(ref err) => err.cause(),
+            _ => None,
+        }
+    }
 }
 
 /// Prompt the user to type a name with at least minchars length.
