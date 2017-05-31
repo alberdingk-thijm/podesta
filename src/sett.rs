@@ -4,6 +4,7 @@ use quarters;
 use buildings;
 use regions;
 use people;
+use prompts;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
@@ -101,23 +102,12 @@ impl Sett {
     pub fn add_building(&mut self,
                         plan: Rc<buildings::BuildingPlan>,
                         q: Rc<RefCell<quarters::Quarter>>)
-    -> Result<(), quarters::BuildError>{
+    -> Result<(), quarters::BuildError> {
         // Check that self has enough gold to pay the cost
         if self.gold < plan.cost {
             return Err(quarters::BuildError::NotEnoughGold);
         }
-        // Check that quarter does not already contain the planned building
-        let ref mut qrtrbs = self.bldgs.iter()
-            .filter(|ref x| x.borrow().loc.name == q.borrow().name);
-        if qrtrbs.any(|ref x| x.borrow().name == plan.name) {
-            return Err(quarters::BuildError::AlreadyExists);
-        }
-        /*
-        self.bldgs.push(Rc::new(RefCell::new(
-                    buildings::Building::new(plan, Rc::new(q.into_inner()))
-            )));
-            */
-        Ok(())
+        q.borrow_mut().add_building(plan)
     }
 
     /// Increment the total amount of gold in the settlement based on the

@@ -8,7 +8,6 @@ use std::rc::Rc;
 pub struct Building {
     pub name: String,
     pub id: i32,
-    pub loc: Rc<quarters::Quarter>,
     pub btype: quarters::QType,
     pub events: Vec<EventChance>,
     pub bspeed: f64,
@@ -56,11 +55,10 @@ pub struct EventChance {
 }
 
 impl Building {
-    pub fn new(plans: BuildingPlan, loc: Rc<quarters::Quarter>) -> Building {
+    pub fn new(plans: BuildingPlan) -> Building {
         Building {
             name: plans.name,
             id: plans.id,
-            loc: loc,
             btype: plans.btype,
             events: plans.events,
             bspeed: plans.build,

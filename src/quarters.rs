@@ -1,9 +1,11 @@
-//use buildings;
+use buildings;
 use people;
 //use effects;
 use sett;
 use std::fmt;
 use std::error;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 #[allow(dead_code)]
 #[derive(Debug, Serialize, Deserialize)]
@@ -18,8 +20,8 @@ pub struct Quarter {
     pub age: i32,
     /// The majority race of the quarter.
     pub race: people::Race,
-    // The buildings constructed in the quarter.
-    //pub bldgs: Vec<buildings::Building>,
+    /// The buildings constructed in the quarter.
+    pub bldgs: Vec<Rc<RefCell<buildings::Building>>>,
     /// The growth rate of the quarter's population.
     pub growth: f64,
 }
@@ -140,7 +142,7 @@ impl Quarter {
             pop: p,
             age: 0,
             race: r,
-            //bldgs: vec!(),
+            bldgs: vec!(),
             growth: 0.01,
         }
     }
@@ -160,21 +162,28 @@ impl Quarter {
     /// [logif]: https://en.wikipedia.org/wiki/Logistic_function
     pub fn step(&mut self, reg_growth: f64) {
         self.age += 1;
-        let grow_rate = |r: f64, t: i32| -> f64 { (r * t as f64).exp() };
+        let grow_rate = |r: f64, t: f64| -> f64 { (r * t).exp() };
         // simplify the constants
-        let e_rt = grow_rate(self.growth, self.age);
+        let e_rt : f64 = grow_rate(self.growth, self.age as f64);
         self.pop = 5000000.0 * reg_growth * e_rt / (99950.0 + 50.0 * e_rt);
     }
 
-    /*
     /// Add a building
-    pub fn add_building(&self, bname: &str) -> Result<Self, BuildError> {
-        unimplemented!()
+    pub fn add_building(&self, plan: Rc<buildings::BuildingPlan>)
+    -> Result<(), BuildError>
+    {
+        if self.bldgs.iter().any(|ref b| b.borrow().name == plan.name) {
+            return Err(BuildError::AlreadyExists);
+        }
+        /*
+        self.bldgs.push(Rc::new(
+                RefCell::new(buildings::Building::new(plan.clone()))));
+                */
+        Ok(())
     }
 
     /// Find a building
     pub fn find_building(&self, bname: &str) -> Option<&buildings::Building> {
         unimplemented!()
     }
-    */
 }
