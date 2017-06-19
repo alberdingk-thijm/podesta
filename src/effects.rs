@@ -98,7 +98,7 @@ pub struct Effect<T: Targeted> {
 
 #[allow(dead_code, unused_variables)]
 impl EventEffect {
-    pub fn activate(&self, caller: &mut buildings::Building) {
+    pub fn activate(&self) {
         //let e = Effect::new(caller, self);
         match *self {
             EventEffect::Kill { ref dead, viralpt, ref area } => {
