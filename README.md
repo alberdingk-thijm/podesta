@@ -13,5 +13,3 @@ podsim is a **WIP** and will not be complete for many months. I've chosen to kee
 ## Name
 
 The Italian word "podestà" refers to "certain high officials in many Italian cities beginning in the later Middle Ages" ([Wikipedia](https://en.wikipedia.org/wiki/Podest%C3%A0)), typically the chief magistrate or the local imperial administrator. Since podsim is about generating and managing towns or cities (and the default data files create late medieval fantasy cities), it seemed like a fitting name.
-
-test
