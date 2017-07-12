@@ -315,7 +315,9 @@ impl Manager {
 
     /// Pop an event and perform its effects on the sett.
     pub fn activate_event(&mut self) {
-        unimplemented!()
+        if let Some(e) = queue.pop() {
+            let effects = e.effects;
+        }
     }
 
     /// Check that user is willing to overwrite existing data.
