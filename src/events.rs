@@ -81,7 +81,7 @@ impl Event {
         if roll <= self.chance {
             // TODO: perform event effects
             // effects have no crossover so we can execute them all in any order
-            for eff in self.effects {
+            for eff in self.effects.iter() {
                 eff.activate()
             }
         }

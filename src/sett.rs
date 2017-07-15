@@ -18,10 +18,10 @@ pub struct Sett {
     pub reg: Rc<regions::Region>,
     /// List of quarters in the settlement.
     pub qrtrs: Vec<Rc<RefCell<quarters::Quarter>>>,
-    /// List of buildings in the settlement
-    pub bldgs: Vec<Rc<RefCell<buildings::Building>>>,
-    /// List of heroes in the settlement
-    pub heroes: Vec<Rc<RefCell<people::Hero>>>,
+    // List of buildings in the settlement
+    //pub bldgs: Vec<Rc<RefCell<buildings::Building>>>,
+    // List of heroes in the settlement
+    //pub heroes: Vec<Rc<RefCell<people::Hero>>>,
     /// Turns before a new quarter is added.
     pub nextqrtr: i32,
     /// Flag for if settlement is coastal.
@@ -47,9 +47,9 @@ impl Sett {
             reg: reg,
             qrtrs: vec![Rc::new(
                 RefCell::new(quarters::Quarter::new("Main", qt, pop, r)))],
-            bldgs: vec!(),
+            //bldgs: vec!(),
             // TODO: get a starting governor
-            heroes: vec!(),
+            //heroes: vec!(),
             nextqrtr: 50,
             coastal: coast,
         }
@@ -115,7 +115,10 @@ impl Sett {
     pub fn collect_gold(&mut self) {
         //TODO: placeholder incrementer
         self.gold += 0.01f64 * self.pop as f64;
-        self.gold += 0.04f64 * self.heroes.len() as f64;
+        for q in &self.qrtrs {
+            self.gold += q.borrow_mut().collect_gold();
+        }
+        //self.gold += 0.04f64 * self.heroes.len() as f64;
     }
 }
 

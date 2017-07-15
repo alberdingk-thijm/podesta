@@ -169,18 +169,24 @@ impl Quarter {
     }
 
     /// Add a building
-    pub fn add_building(&self, plan: Rc<buildings::BuildingPlan>)
+    pub fn add_building(&mut self, plan: Rc<buildings::BuildingPlan>)
     -> Result<(), BuildError>
     {
         if self.bldgs.iter().any(|ref b| b.borrow().name == plan.name) {
             return Err(BuildError::AlreadyExists);
         }
-        /*
-        self.bldgs.push(Rc::new(
-                RefCell::new(buildings::Building::new(plan.clone()))));
-                */
+
+        let newb = Rc::new(RefCell::new(plan.draft_building()));
+        self.bldgs.push(newb);
         Ok(())
     }
+
+    /// Collect gold
+    pub fn collect_gold(&self) -> f64 {
+        self.bldgs.iter().map(|b| 0.04f64 * b.borrow().occupants.len() as f64)
+            .fold(0.0, |acc, x| acc + x)
+    }
+
 
     /// Find a building
     pub fn find_building(&self, bname: &str) -> Option<&buildings::Building> {

@@ -224,14 +224,14 @@ impl Manager {
                           name_input: Option<String>,
                           quarter_input: Option<String>) -> Result<(), Error>
     {
-        match self.sett {
+        let plan = match self.sett {
             Some(ref mut s) => {
                 // Determine building plan
                 let ref plans = self.datafiles.plans;
                 // &String iterator of plan names
                 let mut plannames = plans.iter().map(|ref p| &p.name);
                 // Find index of plan to add
-                let plan = match name_input {
+                match name_input {
                     Some(s) => plannames.position(|x| x == &s)
                         .ok_or(quarters::BuildError::NoPlanFound),
                     None => { prompts::choose(&plannames.collect::<Vec<_>>())
@@ -240,7 +240,7 @@ impl Manager {
                             quarters::BuildError::NoPlanFound
                         })
                     },
-                }.map(|i| plans[i].clone()).map_err(Error::Build);
+                }.map(|i| plans[i].clone()).map_err(Error::Build)
 
                 /*
                 match plan {
@@ -251,23 +251,29 @@ impl Manager {
                 */
                 // Get quarter where building should be added.
                 // Call s.add_building() for that quarter.
+                /*
                 plan.and_then(|ref b| {
                     self.get_quarter(&b, quarter_input)
                         .and_then(|q| {
                             s.add_building(b.clone(), q).map_err(Error::Build)
                         })
                 })
+                */
             },
             None => Err(Error::NoSett),
-        }
+        };//.and_then(|ref b| { println!("Found a plan!") })
+            // get the quarter
+            // add it to the settlement
+        plan.map(|_| println!("Found a plan!"))
     }
 
+    /*
     /// Get a reference-counted pointer to a quarter matching the provided
     /// information (building plan and optional input string).
     fn get_quarter(&self, bplan: &buildings::BuildingPlan, input: Option<String>)
         -> Result<Rc<RefCell<quarters::Quarter>>, Error>
     {
-        let ref s = self.sett.unwrap();
+        let s = self.sett.unwrap();
         // Select quarters where the building could be constructed
         let mut quarters = s.qrtrs.into_iter();
         let valid_qrtrs = quarters.by_ref().filter(|ref q| {
@@ -297,6 +303,7 @@ impl Manager {
             },
         }.map(|i| s.qrtrs[i].clone()).map_err(Error::Build)
     }
+    */
 
     /// Execute n settlement steps and perform all events sequentially.
     /// Write any relevant occurrences to the history.
@@ -315,7 +322,7 @@ impl Manager {
 
     /// Pop an event and perform its effects on the sett.
     pub fn activate_event(&mut self) {
-        if let Some(e) = queue.pop() {
+        if let Some(e) = self.queue.pop() {
             let effects = e.effects;
         }
     }

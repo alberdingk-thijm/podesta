@@ -1,18 +1,18 @@
 use std::default;
 use quarters;
-//use people;
+use people;
 use sett;
 use std::rc::Rc;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Building {
     pub name: String,
-    pub id: i32,
+    //pub id: i32,
     pub btype: quarters::QType,
     pub events: Vec<EventChance>,
     pub bspeed: f64,
     pub condition: BldgCond,
-    //pub occupants: Vec<people::Hero>,
+    pub occupants: Vec<people::Hero>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -27,6 +27,13 @@ pub struct BuildingPlan {
     pub cost: f64,
     pub build: f64,
     pub events: Vec<EventChance>,
+}
+
+impl BuildingPlan {
+    pub fn draft_building(&self) -> Building {
+        //FIXME: events needs to be copied or moved correctly
+        Building::new(&self.name, self.btype, self.build, self.events.clone())
+    }
 }
 
 /// Enum representing condition of a building.
@@ -48,21 +55,29 @@ impl default::Default for BldgCond {
     fn default() -> BldgCond { BldgCond::InProgress }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct EventChance {
     name: String,
     chance: f32,
 }
 
 impl Building {
-    pub fn new(plans: BuildingPlan) -> Building {
+    /// Create a new building object.
+    pub fn new(n: &str,
+               btype: quarters::QType,
+               speed: f64,
+               events: Vec<EventChance>
+               ) -> Building
+    {
         Building {
-            name: plans.name,
-            id: plans.id,
-            btype: plans.btype,
-            events: plans.events,
-            bspeed: plans.build,
+            name: n.to_string(),
+            // DEPRECATED:
+            //id: plans.id,
+            btype: btype,
+            events: events,
+            bspeed: speed,
             condition: BldgCond::InProgress,
+            occupants: vec!(),
         }
     }
 
