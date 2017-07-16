@@ -1,4 +1,5 @@
 use std::default;
+use std::fmt;
 use quarters;
 use people;
 use sett;
@@ -12,7 +13,7 @@ pub struct Building {
     //pub btype: quarters::QType,
     //pub events: Vec<EventChance>,
     //pub bspeed: f64,
-    pub condition: BldgCond,
+    pub condition: f64, //BldgCond,
     pub occupants: Vec<people::Hero>,
 }
 
@@ -30,13 +31,17 @@ pub struct BuildingPlan {
     pub events: Vec<EventChance>,
 }
 
-impl BuildingPlan {
-    /*
-    pub fn draft_building(&self) -> Building {
-        //FIXME: events needs to be copied or moved correctly
-        Building::new(&self.name, self.btype, self.build, self.events.clone())
+impl fmt::Display for BuildingPlan {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{} ({}): pre-reqs {}, costs {}", 
+               self.name,
+               self.btype,
+               match self.preq {
+                   Some(ref preqs) => (&preqs).join(" & "),
+                   None => String::from("n/a"),
+               },
+               self.cost)
     }
-    */
 }
 
 /// Enum representing condition of a building.
@@ -75,7 +80,7 @@ impl Building {
             //btype: btype,
             //events: events,
             //bspeed: speed,
-            condition: BldgCond::InProgress,
+            condition: -100.0, //BldgCond::InProgress,
             occupants: vec!(),
         }
     }
@@ -83,10 +88,23 @@ impl Building {
     /// Execute a timestep for the building, aging it (or progressing in its
     /// construction).
     pub fn step(&mut self) {
-        // add bspeed if still in progress
-        // set bspeed to 1 once built
-        // if condition reaches 0, add events to tracker
-        // if condition reaches 100, remove events from tracker
+        //TODO: allow second parameter with possible repairs/damage to
+        // add to condition?
+        let age_rate = if self.condition < 0.0 {
+            // add build rate if still in progress
+            self.plan.build
+        } else {
+            // add 1 each step once built
+            1.0
+        };
+        //TODO: building can become slightly "overage" on reaching 0
+        //TODO: possible solution: in_progress boolean
+        self.condition += age_rate;
+        //TODO:
+        // if condition reaches 0 for first time, add events to tracker
+        // if condition reaches 100 for first time, remove events from tracker
+        //TODO:
+        // possible second boolean to show in_use (events can trigger)
     }
 }
 
@@ -94,4 +112,15 @@ impl sett::HasName for Building {
     fn get_name(&self) -> &str {
         &self.name
     }
+}
+
+impl fmt::Display for Building {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{} ({}): {}% {}, hosts {} people", 
+               self.name,
+               self.plan.btype,
+               100.0 - self.condition.abs(),  // distance from new & complete
+               if self.condition < 0.0 { "completion" } else { "durability" },
+               self.occupants.len())
+   }
 }

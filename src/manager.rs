@@ -229,14 +229,14 @@ impl Manager {
                 // Determine building plan
                 let ref plans = self.datafiles.plans;
                 // &String iterator of plan names
-                let mut plannames = plans.iter().map(|ref p| &p.name);
+                let mut plannames = plans.iter().map(|p| p.to_string());
                 // Find index of plan to add
                 match name_input {
-                    Some(s) => plannames.position(|x| x == &s)
+                    Some(s) => plannames.position(|x| x == s)
                         .ok_or(quarters::BuildError::NoPlanFound),
                     None => { prompts::choose(&plannames.collect::<Vec<_>>())
                         .map_err(parser::GameDataError::Prompt).map_err(|e| {
-                            println!("Error choosing building: {:?}", e);
+                            //println!("Error choosing building: {:?}", e);
                             quarters::BuildError::NoPlanFound
                         })
                     },
@@ -261,9 +261,7 @@ impl Manager {
                 */
             },
             None => Err(Error::NoSett),
-        };//.and_then(|ref b| { println!("Found a plan!") })
-            // get the quarter
-            // add it to the settlement
+        };
         plan.map(|_| println!("Found a plan!")).unwrap_or_else(|e| {
                     println!("Failed to construct building: {}",e); })
     }

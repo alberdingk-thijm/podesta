@@ -166,6 +166,9 @@ impl Quarter {
         // simplify the constants
         let e_rt : f64 = grow_rate(self.growth, self.age as f64);
         self.pop = 5000000.0 * reg_growth * e_rt / (99950.0 + 50.0 * e_rt);
+        for bldg in self.bldgs.iter() {
+            bldg.borrow_mut().step();
+        }
     }
 
     /// Add a building using the given BuildingPlan plan.

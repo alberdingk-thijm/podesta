@@ -93,6 +93,7 @@ impl Sett {
         // receive gold bonus
         self.gold += 100.0;
         self.nextqrtr *= 2;
+        self.pop += newpop;
         Ok(())
     }
 
