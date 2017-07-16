@@ -4,7 +4,6 @@ use quarters;
 use buildings;
 use regions;
 use people;
-use prompts;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;

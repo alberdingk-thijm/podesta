@@ -8,9 +8,10 @@ use std::rc::Rc;
 pub struct Building {
     pub name: String,
     //pub id: i32,
-    pub btype: quarters::QType,
-    pub events: Vec<EventChance>,
-    pub bspeed: f64,
+    pub plan: Rc<BuildingPlan>,
+    //pub btype: quarters::QType,
+    //pub events: Vec<EventChance>,
+    //pub bspeed: f64,
     pub condition: BldgCond,
     pub occupants: Vec<people::Hero>,
 }
@@ -30,10 +31,12 @@ pub struct BuildingPlan {
 }
 
 impl BuildingPlan {
+    /*
     pub fn draft_building(&self) -> Building {
         //FIXME: events needs to be copied or moved correctly
         Building::new(&self.name, self.btype, self.build, self.events.clone())
     }
+    */
 }
 
 /// Enum representing condition of a building.
@@ -63,19 +66,15 @@ pub struct EventChance {
 
 impl Building {
     /// Create a new building object.
-    pub fn new(n: &str,
-               btype: quarters::QType,
-               speed: f64,
-               events: Vec<EventChance>
-               ) -> Building
-    {
+    pub fn new(plan: Rc<BuildingPlan>) -> Building {
         Building {
-            name: n.to_string(),
+            name: plan.name.clone(),// to_string(),
             // DEPRECATED:
             //id: plans.id,
-            btype: btype,
-            events: events,
-            bspeed: speed,
+            plan: plan,
+            //btype: btype,
+            //events: events,
+            //bspeed: speed,
             condition: BldgCond::InProgress,
             occupants: vec!(),
         }

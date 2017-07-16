@@ -222,7 +222,7 @@ impl Manager {
     #[allow(unused_variables)]
     pub fn build_building(&mut self,
                           name_input: Option<String>,
-                          quarter_input: Option<String>) -> Result<(), Error>
+                          quarter_input: Option<String>)
     {
         let plan = match self.sett {
             Some(ref mut s) => {
@@ -264,7 +264,8 @@ impl Manager {
         };//.and_then(|ref b| { println!("Found a plan!") })
             // get the quarter
             // add it to the settlement
-        plan.map(|_| println!("Found a plan!"))
+        plan.map(|_| println!("Found a plan!")).unwrap_or_else(|e| {
+                    println!("Failed to construct building: {}",e); })
     }
 
     /*

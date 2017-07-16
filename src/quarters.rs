@@ -168,7 +168,8 @@ impl Quarter {
         self.pop = 5000000.0 * reg_growth * e_rt / (99950.0 + 50.0 * e_rt);
     }
 
-    /// Add a building
+    /// Add a building using the given BuildingPlan plan.
+    /// Return an error if the building cannot be added.
     pub fn add_building(&mut self, plan: Rc<buildings::BuildingPlan>)
     -> Result<(), BuildError>
     {
@@ -176,7 +177,8 @@ impl Quarter {
             return Err(BuildError::AlreadyExists);
         }
 
-        let newb = Rc::new(RefCell::new(plan.draft_building()));
+        let newb = Rc::new(RefCell::new(
+                buildings::Building::new(plan)));
         self.bldgs.push(newb);
         Ok(())
     }
@@ -188,8 +190,12 @@ impl Quarter {
     }
 
 
-    /// Find a building
-    pub fn find_building(&self, bname: &str) -> Option<&buildings::Building> {
-        unimplemented!()
+    /// Find a building based on a given name.
+    /// Return Some(Rc<RefCell<building>) if one is found,
+    /// otherwise None.
+    pub fn find_building(&self, bname: &str)
+        -> Option<&Rc<RefCell<buildings::Building>>>
+    {
+        self.bldgs.iter().find(|ref b| b.borrow().name == bname)
     }
 }

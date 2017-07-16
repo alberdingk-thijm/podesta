@@ -51,7 +51,7 @@ fn main() {
                         Some(t) => match t.as_str() {
                             "sett" => man.build_sett(name, false),
                             "quarter" => man.build_quarter(name),
-                            "building" => man.build_building(name, area).unwrap(),
+                            "building" => man.build_building(name, area),
                             _ => println!("Invalid target for 'new' \
                                           (specify 'sett', 'quarter' \
                                            or 'building')!"),
