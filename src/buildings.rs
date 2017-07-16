@@ -116,7 +116,7 @@ impl sett::HasName for Building {
 
 impl fmt::Display for Building {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} ({}): {}% {}, hosts {} people", 
+        write!(f, "{} ({}): {:.1}% {}, hosts {} people", 
                self.name,
                self.plan.btype,
                100.0 - self.condition.abs(),  // distance from new & complete

@@ -232,7 +232,7 @@ impl Manager {
                 let mut plannames = plans.iter().map(|p| p.to_string());
                 // Find index of plan to add
                 match name_input {
-                    Some(s) => plannames.position(|x| x == s)
+                    Some(s) => plannames.position(|x| x.starts_with(&s))
                         .ok_or(quarters::BuildError::NoPlanFound),
                     None => { prompts::choose(&plannames.collect::<Vec<_>>())
                         .map_err(parser::GameDataError::Prompt).map_err(|e| {
@@ -241,68 +241,73 @@ impl Manager {
                         })
                     },
                 }.map(|i| plans[i].clone()).map_err(Error::Build)
-
                 /*
-                match plan {
-                    Ok(b) => {
-                        let q = self.get_quarter(&b, quarter_input);
-                    }
-                }
-                */
-                // Get quarter where building should be added.
-                // Call s.add_building() for that quarter.
-                /*
-                plan.and_then(|ref b| {
-                    self.get_quarter(&b, quarter_input)
-                        .and_then(|q| {
-                            s.add_building(b.clone(), q).map_err(Error::Build)
-                        })
-                })
-                */
+                 .and_then(|p| {
+                     let _q = self.get_quarter(p.clone(), quarter_input);
+                     Ok(())
+                 })
+                 */
             },
             None => Err(Error::NoSett),
         };
-        plan.map(|_| println!("Found a plan!")).unwrap_or_else(|e| {
-                    println!("Failed to construct building: {}",e); })
+        plan.and_then(|p| {
+            println!("Found a plan!");
+            let qrtr = self.get_quarter(p.clone(), quarter_input);
+            //TODO: move get_quarter logic to sett to avoid reborrow,
+            //TODO: and use sett's add_building to ensure gold deducted
+            //TODO: correctly
+            qrtr.and_then(|q| q.borrow_mut().add_building(p).map_err(Error::Build))
+            /*
+            self.sett.map_or(Err(Error::NoSett), |ref mut s| {
+                s.add_building(p, q.unwrap()).map_err(Error::Build)
+            })
+            */
+            //TODO: use q to then add a building
+        }).unwrap_or_else(|e| {
+            println!("Failed to construct building: {}",e);
+        });
+
     }
 
-    /*
     /// Get a reference-counted pointer to a quarter matching the provided
     /// information (building plan and optional input string).
-    fn get_quarter(&self, bplan: &buildings::BuildingPlan, input: Option<String>)
+    fn get_quarter(&self,
+                   bplan: Rc<buildings::BuildingPlan>,
+                   input: Option<String>)
         -> Result<Rc<RefCell<quarters::Quarter>>, Error>
     {
-        let s = self.sett.unwrap();
-        // Select quarters where the building could be constructed
-        let mut quarters = s.qrtrs.into_iter();
-        let valid_qrtrs = quarters.by_ref().filter(|ref q| {
-            bplan.btype == q.borrow().qtype
-        });
-        // Confirm which quarter should host the building
-        let mut qnames = valid_qrtrs.map(|ref q| q.borrow().name.clone());
-        match input {
-            Some(q) => qnames.position(|x| x == q)
-                .ok_or(quarters::BuildError::NoQuarterFound),
-            None => {
-                let qnamesv = qnames.collect::<Vec<_>>();
-                // Cleanly ask which quarter should host the building
-                match qnamesv.len() {
-                    0 => Err(quarters::BuildError::NoQuarterFound),
-                    1 => Ok(0),
-                    _ => {
-                        println!("Please specify where \
-                                 to build the building:");
-                        prompts::choose(&qnamesv)
-                        .map_err(|e| {
-                            println!("Error choosing quarter: {:?}", e);
-                            quarters::BuildError::NoQuarterFound
-                        })
-                    },
-                }
-            },
-        }.map(|i| s.qrtrs[i].clone()).map_err(Error::Build)
+        if let Some(ref s) = self.sett {
+            // Select quarters where the building could be constructed
+            let valid_qrtrs = s.qrtrs.iter().filter(|ref q| {
+                bplan.btype == q.borrow().qtype
+            });
+            // Confirm which quarter should host the building
+            let mut qnames = valid_qrtrs.map(|ref q| q.borrow().name.clone());
+            match input {
+                Some(q) => qnames.position(|x| x == q)
+                    .ok_or(quarters::BuildError::NoQuarterFound),
+                None => {
+                    let qnamesv = qnames.collect::<Vec<_>>();
+                    // Cleanly ask which quarter should host the building
+                    match qnamesv.len() {
+                        0 => Err(quarters::BuildError::NoQuarterFound),
+                        1 => Ok(0),
+                        _ => {
+                            println!("Please specify where \
+                                     to build the building:");
+                            prompts::choose(&qnamesv)
+                            .map_err(|e| {
+                                println!("Error choosing quarter: {:?}", e);
+                                quarters::BuildError::NoQuarterFound
+                            })
+                        },
+                    }
+                },
+            }.map(|i| s.qrtrs[i].clone()).map_err(Error::Build)
+        } else {
+            Err(Error::NoSett)
+        }
     }
-    */
 
     /// Execute n settlement steps and perform all events sequentially.
     /// Write any relevant occurrences to the history.
@@ -322,7 +327,7 @@ impl Manager {
     /// Pop an event and perform its effects on the sett.
     pub fn activate_event(&mut self) {
         if let Some(e) = self.queue.pop() {
-            let effects = e.effects;
+            let _effects = e.effects;
         }
     }
 
