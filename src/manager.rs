@@ -253,7 +253,6 @@ impl Manager {
             None => Err(Error::NoSett),
         };
         plan.and_then(|p| {
-            println!("Found a plan!");
             let qrtr = self.get_quarter(p.clone(), quarter_input);
             //TODO: move get_quarter logic to sett to avoid reborrow,
             //TODO: and use sett's add_building to ensure gold deducted
@@ -280,24 +279,17 @@ impl Manager {
     {
         if let Some(ref s) = self.sett {
             // Select quarters where the building could be constructed
-            let mut valid_qrtrs = s.qrtrs.iter().filter(|ref q| {
+            let valid_qrtrs = s.qrtrs.iter().filter(|ref q| {
                 bplan.btype == q.borrow().qtype
             });
-            let valqrtrs : Vec<_> = valid_qrtrs.by_ref().collect();
+            let valqrtrs : Vec<_> = valid_qrtrs.collect();
             // Confirm which quarter should host the building
-            let qnames = valid_qrtrs.map(|ref q| q.borrow().name.clone());
+            let qnames = valqrtrs.iter().map(|ref q| q.borrow().name.clone());
             let qnamesv : Vec<_> = qnames.collect();
-            choose_info!("{}'s quarter...", input.is_none(), bplan.name);
+            choose_info!("a quarter for {}...",
+                         qnamesv.len() < 2, bplan.name);
             prompts::prechoose(&qnamesv, input)
                 .map_err(|_| quarters::BuildError::NoQuarterFound)
-                //FIXME: returned index will be within restricted list
-                //FIXME: e.g.
-                //FIXME: Q1 Academic, Q2 Residential
-                //FIXME: new building is Residential
-                //FIXME: prechoose returns index 0
-                //FIXME: (since qnamesv contains only Q2)
-                //FIXME: and returned quarter is then Q1
-                //FIXME: (index 0 in s.qrtrs)
                 .map(|i| valqrtrs[i].clone())
                 .map_err(Error::Build)
         } else {
