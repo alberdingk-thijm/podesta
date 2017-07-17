@@ -283,6 +283,8 @@ impl Manager {
         }
     }
 
+    /// Compute the event chances for this step.
+
     /// Pop an event and perform its effects on the sett.
     pub fn activate_event(&mut self) {
         if let Some(e) = self.queue.pop() {
@@ -305,6 +307,13 @@ impl Manager {
                 "sett" => print_opt!(self.sett),
                 "quarter" => (),
                 "building" => (),
+                "plans" => {
+                    let plannames = self.datafiles.plans
+                        .iter().map(|p| format!("{}\n", p.to_string()))
+                        .collect::<String>();
+                    println!("{}", plannames)
+                },
+                "history" => println!("{}", self.hist.show(None)),
                 _ => (),
             },
             None => print_opt!(self.sett),
