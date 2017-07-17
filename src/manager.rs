@@ -53,10 +53,6 @@ impl fmt::Display for Error {
     }
 }
 
-impl From<parser::GameDataError> for Error {
-    fn from(err: parser::GameDataError) -> Error { Error::Data(err) }
-}
-
 impl error::Error for Error {
     fn description(&self) -> &str {
         match *self {
@@ -78,6 +74,10 @@ impl error::Error for Error {
 
 impl From<quarters::BuildError> for Error {
     fn from(err: quarters::BuildError) -> Error { Error::Build(err) }
+}
+
+impl From<parser::GameDataError> for Error {
+    fn from(err: parser::GameDataError) -> Error { Error::Data(err) }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -232,6 +232,8 @@ impl Manager {
                 let mut plannames = plans.iter().map(|p| p.to_string());
                 // Find index of plan to add
                 match name_input {
+                    //TODO: replace starts_with with a substring of 
+                    //TODO: the name up to the first space
                     Some(s) => plannames.position(|x| x.starts_with(&s))
                         .ok_or(quarters::BuildError::NoPlanFound),
                     None => { prompts::choose(&plannames.collect::<Vec<_>>())
@@ -278,32 +280,26 @@ impl Manager {
     {
         if let Some(ref s) = self.sett {
             // Select quarters where the building could be constructed
-            let valid_qrtrs = s.qrtrs.iter().filter(|ref q| {
+            let mut valid_qrtrs = s.qrtrs.iter().filter(|ref q| {
                 bplan.btype == q.borrow().qtype
             });
+            let valqrtrs : Vec<_> = valid_qrtrs.by_ref().collect();
             // Confirm which quarter should host the building
-            let mut qnames = valid_qrtrs.map(|ref q| q.borrow().name.clone());
-            match input {
-                Some(q) => qnames.position(|x| x == q)
-                    .ok_or(quarters::BuildError::NoQuarterFound),
-                None => {
-                    let qnamesv = qnames.collect::<Vec<_>>();
-                    // Cleanly ask which quarter should host the building
-                    match qnamesv.len() {
-                        0 => Err(quarters::BuildError::NoQuarterFound),
-                        1 => Ok(0),
-                        _ => {
-                            println!("Please specify where \
-                                     to build the building:");
-                            prompts::choose(&qnamesv)
-                            .map_err(|e| {
-                                println!("Error choosing quarter: {:?}", e);
-                                quarters::BuildError::NoQuarterFound
-                            })
-                        },
-                    }
-                },
-            }.map(|i| s.qrtrs[i].clone()).map_err(Error::Build)
+            let qnames = valid_qrtrs.map(|ref q| q.borrow().name.clone());
+            let qnamesv : Vec<_> = qnames.collect();
+            choose_info!("{}'s quarter...", input.is_none(), bplan.name);
+            prompts::prechoose(&qnamesv, input)
+                .map_err(|_| quarters::BuildError::NoQuarterFound)
+                //FIXME: returned index will be within restricted list
+                //FIXME: e.g.
+                //FIXME: Q1 Academic, Q2 Residential
+                //FIXME: new building is Residential
+                //FIXME: prechoose returns index 0
+                //FIXME: (since qnamesv contains only Q2)
+                //FIXME: and returned quarter is then Q1
+                //FIXME: (index 0 in s.qrtrs)
+                .map(|i| valqrtrs[i].clone())
+                .map_err(Error::Build)
         } else {
             Err(Error::NoSett)
         }

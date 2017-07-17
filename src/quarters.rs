@@ -35,12 +35,16 @@ impl sett::HasName for Quarter {
 impl fmt::Display for Quarter {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "The {} Quarter, with a {} focus. {} steps old. \
-               Population {}, mostly {}.",
+               Population {}, mostly {}.\n\
+               Buildings:\n{}",
                self.name,
                self.qtype,
                self.age,
                self.pop as i64,
-               self.race)
+               self.race,
+               self.bldgs.iter().map(|b| {
+                   format!("-- {}\n", *(b.borrow()))
+               }).collect::<String>())
     }
 }
 

@@ -1,11 +1,13 @@
 /// Functionality for prompting the user to make a choice or type some text.
 
 use std::io::{self, Write};
+use std::cmp;
 use std::num;
 use rand::{self, Rng};
 use std::fmt;
 use std::error;
 
+/// Possible errors when prompting.
 #[derive(Debug)]
 pub enum PromptError {
     Io(io::Error),
@@ -111,6 +113,8 @@ pub fn bool_choose(question: &str, aff: &[&str], neg: &[&str])
     })
 }
 
+/// Re-prompt the user with a boolean choice a maximum number of times
+/// or randomly choose one of the two options.
 pub fn bool_choose_or_rand(question: &str, aff: &[&str], neg: &[&str],
                            maxprompts: i32) -> bool {
     let mut numprompts = 0;
@@ -164,4 +168,33 @@ pub fn choose_or_rand<T: fmt::Display>(a: &[T], maxprompts: i32) -> usize {
         numprompts += 1;
     }
     rand::thread_rng().gen_range(0, a.len())
+}
+
+/// Prompt the user for a choice from the given list of displayable items,
+/// and return the index of the chosen item. If the user provides an optional
+/// pre-selected choice, use it instead, unless the prechoice is invalid.
+/// ```
+/// use podesta::prompts;
+/// let a = [1, 2, 3];
+/// let b = &a[1..2];
+/// assert_eq!(prompts::prechoose(a, Some(3)), Ok(2))
+/// // automatically choose when given a single-item array
+/// assert_eq!(prompts::prechoose(b, None), Ok(0))
+/// ```
+pub fn prechoose<T>(a: &[T], prechoice: Option<T>)
+    -> Result<usize, PromptError> 
+    where T: fmt::Display + cmp::PartialEq
+{
+    // get the preidx if possible
+    let preidx = prechoice
+        .and_then(|ref t| a.iter().position(|x| x == t));
+    match preidx {
+        Some(i) => Ok(i),
+        None => match a.len() {
+            // normally undefined?
+            0 => Err(PromptError::InvalidNum),
+            1 => Ok(0),
+            _ => choose(a),
+        },
+    }
 }
