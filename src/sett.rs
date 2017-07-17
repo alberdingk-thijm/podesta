@@ -107,6 +107,8 @@ impl Sett {
         if self.gold < plan.cost {
             return Err(quarters::BuildError::NotEnoughGold);
         }
+
+        self.gold -= plan.cost;
         q.borrow_mut().add_building(plan)
     }
 

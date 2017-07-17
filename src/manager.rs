@@ -224,15 +224,15 @@ impl Manager {
                           name_input: Option<String>,
                           quarter_input: Option<String>)
     {
-        let plan = match self.sett {
+        match self.sett {
             Some(ref mut s) => {
                 // Determine building plan
                 let ref plans = self.datafiles.plans;
                 // &String iterator of plan names
                 let mut plannames = plans.iter().map(|p| p.to_string());
                 // Find index of plan to add
-                match name_input {
-                    //TODO: replace starts_with with a substring of 
+                let plan = match name_input {
+                    //TODO: replace starts_with with a substring of
                     //TODO: the name up to the first space
                     Some(s) => plannames.position(|x| x.starts_with(&s))
                         .ok_or(quarters::BuildError::NoPlanFound),
@@ -242,59 +242,36 @@ impl Manager {
                             quarters::BuildError::NoPlanFound
                         })
                     },
-                }.map(|i| plans[i].clone()).map_err(Error::Build)
-                /*
-                 .and_then(|p| {
-                     let _q = self.get_quarter(p.clone(), quarter_input);
-                     Ok(())
-                 })
-                 */
+                }.map(|i| plans[i].clone()).map_err(Error::Build);
+
+                match plan {
+                    Ok(p) => {
+                        let qrtr = {
+                            let valid_qrtrs = s.qrtrs.iter().filter(|ref q| {
+                                p.btype == q.borrow().qtype
+                            });
+                            let valqrtrs : Vec<_> = valid_qrtrs.collect();
+                            // Confirm which quarter should host the building
+                            let qnames = valqrtrs.iter()
+                                .map(|ref q| q.borrow().name.clone());
+                            let qnamesv : Vec<_> = qnames.collect();
+                            choose_info!("a quarter for {}...",
+                                         qnamesv.len() < 2, &p.name);
+                            prompts::prechoose(&qnamesv, quarter_input)
+                                .map_err(|_| quarters::BuildError::NoQuarterFound)
+                                .map(|i| valqrtrs[i].clone())
+                                .map_err(Error::Build)
+                        };
+                        match qrtr {
+                            Ok(q) => s.add_building(p, q).map_err(Error::Build),
+                            Err(e) => Err(e),
+                        }
+                    },
+                    Err(e) => Err(e),
+                }
             },
             None => Err(Error::NoSett),
-        };
-        plan.and_then(|p| {
-            let qrtr = self.get_quarter(p.clone(), quarter_input);
-            //TODO: move get_quarter logic to sett to avoid reborrow,
-            //TODO: and use sett's add_building to ensure gold deducted
-            //TODO: correctly
-            qrtr.and_then(|q| q.borrow_mut().add_building(p).map_err(Error::Build))
-            /*
-            self.sett.map_or(Err(Error::NoSett), |ref mut s| {
-                s.add_building(p, q.unwrap()).map_err(Error::Build)
-            })
-            */
-            //TODO: use q to then add a building
-        }).unwrap_or_else(|e| {
-            println!("Failed to construct building: {}",e);
-        });
-
-    }
-
-    /// Get a reference-counted pointer to a quarter matching the provided
-    /// information (building plan and optional input string).
-    fn get_quarter(&self,
-                   bplan: Rc<buildings::BuildingPlan>,
-                   input: Option<String>)
-        -> Result<Rc<RefCell<quarters::Quarter>>, Error>
-    {
-        if let Some(ref s) = self.sett {
-            // Select quarters where the building could be constructed
-            let valid_qrtrs = s.qrtrs.iter().filter(|ref q| {
-                bplan.btype == q.borrow().qtype
-            });
-            let valqrtrs : Vec<_> = valid_qrtrs.collect();
-            // Confirm which quarter should host the building
-            let qnames = valqrtrs.iter().map(|ref q| q.borrow().name.clone());
-            let qnamesv : Vec<_> = qnames.collect();
-            choose_info!("a quarter for {}...",
-                         qnamesv.len() < 2, bplan.name);
-            prompts::prechoose(&qnamesv, input)
-                .map_err(|_| quarters::BuildError::NoQuarterFound)
-                .map(|i| valqrtrs[i].clone())
-                .map_err(Error::Build)
-        } else {
-            Err(Error::NoSett)
-        }
+        }.unwrap_or_else(|e| println!("Failed to construct building: {}", e))
     }
 
     /// Execute n settlement steps and perform all events sequentially.
