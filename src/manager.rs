@@ -6,15 +6,12 @@ use parser;
 use time;
 use sett;
 use quarters;
-use buildings;
 use people;
 use history;
 use events;
 use prompts;
 use std::fmt;
 use std::error;
-use std::cell::RefCell;
-use std::rc::Rc;
 
 macro_rules! choose_info {
     ($printexpr:expr, $auto:expr, $name:expr) => {
@@ -244,31 +241,28 @@ impl Manager {
                     },
                 }.map(|i| plans[i].clone()).map_err(Error::Build);
 
-                match plan {
-                    Ok(p) => {
-                        let qrtr = {
-                            let valid_qrtrs = s.qrtrs.iter().filter(|ref q| {
-                                p.btype == q.borrow().qtype
-                            });
-                            let valqrtrs : Vec<_> = valid_qrtrs.collect();
-                            // Confirm which quarter should host the building
-                            let qnames = valqrtrs.iter()
-                                .map(|ref q| q.borrow().name.clone());
-                            let qnamesv : Vec<_> = qnames.collect();
-                            choose_info!("a quarter for {}...",
-                                         qnamesv.len() < 2, &p.name);
-                            prompts::prechoose(&qnamesv, quarter_input)
-                                .map_err(|_| quarters::BuildError::NoQuarterFound)
-                                .map(|i| valqrtrs[i].clone())
-                                .map_err(Error::Build)
-                        };
-                        match qrtr {
-                            Ok(q) => s.add_building(p, q).map_err(Error::Build),
-                            Err(e) => Err(e),
-                        }
-                    },
-                    Err(e) => Err(e),
-                }
+                plan.and_then(|p| {
+                    // Determine which quarter should contain the planned building
+                    let qrtr = {
+                        // Borrow s and plan within block to avoid borrow errors
+                        let valid_qrtrs = s.qrtrs.iter().filter(|ref q| {
+                            p.btype == q.borrow().qtype
+                        });
+                        let valqrtrs : Vec<_> = valid_qrtrs.collect();
+                        // Confirm which quarter should host the building
+                        let qnames = valqrtrs.iter()
+                            .map(|ref q| q.borrow().name.clone());
+                        let qnamesv : Vec<_> = qnames.collect();
+                        choose_info!("a quarter for {}...",
+                                     qnamesv.len() < 2, &p.name);
+                        prompts::prechoose(&qnamesv, quarter_input)
+                            // change the prompterror to something more informative
+                            .map_err(|_| quarters::BuildError::NoQuarterFound)
+                            .map(|i| valqrtrs[i].clone())
+                            .map_err(Error::Build)
+                    };
+                    qrtr.and_then(|q| s.add_building(p, q).map_err(Error::Build))
+                })
             },
             None => Err(Error::NoSett),
         }.unwrap_or_else(|e| println!("Failed to construct building: {}", e))
