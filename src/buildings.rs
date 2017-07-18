@@ -4,6 +4,7 @@ use quarters;
 use people;
 use sett;
 use std::rc::Rc;
+use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Building {
@@ -28,12 +29,12 @@ pub struct BuildingPlan {
     pub preq: Option<Vec<String>>,
     pub cost: f64,
     pub build: f64,
-    pub events: Vec<EventChance>,
+    pub events: HashMap<String, f64>,
 }
 
 impl fmt::Display for BuildingPlan {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} ({}): pre-reqs {}, costs {}", 
+        write!(f, "{} ({}): pre-reqs {}, costs {}",
                self.name,
                self.btype,
                match self.preq {
@@ -66,7 +67,7 @@ impl default::Default for BldgCond {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct EventChance {
     name: String,
-    chance: f32,
+    chance: f64,
 }
 
 impl Building {
@@ -106,6 +107,20 @@ impl Building {
         //TODO:
         // possible second boolean to show in_use (events can trigger)
     }
+
+    /// Get a new map of event chances for each event possible at the building
+    /// based on the building's condition.
+    pub fn get_events(&self) -> HashMap<String, f64> {
+        let mut events = self.plan.events.clone();
+        events.iter_mut().map(|(nm, ch)| {
+            (nm.clone(), *ch *
+             if self.condition < 0.0 || self.condition > 100.0 {
+                 0.0
+             } else {
+                 self.condition / 100.0
+             })
+        }).collect::<HashMap<_,_>>()
+    }
 }
 
 impl sett::HasName for Building {
@@ -116,7 +131,7 @@ impl sett::HasName for Building {
 
 impl fmt::Display for Building {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} ({}): {:.1}% {}, hosts {} people", 
+        write!(f, "{} ({}): {:.1}% {}, hosts {} people",
                self.name,
                self.plan.btype,
                100.0 - self.condition.abs(),  // distance from new & complete

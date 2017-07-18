@@ -49,13 +49,18 @@ pub fn parse_input(input: &str) -> ParseResult {
                     "LICENSE".to_string())
             },
             "commands" => ParseResult::Commands,
-            "new" => ParseResult::New(cmd.next(), cmd.next(), cmd.next()),
-            "step" | "n" | "next" => ParseResult::Step(cmd.next().and_then(|s| s.parse::<i64>().ok()).unwrap_or(1)),
+            "new" | "add" => ParseResult::New(cmd.next(), cmd.next(), cmd.next()),
+            "step" | "n" | "next" =>
+                ParseResult::Step(cmd.next().and_then(|s| s.parse::<i64>().ok()).unwrap_or(1)),
             "p" | "print" => ParseResult::Print(cmd.next()),
             "a" | "auto" => ParseResult::ToggleAuto,
             "q" | "quit" => ParseResult::Quit,
             "sv" | "save" => ParseResult::Save(cmd.next()),
             "ld" | "load" => ParseResult::Load(cmd.next()),
+            "dev" => ParseResult::Success, //TODO: add dev mode
+                                           //TODO: allow normally blocked commands
+                                           //TODO: e.g. add building w/o matching quarter or gold,
+                                           //TODO: create a hero or perform an event's effects
             "" => ParseResult::Success,
             s @ _ => ParseResult::Unknown(s.to_string()),
         },

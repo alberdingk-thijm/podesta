@@ -22,7 +22,7 @@
 //! # }
 //! ```
 use effects;
-use std::collections::VecDeque;
+use std::collections::{VecDeque, HashMap};
 
 /// A struct representing an event that occurs in a quarter.
 /// Events have a name, identifier and description.
@@ -53,6 +53,7 @@ impl EventQueue {
     /// element beforehand.
     pub fn push(&mut self, e: Event) {
         if self.is_full() {
+            //TODO: should we really just toss an event here? how to handle a maxed queue?
             self.pop();
         }
         self.events.push_back(e)
@@ -88,3 +89,28 @@ impl Event {
     }
 }
 
+/// A struct representing the probabilities of each named event
+/// at the current step. Returned by sett::step and used to
+/// infer if an event occurs by the manager.
+#[derive(Debug)]
+pub struct EventMap {
+    pub step: i32,
+    pub map: HashMap<String, f64>
+}
+
+impl EventMap {
+    pub fn new(step: i32) -> EventMap {
+        EventMap {
+            step: step,
+            map: HashMap::new(),
+        }
+    }
+
+    /// Add entries to the map using the given hashmap.
+    /// Existing entries are incremented, while new entries are simply added.
+    pub fn add_chances(&mut self, ec: HashMap<String, f64>) {
+        for (event, chance) in ec.into_iter() {
+            *self.map.entry(event).or_insert(0.0) += chance;
+        }
+    }
+}

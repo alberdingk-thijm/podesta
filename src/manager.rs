@@ -119,7 +119,8 @@ impl Manager {
     /// file name or accepting one.
     pub fn save(&self, file: Option<String>) -> Result<(), parser::GameDataError> {
         // Use the given file, OR prompt for a file, OR use the default
-        let savef = file.unwrap_or(
+        // FIXME: always executes prompts::name_file for savefile
+        let savef = file.unwrap_or_else(||
             prompts::name_file(&format!(" to save to (default: {}): ",
                                         self.savefile))
                                .unwrap_or(self.savefile.clone()));
@@ -205,14 +206,10 @@ impl Manager {
                     &(racenames.collect::<Vec<_>>()), nprompts);
                 let race = people::Race::iter_variants()
                     .nth(racechoice).unwrap();
-                s.add_quarter(name.clone(), qtype, race)
-                    .unwrap_or_else(|e| {
-                    println!("Failed to construct {} quarter: {}",
-                             name, e);
-                    })
+                s.add_quarter(name.clone(), qtype, race).map_err(Error::Build)
             },
-            None => println!("No sett found (first run 'new' or 'load')!"),
-        }
+            None => Err(Error::NoSett),
+        }.unwrap_or_else(|e| println!("Failed to construct quarter: {}", e))
     }
 
     /// Initialize a new building and store it in the manager's sett's quarter.
@@ -229,10 +226,11 @@ impl Manager {
                 let mut plannames = plans.iter().map(|p| p.to_string());
                 // Find index of plan to add
                 let plan = match name_input {
-                    //TODO: replace starts_with with a substring of
-                    //TODO: the name up to the first space
-                    Some(s) => plannames.position(|x| x.starts_with(&s))
-                        .ok_or(quarters::BuildError::NoPlanFound),
+                    Some(s) => plannames.position(|x| {
+                        // check that name matches up to first space
+                        x.split_whitespace().next()
+                            .map(|sx| sx == s).unwrap_or(false)
+                    }).ok_or(quarters::BuildError::NoPlanFound),
                     None => { prompts::choose(&plannames.collect::<Vec<_>>())
                         .map_err(parser::GameDataError::Prompt).map_err(|e| {
                             //println!("Error choosing building: {:?}", e);
@@ -276,14 +274,17 @@ impl Manager {
                 for _ in 0..n {
                     self.hist.add_entry(format!("Step {}", s.age),
                                         format!("{}", s));
-                    s.step();
+                    let _emap = s.step();
+                    //TODO: get an event from the emap and add it (if Some) to the queue
+                    //_emap.rand_event()
+                    //     .and_then(|e| /* get the event from the name string */)
+                    //     .and_then(|e| self.queue.push(e))
                 }
+                Ok(())
             },
-            None => println!("No sett found (first run 'new' or 'load')!"),
-        }
+            None => Err(Error::NoSett),
+        }.unwrap_or_else(|e| println!("Failed to perform step: {}", e))
     }
-
-    /// Compute the event chances for this step.
 
     /// Pop an event and perform its effects on the sett.
     pub fn activate_event(&mut self) {

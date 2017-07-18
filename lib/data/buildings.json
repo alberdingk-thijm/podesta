@@ -6,16 +6,10 @@
     "preq": null,
     "cost": 100,
     "build": 10,
-    "events": [
-      {
-        "name": "Heresy",
-        "chance": 2
-      },
-      {
-        "name": "Revelation",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Heresy": 2.0,
+      "Revelation": 1.0
+    }
   },
   {
     "name": "Temple",
@@ -26,20 +20,11 @@
     ],
     "cost": 300,
     "build": 8,
-    "events": [
-      {
-        "name": "Heresy",
-        "chance": 1
-      },
-      {
-        "name": "Revelation",
-        "chance": 2
-      },
-      {
-        "name": "Observance",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Heresy": 1.0,
+      "Revelation": 2.0,
+      "Observance": 1.0
+    }
   },
   {
     "name": "Garden",
@@ -50,12 +35,9 @@
     ],
     "cost": 500,
     "build": 5,
-    "events": [
-      {
-        "name": "Revelation",
-        "chance": 3
-      }
-    ]
+    "events": {
+      "Revelation": 3.0
+    }
   },
   {
     "name": "GrandTemple",
@@ -66,24 +48,12 @@
     ],
     "cost": 1500,
     "build": 3,
-    "events": [
-      {
-        "name": "Heresy",
-        "chance": -1
-      },
-      {
-        "name": "Revelation",
-        "chance": 1
-      },
-      {
-        "name": "Observance",
-        "chance": 2
-      },
-      {
-        "name": "Masterwork",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Heresy": -1.0,
+      "Revelation": 1.0,
+      "Observance": 2.0,
+      "Masterwork": 1.0
+    }
   },
   {
     "name": "Theatre",
@@ -95,20 +65,11 @@
     ],
     "cost": 1000,
     "build": 4,
-    "events": [
-      {
-        "name": "RareBook",
-        "chance": 1
-      },
-      {
-        "name": "Investment",
-        "chance": 1
-      },
-      {
-        "name": "Performance",
-        "chance": 2
-      }
-    ]
+    "events": {
+      "RareBook": 1.0,
+      "Investment": 1.0,
+      "Performance": 2.0
+    }
   },
   {
     "name": "ReligiousOrder",
@@ -120,24 +81,12 @@
     ],
     "cost": 1400,
     "build": 4,
-    "events": [
-      {
-        "name": "RareBook",
-        "chance": 2
-      },
-      {
-        "name": "Revelation",
-        "chance": 2
-      },
-      {
-        "name": "Masterwork",
-        "chance": 1
-      },
-      {
-        "name": "Artifact",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "RareBook": 2.0,
+      "Revelation": 2.0,
+      "Masterwork": 1.0,
+      "Artifact": 1.0
+    }
   },
   {
     "name": "Market",
@@ -146,16 +95,10 @@
     "preq": null,
     "cost": 100,
     "build": 10,
-    "events": [
-      {
-        "name": "Merchants",
-        "chance": 2
-      },
-      {
-        "name": "Outlaws",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Merchants": 2.0,
+      "Outlaws": 1.0
+    }
   },
   {
     "name": "Forge",
@@ -164,20 +107,11 @@
     "preq": null,
     "cost": 200,
     "build": 10,
-    "events": [
-      {
-        "name": "Breakthrough",
-        "chance": 1
-      },
-      {
-        "name": "Fire",
-        "chance": 1
-      },
-      {
-        "name": "FineCraft",
-        "chance": 2
-      }
-    ]
+    "events": {
+      "Breakthrough": 1.0,
+      "Fire": 1.0,
+      "FineCraft": 2.0
+    }
   },
   {
     "name": "Mint",
@@ -189,16 +123,10 @@
     ],
     "cost": 700,
     "build": 5,
-    "events": [
-      {
-        "name": "Outlaws",
-        "chance": 1
-      },
-      {
-        "name": "Tax",
-        "chance": 3
-      }
-    ]
+    "events": {
+      "Outlaws": 1.0,
+      "Tax": 3.0
+    }
   },
   {
     "name": "Workshop",
@@ -207,16 +135,10 @@
     "preq": null,
     "cost": 400,
     "build": 8,
-    "events": [
-      {
-        "name": "Accident",
-        "chance": -1
-      },
-      {
-        "name": "FineCraft",
-        "chance": 2
-      }
-    ]
+    "events": {
+      "Accident": -1.0,
+      "FineCraft": 2.0
+    }
   },
   {
     "name": "GuildHall",
@@ -228,28 +150,13 @@
     ],
     "cost": 1000,
     "build": 4,
-    "events": [
-      {
-        "name": "Breakthrough",
-        "chance": 1
-      },
-      {
-        "name": "Architect",
-        "chance": 1
-      },
-      {
-        "name": "Merchants",
-        "chance": 1
-      },
-      {
-        "name": "Strike",
-        "chance": 1
-      },
-      {
-        "name": "FineCraft",
-        "chance": 3
-      }
-    ]
+    "events": {
+      "Breakthrough": 1.0,
+      "Architect": 1.0,
+      "Merchants": 1.0,
+      "Strike": 1.0,
+      "FineCraft": 3.0
+    }
   },
   {
     "name": "PrintingHouse",
@@ -261,24 +168,12 @@
     ],
     "cost": 1600,
     "build": 8,
-    "events": [
-      {
-        "name": "Merchants",
-        "chance": 2
-      },
-      {
-        "name": "RareBook",
-        "chance": 3
-      },
-      {
-        "name": "Investment",
-        "chance": 2
-      },
-      {
-        "name": "Strike",
-        "chance": 2
-      }
-    ]
+    "events": {
+      "Merchants": 2.0,
+      "RareBook": 3.0,
+      "Investment": 2.0,
+      "Strike": 2.0
+    }
   },
   {
     "name": "Lighthouse",
@@ -287,16 +182,10 @@
     "preq": null,
     "cost": 200,
     "build": 10,
-    "events": [
-      {
-        "name": "Merchants",
-        "chance": 1
-      },
-      {
-        "name": "Outlaws",
-        "chance": 2
-      }
-    ]
+    "events": {
+      "Merchants": 1.0,
+      "Outlaws": 2.0
+    }
   },
   {
     "name": "Harbour",
@@ -307,20 +196,11 @@
     ],
     "cost": 600,
     "build": 5,
-    "events": [
-      {
-        "name": "Outlaws",
-        "chance": 2
-      },
-      {
-        "name": "Plague",
-        "chance": 2
-      },
-      {
-        "name": "Merchants",
-        "chance": 3
-      }
-    ]
+    "events": {
+      "Outlaws": 2.0,
+      "Plague": 2.0,
+      "Merchants": 3.0
+    }
   },
   {
     "name": "Warehouse",
@@ -331,16 +211,10 @@
     ],
     "cost": 900,
     "build": 4,
-    "events": [
-      {
-        "name": "Plague",
-        "chance": 1
-      },
-      {
-        "name": "Merchants",
-        "chance": 4
-      }
-    ]
+    "events": {
+      "Plague": 1.0,
+      "Merchants": 4.0
+    }
   },
   {
     "name": "Shipyard",
@@ -352,20 +226,11 @@
     ],
     "cost": 1500,
     "build": 3,
-    "events": [
-      {
-        "name": "Investment",
-        "chance": 1
-      },
-      {
-        "name": "Embargo",
-        "chance": 1
-      },
-      {
-        "name": "Skirmish",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Investment": 1.0,
+      "Embargo": 1.0,
+      "Skirmish": 1.0
+    }
   },
   {
     "name": "CustomsHouse",
@@ -377,28 +242,13 @@
     ],
     "cost": 2000,
     "build": 2,
-    "events": [
-      {
-        "name": "Merchants",
-        "chance": 2
-      },
-      {
-        "name": "Tax",
-        "chance": 2
-      },
-      {
-        "name": "Embargo",
-        "chance": 2
-      },
-      {
-        "name": "Investment",
-        "chance": 1
-      },
-      {
-        "name": "Plague",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Merchants": 2.0,
+      "Tax": 2.0,
+      "Embargo": 2.0,
+      "Investment": 1.0,
+      "Plague": 1.0
+    }
   },
   {
     "name": "Lazaretto",
@@ -410,16 +260,10 @@
     ],
     "cost": 1500,
     "build": 3,
-    "events": [
-      {
-        "name": "Plague",
-        "chance": -2
-      },
-      {
-        "name": "Revelation",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Plague": -2.0,
+      "Revelation": 1.0
+    }
   },
   {
     "name": "Library",
@@ -428,16 +272,10 @@
     "preq": null,
     "cost": 400,
     "build": 8,
-    "events": [
-      {
-        "name": "RareBook",
-        "chance": 1
-      },
-      {
-        "name": "Breakthrough",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "RareBook": 1.0,
+      "Breakthrough": 1.0
+    }
   },
   {
     "name": "School",
@@ -449,16 +287,10 @@
     ],
     "cost": 1200,
     "build": 3,
-    "events": [
-      {
-        "name": "RareBook",
-        "chance": 2
-      },
-      {
-        "name": "Lecture",
-        "chance": 2
-      }
-    ]
+    "events": {
+      "RareBook": 2.0,
+      "Lecture": 2.0
+    }
   },
   {
     "name": "University",
@@ -469,28 +301,13 @@
     ],
     "cost": 3000,
     "build": 2,
-    "events": [
-      {
-        "name": "RareBook",
-        "chance": 2
-      },
-      {
-        "name": "Lecture",
-        "chance": 2
-      },
-      {
-        "name": "Breakthrough",
-        "chance": 1
-      },
-      {
-        "name": "Strike",
-        "chance": 1
-      },
-      {
-        "name": "Architect",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "RareBook": 2.0,
+      "Lecture": 2.0,
+      "Breakthrough": 1.0,
+      "Strike": 1.0,
+      "Architect": 1.0
+    }
   },
   {
     "name": "Observatory",
@@ -501,16 +318,10 @@
     ],
     "cost": 2500,
     "build": 2,
-    "events": [
-      {
-        "name": "Breakthrough",
-        "chance": 1
-      },
-      {
-        "name": "CelestialEvent",
-        "chance": 2
-      }
-    ]
+    "events": {
+      "Breakthrough": 1.0,
+      "CelestialEvent": 2.0
+    }
   },
   {
     "name": "Society",
@@ -521,28 +332,13 @@
     ],
     "cost": 5000,
     "build": 2,
-    "events": [
-      {
-        "name": "RareBook",
-        "chance": 1
-      },
-      {
-        "name": "Lecture",
-        "chance": 2
-      },
-      {
-        "name": "Performance",
-        "chance": 1
-      },
-      {
-        "name": "Heresy",
-        "chance": 1
-      },
-      {
-        "name": "Artifact",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "RareBook": 1.0,
+      "Lecture": 2.0,
+      "Performance": 1.0,
+      "Heresy": 1.0,
+      "Artifact": 1.0
+    }
   },
   {
     "name": "Walls",
@@ -551,16 +347,10 @@
     "preq": null,
     "cost": 100,
     "build": 10,
-    "events": [
-      {
-        "name": "Skirmish",
-        "chance": 1
-      },
-      {
-        "name": "Outlaws",
-        "chance": -1
-      }
-    ]
+    "events": {
+      "Skirmish": 1.0,
+      "Outlaws": -1.0
+    }
   },
   {
     "name": "Barracks",
@@ -571,12 +361,9 @@
     ],
     "cost": 300,
     "build": 8,
-    "events": [
-      {
-        "name": "Skirmish",
-        "chance": 3
-      }
-    ]
+    "events": {
+      "Skirmish": 3.0
+    }
   },
   {
     "name": "Armoury",
@@ -588,16 +375,10 @@
     ],
     "cost": 1000,
     "build": 4,
-    "events": [
-      {
-        "name": "Skirmish",
-        "chance": 2
-      },
-      {
-        "name": "FineCraft",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Skirmish": 2.0,
+      "FineCraft": 1.0
+    }
   },
   {
     "name": "Fortress",
@@ -608,20 +389,11 @@
     ],
     "cost": 2000,
     "build": 2,
-    "events": [
-      {
-        "name": "Skirmish",
-        "chance": 2
-      },
-      {
-        "name": "FineCraft",
-        "chance": 1
-      },
-      {
-        "name": "Coup",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Skirmish": 2.0,
+      "FineCraft": 1.0,
+      "Coup": 1.0
+    }
   },
   {
     "name": "Assembly",
@@ -630,16 +402,10 @@
     "preq": null,
     "cost": 200,
     "build": 10,
-    "events": [
-      {
-        "name": "Trial",
-        "chance": 2
-      },
-      {
-        "name": "Outlaws",
-        "chance": -1
-      }
-    ]
+    "events": {
+      "Trial": 2.0,
+      "Outlaws": -1.0
+    }
   },
   {
     "name": "Prison",
@@ -651,20 +417,11 @@
     ],
     "cost": 800,
     "build": 5,
-    "events": [
-      {
-        "name": "Trial",
-        "chance": 2
-      },
-      {
-        "name": "Skirmish",
-        "chance": -2
-      },
-      {
-        "name": "Outlaws",
-        "chance": -2
-      }
-    ]
+    "events": {
+      "Trial": 2.0,
+      "Skirmish": -2.0,
+      "Outlaws": -2.0
+    }
   },
   {
     "name": "Palace",
@@ -676,19 +433,10 @@
     ],
     "cost": 5000,
     "build": 2,
-    "events": [
-      {
-        "name": "Investment",
-        "chance": 2
-      },
-      {
-        "name": "Diplomat",
-        "chance": 2
-      },
-      {
-        "name": "Masterwork",
-        "chance": 1
-      }
-    ]
+    "events": {
+      "Investment": 2.0,
+      "Diplomat": 2.0,
+      "Masterwork": 1.0
+    }
   }
 ]

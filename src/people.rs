@@ -1,4 +1,4 @@
-use buildings;
+//use buildings;
 use std::fmt;
 
 #[allow(dead_code)]
@@ -13,7 +13,7 @@ pub struct Hero {
     pub class: Class,
     /// What the hero is currently doing.
     pub activity: Activity,
-    pub home: Box<buildings::Building>,
+    //pub home: Box<buildings::Building>,
 }
 
 macro_attr! {
@@ -176,8 +176,8 @@ impl Hero {
     // const AGEMOD: i32 = 25;
     fn agemod() -> i32 { 25 }
 
-    pub fn new(n: &str, lvl: i32, race: Race, class: Class,
-               home: Box<buildings::Building>) -> Hero {
+    pub fn new(n: &str, lvl: i32, race: Race, class: Class) -> Hero {
+               //home: Box<buildings::Building>) -> Hero {
         Hero {
             name: n.to_string(),
             age: class.get_age() * Hero::agemod(),
@@ -185,7 +185,7 @@ impl Hero {
             race: race,
             class: class,
             activity: Activity::Working,
-            home: home,
+            //home: home,
         }
     }
 

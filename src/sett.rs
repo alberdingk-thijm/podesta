@@ -4,6 +4,7 @@ use quarters;
 use buildings;
 use regions;
 use people;
+use events;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
@@ -54,8 +55,14 @@ impl Sett {
         }
     }
 
-    /// Execute settlement timestep
-    pub fn step(&mut self) {
+    /// Execute settlement timestep and perform the following actions:
+    /// - Increment settlement age by 1.
+    /// - Perform quarters::step() for each quarter, and
+    /// - calculate new population from the quarters.
+    /// - Increment gold for the settlement.
+    /// - Compute an event map for the step and return it.
+    pub fn step(&mut self) -> events::EventMap {
+        // new population (sum of quarters' population)
         let mut newpop = 0f64;
         self.age += 1;
         // call each quarter's step
@@ -66,6 +73,32 @@ impl Sett {
         self.pop = newpop;
         // accumulate gold
         self.collect_gold();
+        // compute event chances and return an eventmap
+        self.compute_events()
+    }
+
+    /// Compute the event chances for this step.
+    fn compute_events(&self) -> events::EventMap {
+        let mut map = events::EventMap::new(self.age);
+        // get all buildings' events
+        /*
+        let eventcs = {
+            let qrtrs = self.qrtrs.iter().map(|q| q.borrow());
+            let bldgs = qrtrs.flat_map(|q| q.bldgs.iter().map(|b| b.borrow()));
+            bldgs.flat_map(|b| b.get_eventchances().iter())
+        };
+        */
+        for q in &self.qrtrs {
+            for b in &q.borrow().bldgs {
+                // get all EventChances
+                let eventcs = {
+                    let bldg = b.borrow();
+                    bldg.get_events()
+                };
+                map.add_chances(eventcs);
+            }
+        }
+        map
     }
 
     /// Add quarter
