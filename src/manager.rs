@@ -12,6 +12,7 @@ use events;
 use prompts;
 use std::fmt;
 use std::error;
+use std::rc::Rc;
 
 macro_rules! choose_info {
     ($printexpr:expr, $auto:expr, $name:expr) => {
@@ -274,11 +275,22 @@ impl Manager {
                 for _ in 0..n {
                     self.hist.add_entry(format!("Step {}", s.age),
                                         format!("{}", s));
-                    let _emap = s.step();
+                    let emap = s.step();
                     //TODO: get an event from the emap and add it (if Some) to the queue
-                    //_emap.rand_event()
-                    //     .and_then(|e| /* get the event from the name string */)
-                    //     .and_then(|e| self.queue.push(e))
+                    for event in emap.rand_events().iter() {
+                        /*
+                        let ev = {
+                            //FIXME: reborrow occurs of self to match event string to
+                            // events in datafiles (but have to use sett to get event strings)
+                            self.find_event(event).map(|e| e.clone())
+                        };
+                        //FIXME: same problem as above (will cause a reborrow)
+                        //FIXME: also must be done each turn so that we can activate events
+                        //FIXME: alternative? event queue only keeps string names,
+                        //FIXME: finds event when it activates it
+                        self.queue.push(ev.unwrap())
+                        */
+                    }
                 }
                 Ok(())
             },
@@ -286,10 +298,16 @@ impl Manager {
         }.unwrap_or_else(|e| println!("Failed to perform step: {}", e))
     }
 
+    /// Return a pointer to an event that matches the given string name,
+    /// or None if no event is found.
+    fn find_event(&self, s: &str) -> Option<&Rc<events::Event>> {
+        self.datafiles.events.iter().find(|e| e.name == s)
+    }
+
     /// Pop an event and perform its effects on the sett.
     pub fn activate_event(&mut self) {
         if let Some(e) = self.queue.pop() {
-            let _effects = e.effects;
+            let ref _effects = e.effects;
         }
     }
 

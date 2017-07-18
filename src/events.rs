@@ -22,7 +22,9 @@
 //! # }
 //! ```
 use effects;
+use rand::{self, Rng};
 use std::collections::{VecDeque, HashMap};
+use std::rc::Rc;
 
 /// A struct representing an event that occurs in a quarter.
 /// Events have a name, identifier and description.
@@ -40,7 +42,7 @@ pub struct Event {
 /// A ring buffer of events.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct EventQueue {
-    events: VecDeque<Event>,
+    events: VecDeque<Rc<Event>>,
 }
 
 impl EventQueue {
@@ -51,7 +53,7 @@ impl EventQueue {
 
     /// Push an Event onto the end of the queue. If it is full, pop the first
     /// element beforehand.
-    pub fn push(&mut self, e: Event) {
+    pub fn push(&mut self, e: Rc<Event>) {
         if self.is_full() {
             //TODO: should we really just toss an event here? how to handle a maxed queue?
             self.pop();
@@ -60,7 +62,7 @@ impl EventQueue {
     }
 
     /// Pop the first element off the queue.
-    pub fn pop(&mut self) -> Option<Event> {
+    pub fn pop(&mut self) -> Option<Rc<Event>> {
         self.events.pop_front()
     }
 
@@ -112,5 +114,18 @@ impl EventMap {
         for (event, chance) in ec.into_iter() {
             *self.map.entry(event).or_insert(0.0) += chance;
         }
+    }
+
+    /// Return a vector of random event keys from the EventMap, based on the
+    /// chance value of the keys.
+    pub fn rand_events(&self) -> Vec<&str> {
+        let mut v = vec![];
+        for (event, chance) in self.map.iter() {
+            let r = rand::thread_rng().gen_range(0f64, 100f64);
+            if r <= *chance {
+                v.push(event.as_str())
+            }
+        }
+        v
     }
 }
