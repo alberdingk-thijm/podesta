@@ -18,10 +18,6 @@ pub struct Sett {
     pub reg: Rc<regions::Region>,
     /// List of quarters in the settlement.
     pub qrtrs: Vec<Rc<RefCell<quarters::Quarter>>>,
-    // List of buildings in the settlement
-    //pub bldgs: Vec<Rc<RefCell<buildings::Building>>>,
-    // List of heroes in the settlement
-    //pub heroes: Vec<Rc<RefCell<people::Hero>>>,
     /// Turns before a new quarter is added.
     pub nextqrtr: i32,
     /// Flag for if settlement is coastal.
@@ -38,7 +34,7 @@ impl Sett {
                coast: bool,
     ) -> Sett {
         // get the starting population based on the region's growth
-        let pop : f64 = 50.0 * reg.growth;
+        let pop = 50.0 * reg.growth;
         Sett {
             name: n,
             age: 0,
@@ -47,9 +43,7 @@ impl Sett {
             reg: reg,
             qrtrs: vec![Rc::new(
                 RefCell::new(quarters::Quarter::new("Main", qt, pop, r)))],
-            //bldgs: vec!(),
-            // TODO: get a starting governor
-            //heroes: vec!(),
+            // TODO: get a starting governor and governing hall?
             nextqrtr: 50,
             coastal: coast,
         }
@@ -67,12 +61,12 @@ impl Sett {
         self.age += 1;
         // call each quarter's step
         for q in &self.qrtrs {
-            q.borrow_mut().step(self.reg.growth as f64);
+            q.borrow_mut().step(self.reg.growth);
             newpop += q.borrow().pop;
         }
         self.pop = newpop;
-        // accumulate gold
-        self.collect_gold();
+        // accumulate gold (TODO: replace None with boost option)
+        self.collect_gold(None);
         // compute event chances and return an eventmap
         self.compute_events()
     }
@@ -81,13 +75,6 @@ impl Sett {
     fn compute_events(&self) -> events::EventMap {
         let mut map = events::EventMap::new(self.age);
         // get all buildings' events
-        /*
-        let eventcs = {
-            let qrtrs = self.qrtrs.iter().map(|q| q.borrow());
-            let bldgs = qrtrs.flat_map(|q| q.bldgs.iter().map(|b| b.borrow()));
-            bldgs.flat_map(|b| b.get_eventchances().iter())
-        };
-        */
         for q in &self.qrtrs {
             for b in &q.borrow().bldgs {
                 // get all EventChances
@@ -140,20 +127,37 @@ impl Sett {
         if self.gold < plan.cost {
             return Err(quarters::BuildError::NotEnoughGold);
         }
+        // Check that prerequisites are built
+        if let Some(ref preqs) = plan.preq {
+            for p in preqs.iter() {
+                let bnames = {
+                    let mut v = vec![];
+                    for q in self.qrtrs.iter() {
+                        for b in q.borrow().bldgs.iter() {
+                            v.push(b.borrow().name.clone())
+                        }
+                    }
+                    v
+                };
+                if bnames.iter().find(|b| b == &p).is_none() {
+                    return Err(quarters::BuildError::PrereqsMissing);
+                }
+            }
+        }
 
         self.gold -= plan.cost;
         q.borrow_mut().add_building(plan)
     }
 
     /// Increment the total amount of gold in the settlement based on the
-    /// state of its quarters.
-    pub fn collect_gold(&mut self) {
+    /// state of its quarters. For each member of the population, collect
+    /// 0.01 gold times the optional boost.
+    pub fn collect_gold(&mut self, boost: Option<f64>) {
         //TODO: placeholder incrementer
-        self.gold += 0.01f64 * self.pop as f64;
+        self.gold += 0.01f64 * boost.unwrap_or(1.0) * self.pop;
         for q in &self.qrtrs {
-            self.gold += q.borrow_mut().collect_gold();
+            self.gold += q.borrow_mut().collect_gold(boost);
         }
-        //self.gold += 0.04f64 * self.heroes.len() as f64;
     }
 }
 

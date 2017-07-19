@@ -100,6 +100,8 @@ pub enum BuildError {
     AlreadyExists,
     /// Port quarter can't be constructed inland
     InlandPort,
+    /// Prerequisite buildings missing
+    PrereqsMissing,
 }
 impl fmt::Display for BuildError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -116,6 +118,8 @@ impl fmt::Display for BuildError {
                 write!(f, "A structure by that name already exists"),
             BuildError::InlandPort =>
                 write!(f, "Cannot add a port quarter to an inland sett"),
+            BuildError::PrereqsMissing =>
+                write!(f, "Prerequisite buildings not yet constructed"),
         }
     }
 }
@@ -129,6 +133,7 @@ impl error::Error for BuildError {
             BuildError::NotEnoughGold => "not enough gold",
             BuildError::AlreadyExists => "reused unique name",
             BuildError::InlandPort => "inland port",
+            BuildError::PrereqsMissing => "prereqs missing",
         }
     }
 
@@ -191,9 +196,11 @@ impl Quarter {
         Ok(())
     }
 
-    /// Collect gold
-    pub fn collect_gold(&self) -> f64 {
-        self.bldgs.iter().map(|b| 0.04f64 * b.borrow().occupants.len() as f64)
+    /// Collect gold. For each occupant in a building, collect an extra 0.04
+    /// gold times the optional boost.
+    pub fn collect_gold(&self, boost: Option<f64>) -> f64 {
+        self.bldgs.iter().map(|b| 0.04f64 * boost.unwrap_or(1.0)
+                              * b.borrow().occupants.len() as f64)
             .fold(0.0, |acc, x| acc + x)
     }
 
