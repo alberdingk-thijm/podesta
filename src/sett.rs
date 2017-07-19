@@ -22,10 +22,12 @@ pub struct Sett {
     pub nextqrtr: i32,
     /// Flag for if settlement is coastal.
     pub coastal: bool,
+    //TODO: add event flags?
+    //TODO: flag for growth/build/gold
+    //pub bonuses: effects::EffectFlags,
 }
 
 impl Sett {
-
     /// Create a new Settlement
     pub fn new(n: String,
                reg: Rc<regions::Region>,

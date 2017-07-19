@@ -79,6 +79,32 @@ pub enum EventEffect {
 }
 */
 
+/// Struct for tracking duration and intensity of non-instant effects.
+/// These include Riot, Grow, Build and Gold.
+/// Struct is created by an event and then passed to the target.
+#[derive(Serialize, Deserialize, Debug)]
+pub struct EffectFlags {
+    pub turns: i32,
+    pub grow: f64,
+    pub build: f64,
+    pub gold: f64,
+}
+
+impl EffectFlags {
+    fn new(time: i32, gw: f64, bu: f64, gd: f64) -> EffectFlags {
+        EffectFlags {
+            turns: time,
+            grow: gw,
+            build: bu,
+            gold: gd,
+        }
+    }
+
+    fn step(&mut self) {
+        self.turns -= 1;
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub enum EventEffect {
     Kill { dead: String, viralpt: Option<i64>, area: Area },
