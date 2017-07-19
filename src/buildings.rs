@@ -9,12 +9,8 @@ use std::collections::HashMap;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Building {
     pub name: String,
-    //pub id: i32,
     pub plan: Rc<BuildingPlan>,
-    //pub btype: quarters::QType,
-    //pub events: Vec<EventChance>,
-    //pub bspeed: f64,
-    pub condition: f64, //BldgCond,
+    pub cond: BldgCond,
     pub occupants: Vec<people::Hero>,
 }
 
@@ -51,61 +47,71 @@ impl fmt::Display for BuildingPlan {
 /// * Pay gold to remove ruined buildings.
 #[derive(Serialize, Deserialize, Debug)]
 pub enum BldgCond {
-    /// Building is not yet complete (no bonuses); any damage resets to -100.
-    InProgress = -100,
+    /// Building is not yet complete (no bonuses); any damage resets to 0.0.
+    InProgress(f64),
     /// Building bonuses have full effects. Each timestep, reduces by 1%.
-    /// Accident chance also increases slightly with age.
-    New = 0,
+    /// TODO: Accident chance also increases slightly with age.
+    /// Goes from 100.0 to 0.0.
+    InUse(f64),
     /// Building too destroyed to use.
-    Ruined = 100,
+    Ruined,
+}
+
+impl fmt::Display for BldgCond {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", match *self {
+            BldgCond::InProgress(n) => format!("{:.1}% complete", n),
+            BldgCond::InUse(n) => format!("{:.1}% durability", n),
+            BldgCond::Ruined => format!("in ruins"),
+        })
+    }
 }
 
 impl default::Default for BldgCond {
-    fn default() -> BldgCond { BldgCond::InProgress }
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct EventChance {
-    name: String,
-    chance: f64,
+    fn default() -> BldgCond { BldgCond::InProgress(0.0) }
 }
 
 impl Building {
     /// Create a new building object.
     pub fn new(plan: Rc<BuildingPlan>) -> Building {
         Building {
-            name: plan.name.clone(),// to_string(),
-            // DEPRECATED:
-            //id: plans.id,
+            name: plan.name.clone(),
             plan: plan,
-            //btype: btype,
-            //events: events,
-            //bspeed: speed,
-            condition: -100.0, //BldgCond::InProgress,
+            cond: BldgCond::InProgress(0.0),
             occupants: vec!(),
         }
     }
 
     /// Execute a timestep for the building, aging it (or progressing in its
     /// construction).
-    pub fn step(&mut self) {
-        //TODO: allow second parameter with possible repairs/damage to
-        // add to condition?
-        let age_rate = if self.condition < 0.0 {
-            // add build rate if still in progress
-            self.plan.build
-        } else {
-            // add 1 each step once built
-            1.0
-        };
-        //TODO: building can become slightly "overage" on reaching 0
-        //TODO: possible solution: in_progress boolean
-        self.condition += age_rate;
-        //TODO:
-        // if condition reaches 0 for first time, add events to tracker
-        // if condition reaches 100 for first time, remove events from tracker
-        //TODO:
-        // possible second boolean to show in_use (events can trigger)
+    /// If boost is some, multiply the build rate by it.
+    /// If bonus is some, add it to the building (note: bonus can be negative).
+    pub fn step(&mut self, boost: Option<f64>, bonus: Option<f64>) {
+        self.cond = match self.cond {
+            BldgCond::InProgress(n) => {
+                if n >= 100.0 {
+                    BldgCond::InUse(100.0)
+                } else {
+                    BldgCond::InProgress(n + (self.plan.build
+                                              * boost.unwrap_or(1.0))
+                                         + bonus.unwrap_or(0.0))
+                }
+            },
+            BldgCond::InUse(n) => {
+                if n <= 0.0 {
+                    // remove all occupants when building becomes ruined
+                    // TODO: should this be handled by the manager?
+                    // TODO: manager can alert that the building is ruined
+                    // TODO: and that the occupants have left
+                    self.occupants.clear();
+                    BldgCond::Ruined
+                } else {
+                    BldgCond::InUse((n - (1.0 * (1.0 - boost.unwrap_or(0.0)))
+                                + bonus.unwrap_or(0.0)).min(100.0))
+                }
+            },
+            BldgCond::Ruined => BldgCond::Ruined,
+        }
     }
 
     /// Get a new map of event chances for each event possible at the building
@@ -114,10 +120,11 @@ impl Building {
         let mut events = self.plan.events.clone();
         events.iter_mut().map(|(nm, ch)| {
             (nm.clone(), *ch *
-             if self.condition < 0.0 || self.condition > 100.0 {
-                 0.0
-             } else {
-                 self.condition / 100.0
+             match self.cond {
+                 // when in use, return the parameter divided by 100.0
+                 BldgCond::InUse(n) => n / 100.0,
+                 // otherwise, event has no chance of occurring
+                 _ => 0.0,
              })
         }).collect::<HashMap<_,_>>()
     }
@@ -131,11 +138,10 @@ impl sett::HasName for Building {
 
 impl fmt::Display for Building {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} ({}): {:.1}% {}, hosts {} people",
+        write!(f, "{} - {} - {} - hosts {} people",
                self.name,
                self.plan.btype,
-               100.0 - self.condition.abs(),  // distance from new & complete
-               if self.condition < 0.0 { "completion" } else { "durability" },
+               self.cond,
                self.occupants.len())
    }
 }

@@ -2,7 +2,7 @@
   {
     "name": "Fire",
     "id": 1,
-    "desc": "%s has erupted into flames!",
+    "desc": "{} has erupted into flames!",
     "chance": 3,
     "effects": [
       {
@@ -24,7 +24,7 @@
   {
     "name": "Accident",
     "id": 2,
-    "desc": "there has been an accident at %s",
+    "desc": "There has been an accident at {}",
     "chance": 3,
     "effects": [
       {
@@ -46,7 +46,7 @@
   {
     "name": "Breakthrough",
     "id": 3,
-    "desc": "%s is celebrating a breakthrough",
+    "desc": "{} is celebrating a breakthrough",
     "chance": 3,
     "effects": [
       {
@@ -66,7 +66,7 @@
   {
     "name": "Investment",
     "id": 4,
-    "desc": "%s received a welcome investment",
+    "desc": "{} received a welcome investment",
     "chance": 3,
     "effects": [
       {
@@ -81,7 +81,7 @@
   {
     "name": "RareBook",
     "id": 11,
-    "desc": "%s has acquired a rare book",
+    "desc": "{} has acquired a rare book",
     "chance": 0,
     "effects": [
       {
@@ -95,7 +95,7 @@
   {
     "name": "Lecture",
     "id": 12,
-    "desc": "a lecture was held at %s",
+    "desc": "A lecture was held at {}",
     "chance": 0,
     "effects": [
       {
@@ -112,7 +112,7 @@
   {
     "name": "CelestialEvent",
     "id": 13,
-    "desc": "%s observed an incredible celestial event!",
+    "desc": "{} observed an incredible celestial event!",
     "chance": 0,
     "effects": [
       {
@@ -135,7 +135,7 @@
   {
     "name": "Strike",
     "id": 14,
-    "desc": "members of %s are striking",
+    "desc": "Members of {} are striking",
     "chance": 0,
     "effects": [
       {
@@ -157,7 +157,7 @@
   {
     "name": "Artifact",
     "id": 15,
-    "desc": "a precious artifact has arrived at %s",
+    "desc": "A precious artifact has arrived at {}",
     "chance": 0,
     "effects": [
       {
@@ -171,7 +171,7 @@
   {
     "name": "Masterwork",
     "id": 21,
-    "desc": "%s has received a beautiful masterwork",
+    "desc": "{} has received a beautiful masterwork",
     "chance": 0,
     "effects": [
       {
@@ -185,7 +185,7 @@
   {
     "name": "Performance",
     "id": 22,
-    "desc": "a performance has been mounted at %s",
+    "desc": "A performance has been mounted at {}",
     "chance": 0,
     "effects": [
       {
@@ -207,7 +207,7 @@
   {
     "name": "Heresy",
     "id": 23,
-    "desc": "%s has uncovered heretics",
+    "desc": "{} has uncovered heretics",
     "chance": 0,
     "effects": [
       {
@@ -231,7 +231,7 @@
   {
     "name": "Revelation",
     "id": 24,
-    "desc": "a visitor to %s experienced a revelation!",
+    "desc": "A visitor to {} experienced a revelation!",
     "chance": 0,
     "effects": [
       {
@@ -256,7 +256,7 @@
   {
     "name": "Observance",
     "id": 25,
-    "desc": "the community of %s is observing a religious holiday",
+    "desc": "The community of {} is observing a religious holiday",
     "chance": 0,
     "effects": [
       {
@@ -270,7 +270,7 @@
   {
     "name": "FineCraft",
     "id": 31,
-    "desc": "%s has produced a fine piece of work",
+    "desc": "{} has produced a fine piece of work",
     "chance": 0,
     "effects": [
       {
@@ -284,7 +284,7 @@
   {
     "name": "Merchants",
     "id": 32,
-    "desc": "rich merchants have arrived at %s",
+    "desc": "Rich merchants have arrived at {}",
     "chance": 0,
     "effects": [
       {
@@ -307,7 +307,7 @@
   {
     "name": "Tax",
     "id": 33,
-    "desc": "%s has established a new tax",
+    "desc": "{} has established a new tax",
     "chance": 0,
     "effects": [
       {
@@ -329,7 +329,7 @@
   {
     "name": "Embargo",
     "id": 34,
-    "desc": "an embargo was established by %s",
+    "desc": "An embargo was established by {}",
     "chance": 0,
     "effects": [
       {
@@ -352,7 +352,7 @@
   {
     "name": "Outlaws",
     "id": 35,
-    "desc": "outlaws have been harassing travellers!",
+    "desc": "Outlaws have been harassing travellers!",
     "chance": 0,
     "effects": [
       {
@@ -376,7 +376,7 @@
   {
     "name": "Architect",
     "id": 36,
-    "desc": "a talented architect has arrived at %s",
+    "desc": "A talented architect has arrived at {}",
     "chance": 0,
     "effects": [
       {
@@ -390,7 +390,7 @@
   {
     "name": "Plague",
     "id": 37,
-    "desc": "a terrible plague has claimed us!",
+    "desc": "A terrible plague has claimed us!",
     "chance": 0,
     "effects": [
       {
@@ -412,7 +412,7 @@
   {
     "name": "Skirmish",
     "id": 41,
-    "desc": "soldiers at %s have returned from a skirmish",
+    "desc": "Soldiers at {} have returned from a skirmish",
     "chance": 0,
     "effects": [
       {
@@ -436,7 +436,7 @@
   {
     "name": "Coup",
     "id": 42,
-    "desc": "disgruntled forces have siezed control of %s!",
+    "desc": "Disgruntled forces have seized control of {}!",
     "chance": 0,
     "effects": [
       {
@@ -466,7 +466,7 @@
   {
     "name": "Trial",
     "id": 43,
-    "desc": "a trial is being held at %s",
+    "desc": "A trial is being held at {}",
     "chance": 0,
     "effects": [
       {
@@ -488,7 +488,7 @@
   {
     "name": "Diplomat",
     "id": 44,
-    "desc": "a dignitary is visiting at %s",
+    "desc": "A dignitary is visiting at {}",
     "chance": 0,
     "effects": [
       {

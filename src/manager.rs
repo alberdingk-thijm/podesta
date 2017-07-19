@@ -12,7 +12,6 @@ use events;
 use prompts;
 use std::fmt;
 use std::error;
-use std::rc::Rc;
 
 macro_rules! choose_info {
     ($printexpr:expr, $auto:expr, $name:expr) => {
@@ -120,7 +119,6 @@ impl Manager {
     /// file name or accepting one.
     pub fn save(&self, file: Option<String>) -> Result<(), parser::GameDataError> {
         // Use the given file, OR prompt for a file, OR use the default
-        // FIXME: always executes prompts::name_file for savefile
         let savef = file.unwrap_or_else(||
             prompts::name_file(&format!(" to save to (default: {}): ",
                                         self.savefile))
@@ -273,35 +271,22 @@ impl Manager {
         match self.sett {
             Some(ref mut s) => {
                 for _ in 0..n {
-                    self.hist.add_entry(format!("Step {}", s.age),
-                                        format!("{}", s));
+                    self.hist.add_entry(s.age, format!("{}", s));
                     let emap = s.step();
-                    //TODO: get an event from the emap and add it (if Some) to the queue
                     for event in emap.rand_events().iter() {
-                        /*
-                        let ev = {
-                            //FIXME: reborrow occurs of self to match event string to
-                            // events in datafiles (but have to use sett to get event strings)
-                            self.find_event(event).map(|e| e.clone())
-                        };
-                        //FIXME: same problem as above (will cause a reborrow)
-                        //FIXME: also must be done each turn so that we can activate events
-                        //FIXME: alternative? event queue only keeps string names,
-                        //FIXME: finds event when it activates it
-                        self.queue.push(ev.unwrap())
-                        */
+                        let ev = self.datafiles.events.iter()
+                            .find(|e| e.name == *event).map(|e| e.clone());
+                        if let Some(e) = ev {
+                            println!("{}", e.desc.replace("{}", &s.name));
+                            self.hist.add_entry(s.age, e.desc.replace("{}", &s.name));
+                            self.queue.push(e);
+                        }
                     }
                 }
                 Ok(())
             },
             None => Err(Error::NoSett),
         }.unwrap_or_else(|e| println!("Failed to perform step: {}", e))
-    }
-
-    /// Return a pointer to an event that matches the given string name,
-    /// or None if no event is found.
-    fn find_event(&self, s: &str) -> Option<&Rc<events::Event>> {
-        self.datafiles.events.iter().find(|e| e.name == s)
     }
 
     /// Pop an event and perform its effects on the sett.
@@ -333,6 +318,7 @@ impl Manager {
                     println!("{}", plannames)
                 },
                 "history" => println!("{}", self.hist.show(None)),
+                "queue" => println!("{:?}", self.queue),
                 _ => (),
             },
             None => print_opt!(self.sett),

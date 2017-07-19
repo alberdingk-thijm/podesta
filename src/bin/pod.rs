@@ -32,6 +32,9 @@ fn main() {
         // TODO: clean out arrow key presses and other key codes
         // codes: ESC[A, ESC[B, ESC[C, ESC[D
         let terms = input.split(';').map(|s| s.trim());
+        //dev: check state of event queue
+        //let print_eq = [String::from("p queue")].iter();
+        //terms = terms.chain(print_eq);
         'terms: for term in terms {
             //println!("{:?}", term);
             match podesta::interpreter::parse_input(term) {
