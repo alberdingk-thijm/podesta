@@ -5,6 +5,7 @@ use buildings;
 use regions;
 use people;
 use events;
+use effects;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
@@ -24,7 +25,7 @@ pub struct Sett {
     pub coastal: bool,
     //TODO: add event flags?
     //TODO: flag for growth/build/gold
-    //pub bonuses: effects::EffectFlags,
+    pub boosts: effects::EffectFlags,
 }
 
 impl Sett {
@@ -48,6 +49,7 @@ impl Sett {
             // TODO: get a starting governor and governing hall?
             nextqrtr: 50,
             coastal: coast,
+            boosts: effects::EffectFlags::default(),
         }
     }
 
@@ -66,9 +68,10 @@ impl Sett {
             q.borrow_mut().step(self.reg.growth);
             newpop += q.borrow().pop;
         }
-        self.pop = newpop;
+        // include the growth bonus based on diff in pop
+        self.pop = newpop + self.boosts.grow * (newpop - self.pop).abs();
         // accumulate gold (TODO: replace None with boost option)
-        self.collect_gold(None);
+        self.collect_gold();
         // compute event chances and return an eventmap
         self.compute_events()
     }
@@ -154,12 +157,13 @@ impl Sett {
     /// Increment the total amount of gold in the settlement based on the
     /// state of its quarters. For each member of the population, collect
     /// 0.01 gold times the optional boost.
-    pub fn collect_gold(&mut self, boost: Option<f64>) {
+    pub fn collect_gold(&mut self) {
         //TODO: placeholder incrementer
-        self.gold += 0.01f64 * boost.unwrap_or(1.0) * self.pop;
+        self.gold += 0.01f64 * self.boosts.gold * self.pop;
         for q in &self.qrtrs {
-            self.gold += q.borrow_mut().collect_gold(boost);
+            self.gold += q.borrow_mut().collect_gold();
         }
+        self.gold += self.boosts.gold_bonus;
     }
 }
 

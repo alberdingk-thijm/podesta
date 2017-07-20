@@ -4,6 +4,7 @@ use rouler::Roller;
 use people;
 use buildings;
 use std::str;
+use std::default;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Area {
@@ -84,24 +85,46 @@ pub enum EventEffect {
 /// Struct is created by an event and then passed to the target.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct EffectFlags {
+    //TODO: consider changing everything to iterators
+    //TODO: flags will naturally run out w/o turns field, and can be easily taken from or chained
+    //together
     pub turns: i32,
     pub grow: f64,
     pub build: f64,
     pub gold: f64,
+    pub build_bonus: f64,
+    pub gold_bonus: f64,
 }
 
 impl EffectFlags {
-    fn new(time: i32, gw: f64, bu: f64, gd: f64) -> EffectFlags {
+    pub fn new(time: i32, gw: f64, bu: f64, gd: f64, bb: f64, gb: f64) -> EffectFlags {
         EffectFlags {
             turns: time,
             grow: gw,
             build: bu,
             gold: gd,
+            build_bonus: bb,
+            gold_bonus: gb,
         }
     }
 
-    fn step(&mut self) {
+    /// Move a turn forward and reset most values to their defaults.
+    pub fn step(&mut self) {
         self.turns -= 1;
+        self.build_bonus = 0.0;
+        self.gold_bonus = 0.0;
+        if self.turns <= 0 {
+            // reset to standard levels
+            self.grow = 1.0;
+            self.build = 1.0;
+            self.gold = 1.0;
+        }
+    }
+}
+
+impl default::Default for EffectFlags {
+    fn default() -> EffectFlags {
+        EffectFlags::new(0, 1.0, 1.0, 1.0, 0.0, 0.0)
     }
 }
 

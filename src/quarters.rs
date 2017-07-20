@@ -1,6 +1,6 @@
 use buildings;
 use people;
-//use effects;
+use effects;
 use sett;
 use std::fmt;
 use std::error;
@@ -24,6 +24,8 @@ pub struct Quarter {
     pub bldgs: Vec<Rc<RefCell<buildings::Building>>>,
     /// The growth rate of the quarter's population.
     pub growth: f64,
+    /// The possible effect bonuses in the quarter.
+    pub boosts: effects::EffectFlags,
 }
 
 impl sett::HasName for Quarter {
@@ -153,6 +155,7 @@ impl Quarter {
             race: r,
             bldgs: vec!(),
             growth: 0.01,
+            boosts: effects::EffectFlags::default(),
         }
     }
 
@@ -174,10 +177,12 @@ impl Quarter {
         let grow_rate = |r: f64, t: f64| -> f64 { (r * t).exp() };
         // simplify the constants
         let e_rt : f64 = grow_rate(self.growth, self.age as f64);
-        self.pop = 5000000.0 * reg_growth * e_rt / (99950.0 + 50.0 * e_rt);
+        // add bonus based on the difference between the old pop and the new
+        let newpop = 5000000.0 * reg_growth * e_rt / (99950.0 + 50.0 * e_rt);
+        self.pop = newpop + self.boosts.grow * (newpop - self.pop).abs();
         for bldg in self.bldgs.iter() {
             // TODO: include a boost or bonus for buildings
-            bldg.borrow_mut().step(None, None);
+            bldg.borrow_mut().step();
         }
     }
 
@@ -198,8 +203,8 @@ impl Quarter {
 
     /// Collect gold. For each occupant in a building, collect an extra 0.04
     /// gold times the optional boost.
-    pub fn collect_gold(&self, boost: Option<f64>) -> f64 {
-        self.bldgs.iter().map(|b| 0.04f64 * boost.unwrap_or(1.0)
+    pub fn collect_gold(&self) -> f64 {
+        self.bldgs.iter().map(|b| 0.04f64 * self.boosts.gold
                               * b.borrow().occupants.len() as f64)
             .fold(0.0, |acc, x| acc + x)
     }

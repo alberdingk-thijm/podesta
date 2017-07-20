@@ -3,6 +3,7 @@ use std::fmt;
 use quarters;
 use people;
 use sett;
+use effects;
 use std::rc::Rc;
 use std::collections::HashMap;
 
@@ -12,6 +13,7 @@ pub struct Building {
     pub plan: Rc<BuildingPlan>,
     pub cond: BldgCond,
     pub occupants: Vec<people::Hero>,
+    pub boosts: effects::EffectFlags,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -79,22 +81,22 @@ impl Building {
             plan: plan,
             cond: BldgCond::InProgress(0.0),
             occupants: vec!(),
+            boosts: effects::EffectFlags::default(),
         }
     }
 
     /// Execute a timestep for the building, aging it (or progressing in its
     /// construction).
-    /// If boost is some, multiply the build rate by it.
-    /// If bonus is some, add it to the building (note: bonus can be negative).
-    pub fn step(&mut self, boost: Option<f64>, bonus: Option<f64>) {
+    /// Add the given bonus to the building (note: bonus can be negative).
+    pub fn step(&mut self) {
         self.cond = match self.cond {
             BldgCond::InProgress(n) => {
                 if n >= 100.0 {
                     BldgCond::InUse(100.0)
                 } else {
                     BldgCond::InProgress(n + (self.plan.build
-                                              * boost.unwrap_or(1.0))
-                                         + bonus.unwrap_or(0.0))
+                                              * self.boosts.build)
+                                         + self.boosts.build_bonus)
                 }
             },
             BldgCond::InUse(n) => {
@@ -106,8 +108,7 @@ impl Building {
                     self.occupants.clear();
                     BldgCond::Ruined
                 } else {
-                    BldgCond::InUse((n - (1.0 * (1.0 - boost.unwrap_or(0.0)))
-                                + bonus.unwrap_or(0.0)).min(100.0))
+                    BldgCond::InUse((n - 1.0 + self.boosts.build_bonus).min(100.0))
                 }
             },
             BldgCond::Ruined => BldgCond::Ruined,
