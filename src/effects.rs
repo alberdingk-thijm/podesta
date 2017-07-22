@@ -2,52 +2,22 @@ use rand;
 use rand::Rng;
 use rouler::Roller;
 use people;
-use buildings;
+//use buildings;
+use quarters;
 use std::str;
 use std::default;
 
+/// An enum to determine what part of the settlement the effect should change.
+/// There are three general choices: Building, Quarter, and Sett.
+/// Filters can also restrict what kind of area can be chosen if Building or
+/// Quarter is selected (e.g. a Building or Quarter of a particular QType)
+/// TODO: should other filters than QType(s) be possible?
+/// TODO: may need to change .json files to specify QType filters
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Area {
-    Building,
-    Quarter,
+    Building(Vec<quarters::QType>),
+    Quarter(Vec<quarters::QType>),
     Sett,
-}
-
-impl Area {
-    /// Return the struct we want to mutate based on the area and
-    /// the calling structure.
-    ///
-    /// # Examples
-    /// TODO: update to new syntax
-    /// ```ignore
-    /// use podesta::effects;
-    /// use podesta::buildings;
-    ///
-    /// let mut b = buildings::Building {
-    ///     name: "foo",
-    ///     id: 1,
-    ///     btype: quarters::Residential,
-    ///     preq: None,
-    ///     cost: 100.0,
-    ///     bspeed: 1.0,
-    ///     events: vec!()
-    /// };
-    /// let a = effects::Area::Building;
-    /// assert_eq!(a.target(b).name , "foo")
-    /// ```
-    #[allow(unused_variables)]
-    pub fn target<T>(&self, caller: &mut buildings::Building) -> &mut T
-    where T: Targeted
-    {
-        unimplemented!()
-        /*
-        match *self {
-            Area::Building => caller,
-            Area::Quarter => caller.loc,
-            Area::Sett => caller.loc.sett,
-        }
-        */
-    }
 }
 
 /// A trait for targeting Areas with effects
@@ -59,26 +29,90 @@ pub trait Targeted {
     fn build(&mut self);
 }
 
-/*
-#[derive(Serialize, Deserialize, Debug)]
-pub enum EventEffect {
-    KillHeroes { dead: String },
-    KillQuarter { dead: String, viralpt: Option<i64> },
-    KillSett { dead: String },
-    DamageBuilding { crumbled: String, viralpt: Option<i64> },
-    DamageQuarter { crumbled: String, viralpt: Option<i64> },
-    DamageSett { crumbled: String },
-    RiotQuarter { steps: String, prod: f64 },
-    RiotSett { steps: String, prod: f64 },
-    GrowQuarter { bonus: String },
-    GrowSett { bonus: String },
-    BuildQuarter { bonus: String },
-    BuildSett { bonus: String },
-    Gold { value: String, bonus: f64, steps: String },
-    Hero { level: String, classes: Vec<people::Class> },
-    Item { value: String, magical: f64 },
+/// An enum representing the rolled result of an effect,
+/// which can then be passed to the appropriate area by the manager
+/// to be processed on the next step().
+/// TODO: since all effects are processed on the step(),
+/// TODO: should there be a trait for stepping?
+pub enum RolledEffect {
+    /// Kill $1 people in $2 area
+    Kill(EffectStep, Area),
+    /// Damage $1 buildings in $2 area
+    Damage(EffectStep, Area),
+    /// Slow tickers $1% each turn for $2 turns in $3 area
+    Riot(EffectStep, Area),
+    /// Boost growth $1% each turn for $2 turns in $3 area
+    Grow(EffectStep, Area),
+    /// Boost build speed $1% each turn for $2 turns in $3 area
+    Build(EffectStep, Area),
+    /// Boost gold gain $1% each turn for $2 turns with a one-turn $3 boost
+    Gold(EffectStep, EffectStep),
+    /// Add hero $1 to building in $3 area
+    Hero(people::Hero, Area),
+    /// Add item worth $1 to building in $3 area
+    Item(f64, Area),
 }
-*/
+
+/// A struct implementing Iterator to return effect steps.
+/// Can be combined or chained with other EffectStep structs
+/// to produce a varied series of boosts.
+///
+/// ```
+/// use podesta::effects::EffectStep;
+///
+/// let e = EffectStep::new(1.5, 4);
+/// assert!(e.next(), Some(1.5));
+/// assert!(e.next(), Some(1.5));
+/// let f = EffectStep::new(2, 1);
+/// e.combine(f);
+/// assert!(e.next(), Some(3));
+/// assert!(e.next(), Some(1.5));
+/// assert!(e.next(), None);
+/// ```
+pub struct EffectStep {
+    steps: Vec<f64>,
+}
+
+impl EffectStep {
+    pub fn new(boost: f64, nsteps: usize) -> EffectStep {
+        EffectStep {
+            steps: vec![boost; nsteps],
+        }
+    }
+
+    /// Take two overlapping EffectSteps and multiply each step in other with self.
+    /// The new EffectStep is the length of the longer of self and other: additional
+    /// elements (past the length of the shorter EffectStep) are appended as-is.
+    pub fn combine(&mut self, other: &EffectStep) {
+        let v = if self.steps.len() > other.steps.len() {
+            let mut v_part = self.steps.iter().zip(other.steps.iter())
+                .map(|(x, y)| *x * *y).collect::<Vec<_>>();
+            v_part.extend_from_slice(&self.steps[other.steps.len()..]);
+            v_part
+        } else if other.steps.len() > self.steps.len() {
+            let mut v_part = other.steps.iter().zip(self.steps.iter())
+                .map(|(x, y)| *x * *y).collect::<Vec<_>>();
+            v_part.extend_from_slice(&other.steps[self.steps.len()..]);
+            v_part
+        } else {
+            self.steps.iter().zip(other.steps.iter())
+                .map(|(x, y)| *x * *y).collect::<Vec<_>>()
+        };
+        self.steps = v;
+    }
+}
+
+impl Iterator for EffectStep {
+    type Item = f64;
+
+    fn next(&mut self) -> Option<f64> {
+        if self.steps.len() == 0 {
+            None
+        } else {
+            Some(self.steps.remove(0))
+        }
+    }
+}
 
 /// Struct for tracking duration and intensity of non-instant effects.
 /// These include Riot, Grow, Build and Gold.
@@ -147,35 +181,33 @@ pub struct Effect<T: Targeted> {
 
 #[allow(dead_code, unused_variables)]
 impl EventEffect {
-    pub fn activate(&self) {
+    pub fn activate(&self) -> RolledEffect {
         //let e = Effect::new(caller, self);
         match *self {
+            //TODO: replace placeholder values with proper code
             EventEffect::Kill { ref dead, viralpt, ref area } => {
-                //let ref mut tgt = area.target(caller);
-                //event_kill(tgt, dead, viralpt)
+                RolledEffect::Kill(EffectStep::new(1.0, 1), area)
             },
             EventEffect::Damage { ref crumbled, viralpt, ref area } => {
-                //let ref mut tgt = area.target(caller);
-                //event_damage(tgt, crumbled, viralpt)
+                RolledEffect::Damage(EffectStep::new(1.0, 1), area)
             },
             EventEffect::Riot { ref steps, prod, ref area } => {
-                //let ref mut tgt = area.target(caller);
-                //event_riot(tgt, steps, prod)
+                RolledEffect::Riot(EffectStep::new(prod, 1), area)
             },
             EventEffect::Grow { ref bonus, ref area } => {
-                //let ref mut tgt = area.target(caller);
-                //event_grow(tgt, bonus)
+                RolledEffect::Grow(EffectStep::new(1.0, 1), area)
             },
             EventEffect::Build { ref bonus, ref area } => {
-                //let ref mut tgt = area.target(caller);
-                //event_build(tgt, bonus)
+                RolledEffect::Build(EffectStep::new(1.0, 1), area)
             },
-            EventEffect::Gold { ref value, bonus, ref steps } => (),
-                //event_gold(value, bonus, steps),
-            EventEffect::Hero { ref level, ref classes } => (),
-                //event_hero(level, classes),
-            EventEffect::Item { ref value, magical } => (),
-                //event_item(value, magical),
+            EventEffect::Gold { ref value, bonus, ref steps } =>
+                RolledEffect::Gold(EffectStep::new(1.0, 1), EffectStep::new(bonus, 1)),
+            EventEffect::Hero { ref level, ref classes } =>
+                RolledEffect::Hero(people::Hero::new("Foo", 1,
+                                                     people::Race::Human,
+                                                     people::Class::Fighter), Area::Sett),
+            EventEffect::Item { ref value, ref magical } =>
+                RolledEffect::Item(0.0, Area::Sett),
         }
     }
 }

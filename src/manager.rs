@@ -292,7 +292,12 @@ impl Manager {
     /// Pop an event and perform its effects on the sett.
     pub fn activate_event(&mut self) {
         if let Some(e) = self.queue.pop() {
-            let ref _effects = e.effects;
+            let rolled = e.activate();
+            for roll in rolled.iter() {
+                match rolled {
+                    _ => (),
+                }
+            }
         }
     }
 

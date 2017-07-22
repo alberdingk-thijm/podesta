@@ -74,20 +74,9 @@ impl EventQueue {
 
 impl Event {
 
-    /// Attempt to activate the event's effects with a provided roll.
-    ///
-    /// ## Arguments
-    ///
-    /// * `roll` - An integer that represents a randomly rolled number
-    #[allow(dead_code)]
-    pub fn activate(&self, roll: i32) {
-        if roll <= self.chance {
-            // TODO: perform event effects
-            // effects have no crossover so we can execute them all in any order
-            for eff in self.effects.iter() {
-                eff.activate()
-            }
-        }
+    /// Attempt to activate the event's effects.
+    pub fn activate(&self) -> Vec<effects::RolledEffect> {
+        self.effects.iter().map(|e| e.activate()).collect::<Vec<_>>()
     }
 }
 

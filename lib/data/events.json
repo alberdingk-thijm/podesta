@@ -9,14 +9,14 @@
         "Kill": {
           "dead": "5d6 * 2",
           "viralpt": 50,
-          "area": "Quarter"
+          "area": { "Quarter": [] }
         }
       },
       {
         "Damage": {
           "crumbled": "5d6 * 2 - 20",
           "viralpt": 30,
-          "area": "Quarter"
+          "area": { "Quarter": [] }
         }
       }
     ]
@@ -31,14 +31,14 @@
         "Kill": {
           "dead": "1d20",
           "viralpt": null,
-          "area": "Quarter"
+          "area": { "Quarter": [] }
         }
       },
       {
         "Damage": {
           "crumbled": "1d20 * 5",
           "viralpt": null,
-          "area": "Building"
+          "area": { "Building": [] }
         }
       }
     ]
@@ -52,13 +52,13 @@
       {
         "Build": {
           "bonus": "5d4 * 2",
-          "area": "Quarter"
+          "area": { "Quarter": [] }
         }
       },
       {
         "Grow": {
           "bonus": "5d4",
-          "area": "Quarter"
+          "area": { "Quarter": [] }
         }
       }
     ]
@@ -142,14 +142,14 @@
         "Riot": {
           "steps": "3d8",
           "prod": 0,
-          "area": "Quarter"
+          "area": { "Quarter": [] }
         }
       },
       {
         "Damage": {
           "crumbled": "3d8",
           "viralpt": null,
-          "area": "Building"
+          "area": { "Building": [] }
         }
       }
     ]
@@ -191,7 +191,7 @@
       {
         "Grow": {
           "bonus": "1d6 * 5",
-          "area": "Quarter"
+          "area": { "Quarter": [ "Residential" ] }
         }
       },
       {
@@ -214,7 +214,7 @@
         "Riot": {
           "steps": "2d6 * 2",
           "prod": 0.25,
-          "area": "Quarter"
+          "area": { "Quarter": [ "Residential" ] }
         }
       },
       {
@@ -237,7 +237,7 @@
       {
         "Grow": {
           "bonus": "4d6",
-          "area": "Quarter"
+          "area": { "Quarter": [ "Residential" ] }
         }
       },
       {
@@ -359,7 +359,7 @@
         "Riot": {
           "steps": "2d6",
           "prod": 0.75,
-          "area": "Quarter"
+          "area": { "Quarter": [ "Industrial", "Port" ] }
         }
       },
       {
@@ -397,7 +397,7 @@
         "Kill": {
           "dead": "2d6 * 5",
           "viralpt": 50,
-          "area": "Quarter"
+          "area": { "Quarter": [] }
         }
       },
       {
@@ -419,7 +419,7 @@
         "Kill": {
           "dead": "2d6",
           "viralpt": null,
-          "area": "Quarter"
+          "area": { "Quarter": [ "Administrative" ] }
         }
       },
       {
@@ -443,14 +443,14 @@
         "Kill": {
           "dead": "2d4 * 4",
           "viralpt": null,
-          "area": "Quarter"
+          "area": { "Quarter": [ "Administrative" ]  }
         }
       },
       {
         "Damage": {
           "crumbled": "2d4 * 6",
           "viralpt": 40,
-          "area": "Building"
+          "area": { "Building": [ "Administrative" ] }
         }
       },
       {
@@ -473,14 +473,14 @@
         "Kill": {
           "dead": "1d6 - 2",
           "viralpt": 3,
-          "area": "Building"
+          "area": { "Building": [] }
         }
       },
       {
         "Riot": {
           "steps": "1d6 * 2",
           "prod": 0.5,
-          "area": "Quarter"
+          "area": { "Quarter": [] }
         }
       }
     ]
@@ -500,7 +500,7 @@
       {
         "Build": {
           "bonus": "5d8",
-          "area": "Quarter"
+          "area": { "Quarter": [] }
         }
       },
       {
