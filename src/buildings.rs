@@ -95,8 +95,8 @@ impl Building {
                     BldgCond::InUse(100.0)
                 } else {
                     BldgCond::InProgress(n + (self.plan.build
-                                              * self.boosts.build)
-                                         + self.boosts.build_bonus)
+                                              * self.boosts.build.next().unwrap_or(1.0))
+                                         + self.boosts.build_bonus.next().unwrap_or(0.0))
                 }
             },
             BldgCond::InUse(n) => {
@@ -108,7 +108,7 @@ impl Building {
                     self.occupants.clear();
                     BldgCond::Ruined
                 } else {
-                    BldgCond::InUse((n - 1.0 + self.boosts.build_bonus).min(100.0))
+                    BldgCond::InUse((n - 1.0 + self.boosts.build_bonus.next().unwrap_or(0.0)).min(100.0))
                 }
             },
             BldgCond::Ruined => BldgCond::Ruined,

@@ -6,6 +6,7 @@ use people;
 use quarters;
 use std::str;
 use std::default;
+use std::rc::Rc;
 
 /// An enum to determine what part of the settlement the effect should change.
 /// There are three general choices: Building, Quarter, and Sett.
@@ -13,7 +14,7 @@ use std::default;
 /// Quarter is selected (e.g. a Building or Quarter of a particular QType)
 /// TODO: should other filters than QType(s) be possible?
 /// TODO: may need to change .json files to specify QType filters
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Area {
     Building(Vec<quarters::QType>),
     Quarter(Vec<quarters::QType>),
@@ -48,7 +49,7 @@ pub enum RolledEffect {
     /// Boost gold gain $1% each turn for $2 turns with a one-turn $3 boost
     Gold(EffectStep, EffectStep),
     /// Add hero $1 to building in $3 area
-    Hero(people::Hero, Area),
+    Hero(i32, Rc<people::Class>, Area),
     /// Add item worth $1 to building in $3 area
     Item(f64, Area),
 }
@@ -69,6 +70,7 @@ pub enum RolledEffect {
 /// assert!(e.next(), Some(1.5));
 /// assert!(e.next(), None);
 /// ```
+#[derive(Serialize, Deserialize, Debug)]
 pub struct EffectStep {
     steps: Vec<f64>,
 }
@@ -120,20 +122,18 @@ impl Iterator for EffectStep {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct EffectFlags {
     //TODO: consider changing everything to iterators
-    //TODO: flags will naturally run out w/o turns field, and can be easily taken from or chained
-    //together
-    pub turns: i32,
-    pub grow: f64,
-    pub build: f64,
-    pub gold: f64,
-    pub build_bonus: f64,
-    pub gold_bonus: f64,
+    pub grow: EffectStep,
+    pub build: EffectStep,
+    pub gold: EffectStep,
+    pub build_bonus: EffectStep,
+    pub gold_bonus: EffectStep,
 }
 
 impl EffectFlags {
-    pub fn new(time: i32, gw: f64, bu: f64, gd: f64, bb: f64, gb: f64) -> EffectFlags {
+    pub fn new(gw: EffectStep, bu: EffectStep, gd: EffectStep,
+               bb: EffectStep, gb: EffectStep) -> EffectFlags
+    {
         EffectFlags {
-            turns: time,
             grow: gw,
             build: bu,
             gold: gd,
@@ -141,24 +141,16 @@ impl EffectFlags {
             gold_bonus: gb,
         }
     }
-
-    /// Move a turn forward and reset most values to their defaults.
-    pub fn step(&mut self) {
-        self.turns -= 1;
-        self.build_bonus = 0.0;
-        self.gold_bonus = 0.0;
-        if self.turns <= 0 {
-            // reset to standard levels
-            self.grow = 1.0;
-            self.build = 1.0;
-            self.gold = 1.0;
-        }
-    }
 }
 
 impl default::Default for EffectFlags {
     fn default() -> EffectFlags {
-        EffectFlags::new(0, 1.0, 1.0, 1.0, 0.0, 0.0)
+        EffectFlags::new(EffectStep::new(1.0, 1),
+                         EffectStep::new(1.0, 1),
+                         EffectStep::new(1.0, 1),
+                         //FIXME: this will cause bonuses to always be 0 due to combine method
+                         EffectStep::new(0.0, 1),
+                         EffectStep::new(0.0, 1))
     }
 }
 
@@ -186,26 +178,28 @@ impl EventEffect {
         match *self {
             //TODO: replace placeholder values with proper code
             EventEffect::Kill { ref dead, viralpt, ref area } => {
-                RolledEffect::Kill(EffectStep::new(1.0, 1), area)
+                //TODO:
+                //roll dead and store as f64
+                //if > Some(viralpt), make area larger
+                //else, use given area
+                RolledEffect::Kill(EffectStep::new(1.0, 1), area.clone())
             },
             EventEffect::Damage { ref crumbled, viralpt, ref area } => {
-                RolledEffect::Damage(EffectStep::new(1.0, 1), area)
+                RolledEffect::Damage(EffectStep::new(1.0, 1), area.clone())
             },
             EventEffect::Riot { ref steps, prod, ref area } => {
-                RolledEffect::Riot(EffectStep::new(prod, 1), area)
+                RolledEffect::Riot(EffectStep::new(prod, 1), area.clone())
             },
             EventEffect::Grow { ref bonus, ref area } => {
-                RolledEffect::Grow(EffectStep::new(1.0, 1), area)
+                RolledEffect::Grow(EffectStep::new(1.0, 1), area.clone())
             },
             EventEffect::Build { ref bonus, ref area } => {
-                RolledEffect::Build(EffectStep::new(1.0, 1), area)
+                RolledEffect::Build(EffectStep::new(1.0, 1), area.clone())
             },
             EventEffect::Gold { ref value, bonus, ref steps } =>
                 RolledEffect::Gold(EffectStep::new(1.0, 1), EffectStep::new(bonus, 1)),
             EventEffect::Hero { ref level, ref classes } =>
-                RolledEffect::Hero(people::Hero::new("Foo", 1,
-                                                     people::Race::Human,
-                                                     people::Class::Fighter), Area::Sett),
+                RolledEffect::Hero(1, Rc::new(people::Class::Fighter), Area::Sett),
             EventEffect::Item { ref value, ref magical } =>
                 RolledEffect::Item(0.0, Area::Sett),
         }

@@ -9,6 +9,7 @@ use quarters;
 use people;
 use history;
 use events;
+use effects;
 use prompts;
 use std::fmt;
 use std::error;
@@ -292,10 +293,29 @@ impl Manager {
     /// Pop an event and perform its effects on the sett.
     pub fn activate_event(&mut self) {
         if let Some(e) = self.queue.pop() {
+            use effects::RolledEffect as Rolled;
             let rolled = e.activate();
             for roll in rolled.iter() {
-                match rolled {
-                    _ => (),
+                match *roll {
+                    Rolled::Kill(ref step, ref area) => {
+                        match self.sett {
+                            Some(ref mut s) => {
+                                match *area {
+                                    effects::Area::Building(_) => (),
+                                    effects::Area::Quarter(_) => (),
+                                    effects::Area::Sett => {},
+                                }
+                            },
+                            None => (),
+                        };
+                    },
+                    Rolled::Damage(ref step, ref area) => (),
+                    Rolled::Riot(ref step, ref area) => (),
+                    Rolled::Grow(ref step, ref area) => (),
+                    Rolled::Build(ref step, ref area) => (),
+                    Rolled::Gold(ref step, ref bonus) => (),
+                    Rolled::Hero(level, ref class, ref area) => (),
+                    Rolled::Item(value, ref area) => (),
                 }
             }
         }

@@ -23,8 +23,7 @@ pub struct Sett {
     pub nextqrtr: i32,
     /// Flag for if settlement is coastal.
     pub coastal: bool,
-    //TODO: add event flags?
-    //TODO: flag for growth/build/gold
+    //flag for growth/build/gold
     pub boosts: effects::EffectFlags,
 }
 
@@ -69,7 +68,7 @@ impl Sett {
             newpop += q.borrow().pop;
         }
         // include the growth bonus based on diff in pop
-        self.pop = newpop + self.boosts.grow * (newpop - self.pop).abs();
+        self.pop = newpop + self.boosts.grow.next().unwrap_or(1.0) * (newpop - self.pop).abs();
         // accumulate gold (TODO: replace None with boost option)
         self.collect_gold();
         // compute event chances and return an eventmap
@@ -159,11 +158,11 @@ impl Sett {
     /// 0.01 gold times the optional boost.
     pub fn collect_gold(&mut self) {
         //TODO: placeholder incrementer
-        self.gold += 0.01f64 * self.boosts.gold * self.pop;
+        self.gold += 0.01f64 * self.boosts.gold.next().unwrap_or(1.0) * self.pop;
         for q in &self.qrtrs {
             self.gold += q.borrow_mut().collect_gold();
         }
-        self.gold += self.boosts.gold_bonus;
+        self.gold += self.boosts.gold_bonus.next().unwrap_or(0.0);
     }
 }
 

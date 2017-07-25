@@ -179,7 +179,7 @@ impl Quarter {
         let e_rt : f64 = grow_rate(self.growth, self.age as f64);
         // add bonus based on the difference between the old pop and the new
         let newpop = 5000000.0 * reg_growth * e_rt / (99950.0 + 50.0 * e_rt);
-        self.pop = newpop + self.boosts.grow * (newpop - self.pop).abs();
+        self.pop = newpop + self.boosts.grow.next().unwrap_or(1.0) * (newpop - self.pop).abs();
         for bldg in self.bldgs.iter() {
             // TODO: include a boost or bonus for buildings
             bldg.borrow_mut().step();
@@ -203,8 +203,9 @@ impl Quarter {
 
     /// Collect gold. For each occupant in a building, collect an extra 0.04
     /// gold times the optional boost.
-    pub fn collect_gold(&self) -> f64 {
-        self.bldgs.iter().map(|b| 0.04f64 * self.boosts.gold
+    pub fn collect_gold(&mut self) -> f64 {
+        let boost : f64 = self.boosts.gold.next().unwrap_or(1.0);
+        self.bldgs.iter().map(|b| 0.04f64 * boost
                               * b.borrow().occupants.len() as f64)
             .fold(0.0, |acc, x| acc + x)
     }
