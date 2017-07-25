@@ -7,6 +7,7 @@ use quarters;
 use std::str;
 use std::default;
 use std::rc::Rc;
+use std::ops::{Add, Mul, AddAssign, MulAssign};
 
 /// An enum to determine what part of the settlement the effect should change.
 /// There are three general choices: Building, Quarter, and Sett.
@@ -70,9 +71,14 @@ pub enum RolledEffect {
 /// assert!(e.next(), Some(1.5));
 /// assert!(e.next(), None);
 /// ```
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct EffectStep {
     steps: Vec<f64>,
+}
+
+enum CombineOp {
+    Add,
+    Mul,
 }
 
 impl EffectStep {
@@ -82,25 +88,62 @@ impl EffectStep {
         }
     }
 
-    /// Take two overlapping EffectSteps and multiply each step in other with self.
+    /// Take two overlapping EffectSteps and perform the op on each step in other with self.
     /// The new EffectStep is the length of the longer of self and other: additional
     /// elements (past the length of the shorter EffectStep) are appended as-is.
-    pub fn combine(&mut self, other: &EffectStep) {
+    fn combine(self, other: EffectStep, op: CombineOp) -> EffectStep {
         let v = if self.steps.len() > other.steps.len() {
             let mut v_part = self.steps.iter().zip(other.steps.iter())
-                .map(|(x, y)| *x * *y).collect::<Vec<_>>();
+                .map(|(x, y)| match op {
+                    CombineOp::Add => *x + *y,
+                    CombineOp::Mul => *x * *y,
+                }).collect::<Vec<_>>();
             v_part.extend_from_slice(&self.steps[other.steps.len()..]);
             v_part
         } else if other.steps.len() > self.steps.len() {
             let mut v_part = other.steps.iter().zip(self.steps.iter())
-                .map(|(x, y)| *x * *y).collect::<Vec<_>>();
+                .map(|(x, y)| match op {
+                    CombineOp::Add => *x + *y,
+                    CombineOp::Mul => *x * *y,
+                }).collect::<Vec<_>>();
             v_part.extend_from_slice(&other.steps[self.steps.len()..]);
             v_part
         } else {
             self.steps.iter().zip(other.steps.iter())
-                .map(|(x, y)| *x * *y).collect::<Vec<_>>()
+                .map(|(x, y)| match op {
+                    CombineOp::Add => *x + *y,
+                    CombineOp::Mul => *x * *y,
+                }).collect::<Vec<_>>()
         };
-        self.steps = v;
+        EffectStep {
+            steps: v,
+        }
+    }
+}
+
+impl Add for EffectStep {
+    type Output = EffectStep;
+    fn add(self, other: EffectStep) -> EffectStep {
+        self.combine(other, CombineOp::Add)
+    }
+}
+
+impl AddAssign for EffectStep {
+    fn add_assign(&mut self, other: EffectStep) {
+        *self = (self.clone()).combine(other, CombineOp::Add);
+    }
+}
+
+impl MulAssign for EffectStep {
+    fn mul_assign(&mut self, other: EffectStep) {
+        *self = (self.clone()).combine(other, CombineOp::Mul);
+    }
+}
+
+impl Mul for EffectStep {
+    type Output = EffectStep;
+    fn mul(self, other: EffectStep) -> EffectStep {
+        self.combine(other, CombineOp::Mul)
     }
 }
 
@@ -125,18 +168,20 @@ pub struct EffectFlags {
     pub grow: EffectStep,
     pub build: EffectStep,
     pub gold: EffectStep,
+    pub grow_bonus: EffectStep,
     pub build_bonus: EffectStep,
     pub gold_bonus: EffectStep,
 }
 
 impl EffectFlags {
     pub fn new(gw: EffectStep, bu: EffectStep, gd: EffectStep,
-               bb: EffectStep, gb: EffectStep) -> EffectFlags
+               pb: EffectStep, bb: EffectStep, gb: EffectStep) -> EffectFlags
     {
         EffectFlags {
             grow: gw,
             build: bu,
             gold: gd,
+            grow_bonus: pb,
             build_bonus: bb,
             gold_bonus: gb,
         }
@@ -148,7 +193,7 @@ impl default::Default for EffectFlags {
         EffectFlags::new(EffectStep::new(1.0, 1),
                          EffectStep::new(1.0, 1),
                          EffectStep::new(1.0, 1),
-                         //FIXME: this will cause bonuses to always be 0 due to combine method
+                         EffectStep::new(0.0, 1),
                          EffectStep::new(0.0, 1),
                          EffectStep::new(0.0, 1))
     }

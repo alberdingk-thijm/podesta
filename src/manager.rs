@@ -6,6 +6,7 @@ use parser;
 use time;
 use sett;
 use quarters;
+use buildings;
 use people;
 use history;
 use events;
@@ -13,6 +14,11 @@ use effects;
 use prompts;
 use std::fmt;
 use std::error;
+use std::rc::Rc;
+use std::cell::RefCell;
+use rand::Rng;
+use rand;
+use std::result;
 
 macro_rules! choose_info {
     ($printexpr:expr, $auto:expr, $name:expr) => {
@@ -29,6 +35,8 @@ macro_rules! print_opt {
         }
     };
 }
+
+type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
@@ -107,24 +115,26 @@ impl Manager {
 
     /// Load a Manager from a file with the given name; if None is given,
     /// prompt the user for one.
-    pub fn load(file: Option<String>) -> Result<Self, parser::GameDataError> {
+    pub fn load(file: Option<String>) -> Result<Self> {
         match file {
             Some(filename) => Ok(filename),
             None => prompts::name_file(" to load: "),
         }.map_err(parser::GameDataError::Prompt)
             .and_then(|f| parser::load_rbs(f.as_str()))
+            .map_err(Error::Data)
 
     }
 
     /// Save a Manager to its save file, optionally prompting the user for a
     /// file name or accepting one.
-    pub fn save(&self, file: Option<String>) -> Result<(), parser::GameDataError> {
+    pub fn save(&self, file: Option<String>) -> Result<()> {
         // Use the given file, OR prompt for a file, OR use the default
         let savef = file.unwrap_or_else(||
             prompts::name_file(&format!(" to save to (default: {}): ",
                                         self.savefile))
                                .unwrap_or(self.savefile.clone()));
         parser::save_rbs(self, &savef)
+            .map_err(Error::Data)
     }
     /// Toggle automation of build functions.
     pub fn toggle_auto(&mut self) {
@@ -220,9 +230,7 @@ impl Manager {
     {
         match self.sett {
             Some(ref mut s) => {
-                // Determine building plan
                 let ref plans = self.datafiles.plans;
-                // &String iterator of plan names
                 let mut plannames = plans.iter().map(|p| p.to_string());
                 // Find index of plan to add
                 let plan = match name_input {
@@ -233,7 +241,6 @@ impl Manager {
                     }).ok_or(quarters::BuildError::NoPlanFound),
                     None => { prompts::choose(&plannames.collect::<Vec<_>>())
                         .map_err(parser::GameDataError::Prompt).map_err(|e| {
-                            //println!("Error choosing building: {:?}", e);
                             quarters::BuildError::NoPlanFound
                         })
                     },
@@ -247,7 +254,6 @@ impl Manager {
                             p.btype == q.borrow().qtype
                         });
                         let valqrtrs : Vec<_> = valid_qrtrs.collect();
-                        // Confirm which quarter should host the building
                         let qnames = valqrtrs.iter()
                             .map(|ref q| q.borrow().name.clone());
                         let qnamesv : Vec<_> = qnames.collect();
@@ -278,7 +284,7 @@ impl Manager {
                         let ev = self.datafiles.events.iter()
                             .find(|e| e.name == *event).map(|e| e.clone());
                         if let Some(e) = ev {
-                            println!("{}", e.desc.replace("{}", &s.name));
+                            println!("{} (step {})", e.desc.replace("{}", &s.name), s.age);
                             self.hist.add_entry(s.age, e.desc.replace("{}", &s.name));
                             self.queue.push(e);
                         }
@@ -303,7 +309,11 @@ impl Manager {
                                 match *area {
                                     effects::Area::Building(_) => (),
                                     effects::Area::Quarter(_) => (),
-                                    effects::Area::Sett => {},
+                                    effects::Area::Sett => {
+                                        //TODO: since quarters compute new grow_bonus, add to
+                                        //sett's quarters instead
+                                        s.boosts.grow_bonus += step.clone();
+                                    },
                                 }
                             },
                             None => (),
@@ -318,6 +328,28 @@ impl Manager {
                     Rolled::Item(value, ref area) => (),
                 }
             }
+        }
+    }
+
+    /// Return a random quarter in the settlement.
+    fn rand_quarter(&self, qtypes: Vec<quarters::QType>) -> Option<Rc<RefCell<quarters::Quarter>>> {
+        match self.sett {
+            Some(ref s) => {
+                //FIXME: some referencing/borrowing errors
+                //let filtered = s.qrtrs.iter()
+                //    .filter(|q| qtypes.contains(&q.borrow().qtype)).collect::<Vec<_>>();
+                //rand::thread_rng().choose(&filtered)
+                None
+            },
+            None => None,
+        }
+    }
+
+    /// Return a random building in the settlement.
+    fn rand_building(&self, btypes: Vec<quarters::QType>) -> Option<Rc<RefCell<buildings::Building>>> {
+        match self.sett {
+            Some(ref s) => { None },
+            None => None,
         }
     }
 
