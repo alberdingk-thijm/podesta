@@ -304,19 +304,24 @@ impl Manager {
             for roll in rolled.iter() {
                 match *roll {
                     Rolled::Kill(ref step, ref area) => {
-                        match self.sett {
-                            Some(ref mut s) => {
-                                match *area {
-                                    effects::Area::Building(_) => (),
-                                    effects::Area::Quarter(_) => (),
-                                    effects::Area::Sett => {
-                                        //TODO: since quarters compute new grow_bonus, add to
-                                        //sett's quarters instead
-                                        s.boosts.grow_bonus += step.clone();
-                                    },
-                                }
+                        match *area {
+                            effects::Area::Building(ref bts) => {
+                                self.rand_building(&bts).map(|b| {
+                                    b.borrow_mut().boosts.grow_bonus += step.clone(); })
                             },
-                            None => (),
+                            effects::Area::Quarter(ref qts) => {
+                                self.rand_quarter(&qts).map(|q| {
+                                    q.borrow_mut().boosts.grow_bonus += step.clone(); })
+                            },
+                            effects::Area::Sett => {
+                                self.sett.as_ref().map(|s| {
+                                    //since quarters compute new grow_bonus, add to
+                                    //sett's quarters instead
+                                    for q in s.qrtrs.iter() {
+                                        q.borrow_mut().boosts.grow_bonus += step.clone();
+                                    }
+                                })
+                            },
                         };
                     },
                     Rolled::Damage(ref step, ref area) => (),
@@ -332,23 +337,28 @@ impl Manager {
     }
 
     /// Return a random quarter in the settlement.
-    fn rand_quarter(&self, qtypes: Vec<quarters::QType>) -> Option<Rc<RefCell<quarters::Quarter>>> {
+    fn rand_quarter(&self, qtypes: &[quarters::QType]) -> Option<Rc<RefCell<quarters::Quarter>>> {
         match self.sett {
             Some(ref s) => {
-                //FIXME: some referencing/borrowing errors
-                //let filtered = s.qrtrs.iter()
-                //    .filter(|q| qtypes.contains(&q.borrow().qtype)).collect::<Vec<_>>();
-                //rand::thread_rng().choose(&filtered)
-                None
+                let filtered = s.qrtrs.clone().into_iter()
+                    .filter(|q| qtypes.contains(&q.borrow().qtype))
+                    .map(|q| q.clone()).collect::<Vec<_>>();
+                rand::thread_rng().choose(&filtered).cloned()
             },
             None => None,
         }
     }
 
     /// Return a random building in the settlement.
-    fn rand_building(&self, btypes: Vec<quarters::QType>) -> Option<Rc<RefCell<buildings::Building>>> {
+    fn rand_building(&self, btypes: &[quarters::QType]) -> Option<Rc<RefCell<buildings::Building>>> {
         match self.sett {
-            Some(ref s) => { None },
+            Some(ref s) => {
+                let filtered = s.qrtrs.iter()
+                    .flat_map(|q| q.borrow().bldgs.clone().into_iter())
+                    .filter(|b| btypes.contains(&b.borrow().plan.btype))
+                    .map(|b| b.clone()).collect::<Vec<_>>();
+                rand::thread_rng().choose(&filtered).cloned()
+            },
             None => None,
         }
     }
