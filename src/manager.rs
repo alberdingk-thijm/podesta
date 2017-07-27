@@ -410,8 +410,13 @@ impl Manager {
                             s.boosts.gold += step.clone(); });
                     },
                     Rolled::Hero(level, ref class, ref area) => {
+                        // create a hero
+                        let _hero = people::Hero::new("Foo", level, people::Race::Human, class);
+                        // put in area
                     },
                     Rolled::Item(value, ref area) => {
+                        // create item
+                        // put in area
                     },
                 }
             }

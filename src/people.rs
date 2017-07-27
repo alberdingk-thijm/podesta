@@ -16,6 +16,22 @@ pub struct Hero {
     //pub home: Box<buildings::Building>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Item {
+    pub name: String,
+    pub form: ItemType,
+    pub value: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum ItemType {
+    //TODO: add more types
+    Book,
+    Weapon,
+    Armour,
+    Artwork,
+}
+
 macro_attr! {
     #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq,
              IterVariants!(RaceVariants),
