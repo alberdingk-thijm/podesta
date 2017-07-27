@@ -315,8 +315,6 @@ impl Manager {
                             },
                             effects::Area::Sett => {
                                 self.sett.as_ref().map(|s| {
-                                    //since quarters compute new grow_bonus, add to
-                                    //sett's quarters instead
                                     for q in s.qrtrs.iter() {
                                         q.borrow_mut().boosts.grow_bonus += step.clone();
                                     }
@@ -324,13 +322,97 @@ impl Manager {
                             },
                         };
                     },
-                    Rolled::Damage(ref step, ref area) => (),
-                    Rolled::Riot(ref step, ref area) => (),
-                    Rolled::Grow(ref step, ref area) => (),
-                    Rolled::Build(ref step, ref area) => (),
-                    Rolled::Gold(ref step, ref bonus) => (),
-                    Rolled::Hero(level, ref class, ref area) => (),
-                    Rolled::Item(value, ref area) => (),
+                    Rolled::Damage(ref step, ref area) => {
+                        match *area {
+                            effects::Area::Building(ref bts) => {
+                                self.rand_building(&bts).map(|b| {
+                                    b.borrow_mut().boosts.build_bonus += step.clone(); })
+                            },
+                            effects::Area::Quarter(ref qts) => {
+                                self.rand_quarter(&qts).map(|q| {
+                                    q.borrow_mut().boosts.build_bonus += step.clone(); })
+                            },
+                            effects::Area::Sett => {
+                                self.sett.as_ref().map(|s| {
+                                    for q in s.qrtrs.iter() {
+                                        q.borrow_mut().boosts.build_bonus += step.clone();
+                                    }
+                                })
+                            },
+                        };
+                    },
+                    Rolled::Riot(ref step, ref area) => {
+                        match *area {
+                            effects::Area::Building(ref bts) => {
+                                self.rand_building(&bts).map(|b| {
+                                    b.borrow_mut().boosts.grow += step.clone();
+                                    b.borrow_mut().boosts.build += step.clone();
+                                    b.borrow_mut().boosts.gold += step.clone(); })
+                            },
+                            effects::Area::Quarter(ref qts) => {
+                                self.rand_quarter(&qts).map(|q| {
+                                    q.borrow_mut().boosts.grow += step.clone();
+                                    q.borrow_mut().boosts.build += step.clone();
+                                    q.borrow_mut().boosts.gold += step.clone(); })
+                            },
+                            effects::Area::Sett => {
+                                self.sett.as_ref().map(|s| {
+                                    for q in s.qrtrs.iter() {
+                                        q.borrow_mut().boosts.grow += step.clone();
+                                        q.borrow_mut().boosts.build += step.clone();
+                                        q.borrow_mut().boosts.gold += step.clone();
+                                    }
+                                })
+                            },
+                        };
+                    },
+                    Rolled::Grow(ref step, ref area) => {
+                        match *area {
+                            effects::Area::Building(ref bts) => {
+                                self.rand_building(&bts).map(|b| {
+                                    b.borrow_mut().boosts.grow += step.clone(); })
+                            },
+                            effects::Area::Quarter(ref qts) => {
+                                self.rand_quarter(&qts).map(|q| {
+                                    q.borrow_mut().boosts.grow += step.clone(); })
+                            },
+                            effects::Area::Sett => {
+                                self.sett.as_ref().map(|s| {
+                                    for q in s.qrtrs.iter() {
+                                        q.borrow_mut().boosts.grow += step.clone();
+                                    }
+                                })
+                            },
+                        };
+                    },
+                    Rolled::Build(ref step, ref area) => {
+                        match *area {
+                            effects::Area::Building(ref bts) => {
+                                self.rand_building(&bts).map(|b| {
+                                    b.borrow_mut().boosts.build += step.clone(); })
+                            },
+                            effects::Area::Quarter(ref qts) => {
+                                self.rand_quarter(&qts).map(|q| {
+                                    q.borrow_mut().boosts.build += step.clone(); })
+                            },
+                            effects::Area::Sett => {
+                                self.sett.as_ref().map(|s| {
+                                    for q in s.qrtrs.iter() {
+                                        q.borrow_mut().boosts.build += step.clone();
+                                    }
+                                })
+                            },
+                        };
+                    },
+                    Rolled::Gold(ref step, ref bonus) => {
+                        self.sett.as_mut().map(|s| {
+                            s.boosts.gold_bonus += bonus.clone();
+                            s.boosts.gold += step.clone(); });
+                    },
+                    Rolled::Hero(level, ref class, ref area) => {
+                    },
+                    Rolled::Item(value, ref area) => {
+                    },
                 }
             }
         }
