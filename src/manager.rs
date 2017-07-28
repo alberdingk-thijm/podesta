@@ -411,7 +411,7 @@ impl Manager {
                     },
                     Rolled::Hero(level, ref class, ref area) => {
                         // create a hero
-                        let _hero = people::Hero::new("Foo", level, people::Race::Human, class);
+                        let _hero = people::Hero::new("Foo", level, people::Race::Human, class.clone());
                         // put in area
                     },
                     Rolled::Item(value, ref area) => {

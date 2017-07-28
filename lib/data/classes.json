@@ -1,0 +1,219 @@
+[
+  {
+    "name": "Cleric",
+    "id": 1,
+    "desc": "Clerics are wise spiritual leaders of the community blessed with divine magic.",
+    "races": [ "ALL" ],
+    "buildings": [ "Shrine", "Temple", "Garden", "GrandTemple", "ReligiousOrder", "Lazaretto" ],
+    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "HolyRelic", "Magic" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 1.2,
+      "Trading": 0.0,
+      "Adventuring": 1.0,
+      "Resting": 1.2,
+      "Treasure": 1.0
+    },
+    "powers": [ "CureWounds" ]
+  },
+  {
+    "name": "Druid",
+    "id": 2,
+    "desc": "Druids are independent spiritualists of Nature, pursuing its preservation through magic.",
+    "races": [ "Halfelf", "Halfling", "Human" ],
+    "buildings": [ "Shrine", "Garden" ],
+    "items": [ "LightArmour", "LightWeapons", "Magic" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 1.0,
+      "Trading": 0.0,
+      "Adventuring": 1.2,
+      "Resting": 1.2,
+      "Treasure": 1.0
+    },
+    "powers": [ "CureWounds", "Questing" ]
+  },
+  {
+    "name": "Fighter",
+    "id": 3,
+    "desc": "Fighters are the traditional, hard-as-nails soldiery of the world.",
+    "races": [ "ALL" ],
+    "buildings": [ "Shipyard", "Walls", "Barracks", "Armoury", "Fortress", "Prison", "Palace" ],
+    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "Magic" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.5,
+      "Governing": 1.0,
+      "Trading": 0.0,
+      "Adventuring": 1.5,
+      "Resting": 1.0,
+      "Treasure": 1.0
+    },
+    "powers": []
+  },
+  {
+    "name": "Paladin",
+    "id": 4,
+    "desc": "Paladins fight for a religious cause, combining aspects of fighters and clerics.",
+    "races": [ "Human" ],
+    "buildings": [ "Shrine", "Temple", "Garden", "GrandTemple", "ReligiousOrder", "Lazaretto" ],
+    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "HolyRelic", "Magic" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 1.2,
+      "Trading": 0.0,
+      "Adventuring": 1.0,
+      "Resting": 1.0,
+      "Treasure": 1.0
+    },
+    "powers": [ "DiseaseImmune", "CureWounds" ]
+  },
+  {
+    "name": "Ranger",
+    "id": 5,
+    "desc": "Rangers are savvy specialists in woodcraft, tracking, scouting and infiltration.",
+    "races": [ "Elf", "Halfelf", "Human" ],
+    "buildings": [ "Garden", "Walls", "Barracks", "Fortress", "Assembly" ],
+    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "Magic" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 1.0,
+      "Trading": 0.0,
+      "Adventuring": 1.5,
+      "Resting": 1.0,
+      "Treasure": 1.0
+    },
+    "powers": [ "Questing" ]
+  },
+  {
+    "name": "Assassin",
+    "id": 6,
+    "desc": "Assassins are dangerous killers and spies of infamous skill.",
+    "races": [ "Dwarf", "Elf", "Gnome", "Halfelf", "Halforc", "Human" ],
+    "buildings": [ "Market", "Lighthouse", "Harbour", "Prison" ],
+    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "Magic" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 1.0,
+      "Trading": 0.0,
+      "Adventuring": 1.2,
+      "Resting": 1.0,
+      "Treasure": 1.0
+    },
+    "powers": [ "Assassinate" ]
+  },
+  {
+    "name": "Mage",
+    "id": 7,
+    "desc": "Mages control incredible magical forces and often occupy the upper echelons of society.",
+    "races": [ "Elf", "Halfelf", "Human" ],
+    "buildings": [ "Library", "School", "University", "Observatory", "Society", "Assembly", "Palace" ],
+    "items": [ "LightWeapons", "Magic" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 1.2,
+      "Trading": 0.0,
+      "Adventuring": 1.0,
+      "Resting": 1.0,
+      "Treasure": 1.0
+    },
+    "powers": [ "Enchanting" ]
+  },
+  {
+    "name": "Illusionist",
+    "id": 8,
+    "desc": "Illusionists manipulate magic to control cognition and sensation in fearsome ways.",
+    "races": [ "Gnome", "Human" ],
+    "buildings": [ "Library", "School", "University", "Society" ],
+    "items": [ "LightWeapons", "Magic" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 1.0,
+      "Trading": 0.0,
+      "Adventuring": 1.2,
+      "Resting": 1.0,
+      "Treasure": 1.0
+    },
+    "powers": [ "Enchanting" ]
+  },
+  {
+    "name": "Thief",
+    "id": 9,
+    "desc": "Thieves are cunning criminals who break the rules of society for personal gain.",
+    "races": [ "ALL" ],
+    "buildings": [ "Market", "Lighthouse", "Harbour", "Warehouse", "Shipyard", "Prison" ],
+    "items": [ "LightArmour", "LightWeapons", "Magic", "Art" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 1.0,
+      "Trading": 1.0,
+      "Adventuring": 1.2,
+      "Resting": 1.0,
+      "Treasure": 1.2
+    },
+    "powers": [ "Heist" ]
+  },
+  {
+    "name": "Monk",
+    "id": 10,
+    "desc": "Monks are aesthetes who practice rigorous mental and physical training.",
+    "races": [ "Halforc", "Human" ],
+    "buildings": [ "Shrine", "ReligiousOrder", "Lazaretto" ],
+    "items": [ "LightWeapons", "Magic" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.2,
+      "Governing": 0.0,
+      "Trading": 0.0,
+      "Adventuring": 1.0,
+      "Resting": 1.2,
+      "Treasure": 1.0
+    },
+    "powers": [ "Questing" ]
+  },
+  {
+    "name": "Bard",
+    "id": 11,
+    "desc": "Bards are artists who produce works to teach and entertain their audiences.",
+    "items": [ "LightArmour", "LightWeapons", "Magic", "Art" ],
+    "buildings": [ "Theatre", "Society" ],
+    "races": [ "Halfelf", "Human" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 1.0,
+      "Trading": 0.0,
+      "Adventuring": 1.0,
+      "Resting": 1.0,
+      "Treasure": 1.0
+    },
+    "powers": [ "CreateArt" ]
+  },
+  {
+    "name": "Merchant",
+    "id": 12,
+    "desc": "Merchants are shrewd travellers who achieve success in the complex art of trade.",
+    "races": [ "ALL" ],
+    "buildings": [ "Market", "Forge", "Mint", "Workshop", "GuildHall", "PrintingHouse",
+      "Lighthouse", "Harbour", "Warehouse", "Shipyard", "CustomsHouse" ],
+    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "Magic", "Art" ],
+    "age": 0,
+    "activities": {
+      "Working": 1.0,
+      "Governing": 0.0,
+      "Trading": 2.0,
+      "Adventuring": 0.0,
+      "Resting": 1.0,
+      "Treasure": 1.0
+    },
+    "powers": []
+  }
+]

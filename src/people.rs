@@ -1,5 +1,6 @@
-//use buildings;
+use quarters;
 use std::fmt;
+use std::rc::Rc;
 
 #[allow(dead_code)]
 #[derive(Debug, Serialize, Deserialize)]
@@ -10,7 +11,7 @@ pub struct Hero {
     pub age: i32,
     pub level: i32,
     pub race: Race,
-    pub class: Class,
+    pub class: Rc<Class>,
     /// What the hero is currently doing.
     pub activity: Activity,
     //pub home: Box<buildings::Building>,
@@ -120,6 +121,11 @@ impl Class {
             Class::Merchant => 0,
         }
     }
+
+    /// Return a vec of QTypes representing possible homes for this Class.
+    fn get_home(&self) -> Vec<quarters::QType> {
+        vec![]
+    }
 }
 
 #[allow(dead_code)]
@@ -192,7 +198,7 @@ impl Hero {
     // const AGEMOD: i32 = 25;
     fn agemod() -> i32 { 25 }
 
-    pub fn new(n: &str, lvl: i32, race: Race, class: Class) -> Hero {
+    pub fn new(n: &str, lvl: i32, race: Race, class: Rc<Class>) -> Hero {
                //home: Box<buildings::Building>) -> Hero {
         Hero {
             name: n.to_string(),
@@ -237,7 +243,7 @@ impl Hero {
                     Activity::Resting(10)
                 } else if r < (self.age / Hero::agemod() + 29) {
                     let away = Hero::awaymod() * self.level;
-                    match self.class {
+                    match *self.class {
                         Class::Merchant => Activity::Trading(away),
                         _ => Activity::Adventuring(away),
                     }
