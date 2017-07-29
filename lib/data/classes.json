@@ -5,7 +5,9 @@
     "desc": "Clerics are wise spiritual leaders of the community blessed with divine magic.",
     "races": [ "ALL" ],
     "buildings": [ "Shrine", "Temple", "Garden", "GrandTemple", "ReligiousOrder", "Lazaretto" ],
-    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "HolyRelic", "Magic" ],
+    "items": [
+        "LightArmour", "HeavyArmour", "LightWeapon", "HeavyWeapon", "HolyRelic", "Magic", "Book"
+    ],
     "age": 0,
     "activities": {
       "Working": 1.0,
@@ -23,7 +25,9 @@
     "desc": "Druids are independent spiritualists of Nature, pursuing its preservation through magic.",
     "races": [ "Halfelf", "Halfling", "Human" ],
     "buildings": [ "Shrine", "Garden" ],
-    "items": [ "LightArmour", "LightWeapons", "Magic" ],
+    "items": [
+        "LightArmour", "LightWeapon", "Magic"
+    ],
     "age": 0,
     "activities": {
       "Working": 1.0,
@@ -40,8 +44,12 @@
     "id": 3,
     "desc": "Fighters are the traditional, hard-as-nails soldiery of the world.",
     "races": [ "ALL" ],
-    "buildings": [ "Shipyard", "Walls", "Barracks", "Armoury", "Fortress", "Prison", "Palace" ],
-    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "Magic" ],
+    "buildings": [
+        "Shipyard", "Walls", "Barracks", "Armoury", "Fortress", "Prison", "Palace"
+    ],
+    "items": [
+        "LightArmour", "HeavyArmour", "LightWeapon", "HeavyWeapon", "Magic"
+    ],
     "age": 0,
     "activities": {
       "Working": 1.5,
@@ -59,7 +67,9 @@
     "desc": "Paladins fight for a religious cause, combining aspects of fighters and clerics.",
     "races": [ "Human" ],
     "buildings": [ "Shrine", "Temple", "Garden", "GrandTemple", "ReligiousOrder", "Lazaretto" ],
-    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "HolyRelic", "Magic" ],
+    "items": [
+        "LightArmour", "HeavyArmour", "LightWeapon", "HeavyWeapon", "HolyRelic", "Magic"
+    ],
     "age": 0,
     "activities": {
       "Working": 1.0,
@@ -77,7 +87,9 @@
     "desc": "Rangers are savvy specialists in woodcraft, tracking, scouting and infiltration.",
     "races": [ "Elf", "Halfelf", "Human" ],
     "buildings": [ "Garden", "Walls", "Barracks", "Fortress", "Assembly" ],
-    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "Magic" ],
+    "items": [
+        "LightArmour", "HeavyArmour", "LightWeapon", "HeavyWeapon", "Magic"
+    ],
     "age": 0,
     "activities": {
       "Working": 1.0,
@@ -95,7 +107,9 @@
     "desc": "Assassins are dangerous killers and spies of infamous skill.",
     "races": [ "Dwarf", "Elf", "Gnome", "Halfelf", "Halforc", "Human" ],
     "buildings": [ "Market", "Lighthouse", "Harbour", "Prison" ],
-    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "Magic" ],
+    "items": [
+        "LightArmour", "HeavyArmour", "LightWeapon", "HeavyWeapon", "Magic"
+    ],
     "age": 0,
     "activities": {
       "Working": 1.0,
@@ -113,7 +127,7 @@
     "desc": "Mages control incredible magical forces and often occupy the upper echelons of society.",
     "races": [ "Elf", "Halfelf", "Human" ],
     "buildings": [ "Library", "School", "University", "Observatory", "Society", "Assembly", "Palace" ],
-    "items": [ "LightWeapons", "Magic" ],
+    "items": [ "LightWeapon", "Magic", "Book" ],
     "age": 0,
     "activities": {
       "Working": 1.0,
@@ -131,7 +145,7 @@
     "desc": "Illusionists manipulate magic to control cognition and sensation in fearsome ways.",
     "races": [ "Gnome", "Human" ],
     "buildings": [ "Library", "School", "University", "Society" ],
-    "items": [ "LightWeapons", "Magic" ],
+    "items": [ "LightWeapon", "Magic", "Book" ],
     "age": 0,
     "activities": {
       "Working": 1.0,
@@ -149,12 +163,12 @@
     "desc": "Thieves are cunning criminals who break the rules of society for personal gain.",
     "races": [ "ALL" ],
     "buildings": [ "Market", "Lighthouse", "Harbour", "Warehouse", "Shipyard", "Prison" ],
-    "items": [ "LightArmour", "LightWeapons", "Magic", "Art" ],
+    "items": [ "LightArmour", "LightWeapon", "Magic", "Art", "Book" ],
     "age": 0,
     "activities": {
       "Working": 1.0,
       "Governing": 1.0,
-      "Trading": 1.0,
+      "Trading": 0.0,
       "Adventuring": 1.2,
       "Resting": 1.0,
       "Treasure": 1.2
@@ -167,7 +181,7 @@
     "desc": "Monks are aesthetes who practice rigorous mental and physical training.",
     "races": [ "Halforc", "Human" ],
     "buildings": [ "Shrine", "ReligiousOrder", "Lazaretto" ],
-    "items": [ "LightWeapons", "Magic" ],
+    "items": [ "LightWeapon", "Magic" ],
     "age": 0,
     "activities": {
       "Working": 1.2,
@@ -183,9 +197,9 @@
     "name": "Bard",
     "id": 11,
     "desc": "Bards are artists who produce works to teach and entertain their audiences.",
-    "items": [ "LightArmour", "LightWeapons", "Magic", "Art" ],
     "buildings": [ "Theatre", "Society" ],
     "races": [ "Halfelf", "Human" ],
+    "items": [ "LightArmour", "LightWeapon", "Magic", "Art", "Book" ],
     "age": 0,
     "activities": {
       "Working": 1.0,
@@ -202,18 +216,20 @@
     "id": 12,
     "desc": "Merchants are shrewd travellers who achieve success in the complex art of trade.",
     "races": [ "ALL" ],
-    "buildings": [ "Market", "Forge", "Mint", "Workshop", "GuildHall", "PrintingHouse",
-      "Lighthouse", "Harbour", "Warehouse", "Shipyard", "CustomsHouse" ],
-    "items": [ "LightArmour", "HeavyArmour", "LightWeapons", "HeavyWeapons", "Magic", "Art" ],
+    "buildings": [
+        "Market", "Forge", "Mint", "Workshop", "GuildHall", "PrintingHouse",
+        "Lighthouse", "Harbour", "Warehouse", "Shipyard", "CustomsHouse"
+    ],
+    "items": [ "LightArmour", "HeavyArmour", "LightWeapon", "HeavyWeapon", "Magic", "Art", "Book" ],
     "age": 0,
     "activities": {
       "Working": 1.0,
       "Governing": 0.0,
-      "Trading": 2.0,
+      "Trading": 1.0,
       "Adventuring": 0.0,
       "Resting": 1.0,
       "Treasure": 1.0
     },
-    "powers": []
+    "powers": [ "Trading" ]
   }
 ]

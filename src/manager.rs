@@ -100,10 +100,10 @@ pub struct Manager {
 impl Manager {
     /// Create a new Manager with the given data files.
     /// Note that until build_sett() is called, no settlement actually exists.
-    pub fn new(reg_path: &str, bldg_path: &str, ev_path: &str,
+    pub fn new(reg_path: &str, bldg_path: &str, ev_path: &str, cl_path: &str,
                verb: bool) -> Self {
         Manager {
-            datafiles: parser::DataFiles::new(reg_path, bldg_path, ev_path),
+            datafiles: parser::DataFiles::new(reg_path, bldg_path, ev_path, cl_path),
             sett: None,
             hist: history::History::new(),
             queue: events::EventQueue::new(32),

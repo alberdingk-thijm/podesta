@@ -17,6 +17,7 @@ fn main() {
     let mut man = Manager::new("regions.json",
                                "buildings.json",
                                "events.json",
+                               "classes.json",
                                true);
     let mut input = String::new();
     'game: loop {

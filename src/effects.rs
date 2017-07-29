@@ -207,8 +207,8 @@ pub enum EventEffect {
     Grow { bonus: String, area: Area },
     Build { bonus: String, area: Area },
     Gold { value: String, bonus: f64, steps: String },
-    Hero { level: String, classes: Vec<people::Class> },
-    Item { value: String, magical: f64 },
+    Hero { level: String, classes: Vec<String> },
+    Item { value: String, kind: Vec<String>, magical: f64 },
 }
 
 pub struct Effect<T: Targeted> {
@@ -244,8 +244,8 @@ impl EventEffect {
             EventEffect::Gold { ref value, bonus, ref steps } =>
                 RolledEffect::Gold(EffectStep::new(1.0, 1), EffectStep::new(bonus, 1)),
             EventEffect::Hero { ref level, ref classes } =>
-                RolledEffect::Hero(1, Rc::new(people::Class::Fighter), Area::Sett),
-            EventEffect::Item { ref value, ref magical } =>
+                RolledEffect::Hero(1, Rc::new(people::Class::default()), Area::Sett),
+            EventEffect::Item { ref value, ref kind, ref magical } =>
                 RolledEffect::Item(0.0, Area::Sett),
         }
     }

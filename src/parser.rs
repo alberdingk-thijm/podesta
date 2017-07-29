@@ -17,6 +17,7 @@ use bincode;
 use regions::Region;
 use buildings::BuildingPlan;
 use events::Event;
+use people::Class;
 use manager;
 use prompts::PromptError;
 
@@ -34,6 +35,7 @@ pub struct DataFiles {
     pub regions: Vec<Rc<Region>>,
     pub plans: Vec<Rc<BuildingPlan>>,
     pub events: Vec<Rc<Event>>,
+    pub classes: Vec<Rc<Class>>,
 }
 
 macro_rules! load_datafile {
@@ -46,16 +48,18 @@ macro_rules! load_datafile {
 }
 
 impl DataFiles {
-    /// Create a new DataFiles struct to track regions, buildings, and
-    /// (eventually) events.
+    /// Create a new DataFiles struct to track regions, buildings, events,
+    /// and classes.
     /// NOTE: Be mindful of the order when providing the parameters!
     pub fn new(region_path: &str,
                building_path: &str,
-               event_path: &str) -> DataFiles {
+               event_path: &str,
+               class_path: &str) -> DataFiles {
         DataFiles {
             regions: load_datafile!("regions", region_path),
             plans: load_datafile!("buildings", building_path),
-            events: load_datafile!("events", event_path)
+            events: load_datafile!("events", event_path),
+            classes: load_datafile!("classes", class_path)
         }
     }
 }

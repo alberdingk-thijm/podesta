@@ -1,6 +1,9 @@
 use quarters;
+//use buildings;
 use std::fmt;
+use std::default;
 use std::rc::Rc;
+use std::collections::HashMap;
 
 #[allow(dead_code)]
 #[derive(Debug, Serialize, Deserialize)]
@@ -15,22 +18,6 @@ pub struct Hero {
     /// What the hero is currently doing.
     pub activity: Activity,
     //pub home: Box<buildings::Building>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Item {
-    pub name: String,
-    pub form: ItemType,
-    pub value: f64,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum ItemType {
-    //TODO: add more types
-    Book,
-    Weapon,
-    Armour,
-    Artwork,
 }
 
 macro_attr! {
@@ -69,8 +56,7 @@ impl Race {
         }
     }
 }
-
-#[allow(dead_code)]
+/*
 #[derive(Serialize, Deserialize, Debug)]
 /// The class of a person.
 /// Different classes provide different bonuses.
@@ -101,30 +87,53 @@ pub enum Class {
     /// Merchants are able to trade.
     Merchant,
 }
+*/
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Class {
+    pub name: String,
+    pub id: i32,
+    pub desc: String,
+    pub races: Vec<String>,
+    #[serde(rename = "buildings")]
+    pub bldgs: Vec<String>,
+    pub items: Vec<String>,
+    pub age: i32,
+    #[serde(rename = "activities")]
+    pub act_boosts: HashMap<String, f64>,
+    pub powers: Vec<String>,
+}
 
 impl Class {
-    /// Return a number representing the youngest age of a member of this Class.
-    fn get_age(&self) -> i32 {
-        match *self {
-            //TODO
-            Class::Cleric => 0,
-            Class::Druid => 0,
-            Class::Fighter => 0,
-            Class::Assassin => 0,
-            Class::Paladin => 0,
-            Class::Ranger => 0,
-            Class::Mage => 0,
-            Class::Illusionist => 0,
-            Class::Thief => 0,
-            Class::Monk => 0,
-            Class::Bard => 0,
-            Class::Merchant => 0,
+    fn new(n: &str, id: i32, d: &str,
+           races: Vec<String>, bldgs: Vec<String>, items: Vec<String>,
+           age: i32, ab: HashMap<String, f64>, powers: Vec<String>) -> Class {
+        Class {
+            name: n.to_string(),
+            id: id,
+            desc: d.to_string(),
+            races: races,
+            bldgs: bldgs,
+            items: items,
+            age: age,
+            act_boosts: ab,
+            powers: powers,
         }
     }
+}
 
-    /// Return a vec of QTypes representing possible homes for this Class.
-    fn get_home(&self) -> Vec<quarters::QType> {
-        vec![]
+impl default::Default for Class {
+    fn default() -> Class {
+        let mut acts = HashMap::new();
+        acts.insert(String::from("Working"), 1f64);
+        acts.insert(String::from("Governing"), 1f64);
+        acts.insert(String::from("Trading"), 0f64);
+        acts.insert(String::from("Adventuring"), 1f64);
+        acts.insert(String::from("Resting"), 1f64);
+        acts.insert(String::from("Treasure"), 1f64);
+        Class::new("DEFAULT", 1, "defaultdesc",
+                   vec!["ALL".to_string()], vec!["ALL".to_string()], vec!["ALL".to_string()],
+                   0, acts, vec![])
     }
 }
 
@@ -199,28 +208,26 @@ impl Hero {
     fn agemod() -> i32 { 25 }
 
     pub fn new(n: &str, lvl: i32, race: Race, class: Rc<Class>) -> Hero {
-               //home: Box<buildings::Building>) -> Hero {
         Hero {
             name: n.to_string(),
-            age: class.get_age() * Hero::agemod(),
+            age: class.age * Hero::agemod(),
             level: lvl,
             race: race,
             class: class,
             activity: Activity::Working,
-            //home: home,
         }
     }
 
-    #[allow(dead_code)]
     /// Execute a timestep, aging the hero and changing their activity based on
     /// a provided percentile roll r (between 1 and 100, inclusive).
+    /// TODO: use new class format
     /// ```
     /// use podesta::people;
     /// let h = people::Hero::new {
     ///     "George",
     ///     1,
     ///     people::Race::Human,
-    ///     people::Class::Fighter,
+    ///     people::Class::default()
     /// };
     /// assert_eq!(h.activity, people::Activity::Working);
     /// let mut r = 50;
@@ -243,9 +250,11 @@ impl Hero {
                     Activity::Resting(10)
                 } else if r < (self.age / Hero::agemod() + 29) {
                     let away = Hero::awaymod() * self.level;
-                    match *self.class {
-                        Class::Merchant => Activity::Trading(away),
-                        _ => Activity::Adventuring(away),
+                    //TODO: allow for possible hybrids
+                    if self.class.powers.contains(&"Trading".to_string()) {
+                        Activity::Trading(away)
+                    } else {
+                        Activity::Adventuring(away)
                     }
                 } else {
                     Activity::Working
