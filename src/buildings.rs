@@ -4,15 +4,19 @@ use quarters;
 use people;
 use sett;
 use effects;
+use items;
 use std::rc::Rc;
+use std::cell::RefCell;
 use std::collections::HashMap;
+use rand::{self, Rng};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Building {
     pub name: String,
     pub plan: Rc<BuildingPlan>,
     pub cond: BldgCond,
-    pub occupants: Vec<people::Hero>,
+    pub occupants: Vec<Rc<RefCell<people::Hero>>>,
+    pub items: Vec<Rc<RefCell<items::Item>>>,
     pub boosts: effects::EffectFlags,
 }
 
@@ -29,6 +33,18 @@ pub struct BuildingPlan {
     pub build: f64,
     pub events: HashMap<String, f64>,
 }
+
+#[derive(Debug)]
+/// Errors specific to buildings and their use.
+pub enum OccupyError {
+    /// Building's condition prevents its use.
+    NotInUse,
+    /// Occupant not valid in building.
+    InvalidOccupant,
+    /// Item not valid in building.
+    InvalidItem,
+}
+
 
 impl fmt::Display for BuildingPlan {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -81,6 +97,7 @@ impl Building {
             plan: plan,
             cond: BldgCond::InProgress(0.0),
             occupants: vec!(),
+            items: vec!(),
             boosts: effects::EffectFlags::default(),
         }
     }
@@ -101,17 +118,53 @@ impl Building {
             },
             BldgCond::InUse(n) => {
                 if n <= 0.0 {
-                    // remove all occupants when building becomes ruined
+                    // remove all occupants & items when building becomes ruined
                     // TODO: should this be handled by the manager?
                     // TODO: manager can alert that the building is ruined
-                    // TODO: and that the occupants have left
+                    // TODO: and that the occupants have left and items destroyed
                     self.occupants.clear();
+                    self.items.clear();
                     BldgCond::Ruined
                 } else {
-                    BldgCond::InUse((n - 1.0 + self.boosts.build_bonus.next().unwrap_or(0.0)).min(100.0))
+                    BldgCond::InUse((n - 1.0 + self.boosts.build_bonus.next()
+                                     .unwrap_or(0.0)).min(100.0))
                 }
             },
             BldgCond::Ruined => BldgCond::Ruined,
+        };
+        let mut r = rand::thread_rng();
+        for hero in self.occupants.iter() {
+            hero.borrow_mut().step(r.gen_range(1, 101));
+        }
+    }
+
+    /// Add occupant to building.
+    /// Return an Error if the building cannot accept the occupant.
+    pub fn add_occupant(&mut self, hero: Rc<RefCell<people::Hero>>) -> Result<(), OccupyError> {
+        match self.cond {
+            BldgCond::InUse(_) => {
+                if hero.borrow().class.bldgs.contains(&self.name) {
+                    self.occupants.push(hero);
+                    Ok(())
+                } else {
+                    Err(OccupyError::InvalidOccupant)
+                }
+            },
+            _ => Err(OccupyError::NotInUse),
+        }
+    }
+
+    /// Add item to building.
+    /// Return an Error if the building cannot accept the item.
+    pub fn add_item(&mut self, item: Rc<RefCell<items::Item>>) -> Result<(), OccupyError> {
+        match self.cond {
+            BldgCond::InUse(_) => {
+                //TODO: add element to building plan specifying
+                //TODO: kinds of items building can hold
+                self.items.push(item);
+                Ok(())
+            },
+            _ => Err(OccupyError::NotInUse),
         }
     }
 

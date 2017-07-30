@@ -411,8 +411,10 @@ impl Manager {
                     },
                     Rolled::Hero(level, ref class, ref area) => {
                         // create a hero
+                        // TODO: implement name generator
                         let _hero = people::Hero::new("Foo", level, people::Race::Human, class.clone());
-                        // put in area
+                        // TODO: put in area
+                        // TODO: area should be a particular building specifically?
                     },
                     Rolled::Item(value, ref area) => {
                         // create item

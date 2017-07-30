@@ -231,10 +231,10 @@ impl Hero {
     /// };
     /// assert_eq!(h.activity, people::Activity::Working);
     /// let mut r = 50;
-    /// h.execute_timestep(r);
+    /// h.step(r);
     /// assert_eq!(h.activity, people::Activity::Adventuring);
     /// ```
-    pub fn execute_timestep(&mut self, r: i32) {
+    pub fn step(&mut self, r: i32) {
         if self.age >= Hero::agemod() * self.race.max_age() {
             self.activity = Activity::Dying("old age".to_string());
             // TODO: Log the death

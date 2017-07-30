@@ -16,6 +16,7 @@ pub mod sett;
 pub mod buildings;
 pub mod quarters;
 pub mod people;
+pub mod items;
 mod prompts;
 pub mod events;
 pub mod effects;
