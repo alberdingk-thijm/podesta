@@ -138,6 +138,9 @@ impl Building {
         for hero in self.occupants.iter() {
             hero.borrow_mut().step(r.gen_range(1, 101));
         }
+        for item in self.items.iter() {
+            item.borrow_mut().step();
+        }
     }
 
     /// Add occupant to building.
@@ -174,6 +177,16 @@ impl Building {
             },
             _ => Err(OccupyError::NotInUse),
         }
+    }
+
+    /// Collect gold.
+    /// For each occupant of the building, collect an extra 0.04 gold.
+    /// For each item in the building, collect an extra 0-0.0x gold, where
+    /// x is the item's power.
+    pub fn collect_gold(&mut self) -> f64 {
+        let boost : f64 = self.boosts.gold.next().unwrap_or(1.0);
+        (self.occupants.len() as f64 * 0.04f64
+         + self.items.iter().fold(0.0, |acc, x| acc + x.borrow().collect_gold() * boost))
     }
 
     /// Get a new map of event chances for each event possible at the building

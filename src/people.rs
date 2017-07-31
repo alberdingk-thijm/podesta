@@ -1,11 +1,8 @@
-use quarters;
-//use buildings;
 use std::fmt;
 use std::default;
 use std::rc::Rc;
 use std::collections::HashMap;
 
-#[allow(dead_code)]
 #[derive(Debug, Serialize, Deserialize)]
 /// A hero of the settlement.
 pub struct Hero {
@@ -17,7 +14,6 @@ pub struct Hero {
     pub class: Rc<Class>,
     /// What the hero is currently doing.
     pub activity: Activity,
-    //pub home: Box<buildings::Building>,
 }
 
 macro_attr! {
@@ -137,7 +133,6 @@ impl default::Default for Class {
     }
 }
 
-#[allow(dead_code)]
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Activity {
     Working,

@@ -7,6 +7,7 @@ use time;
 use sett;
 use quarters;
 use buildings;
+use items;
 use people;
 use history;
 use events;
@@ -307,16 +308,16 @@ impl Manager {
                         match *area {
                             effects::Area::Building(ref bts) => {
                                 self.rand_building(&bts).map(|b| {
-                                    b.borrow_mut().boosts.grow_bonus += step.clone(); })
+                                    b.borrow_mut().boosts.grow_bonus *= step.clone(); })
                             },
                             effects::Area::Quarter(ref qts) => {
                                 self.rand_quarter(&qts).map(|q| {
-                                    q.borrow_mut().boosts.grow_bonus += step.clone(); })
+                                    q.borrow_mut().boosts.grow_bonus *= step.clone(); })
                             },
                             effects::Area::Sett => {
                                 self.sett.as_ref().map(|s| {
                                     for q in s.qrtrs.iter() {
-                                        q.borrow_mut().boosts.grow_bonus += step.clone();
+                                        q.borrow_mut().boosts.grow_bonus *= step.clone();
                                     }
                                 })
                             },
@@ -326,16 +327,16 @@ impl Manager {
                         match *area {
                             effects::Area::Building(ref bts) => {
                                 self.rand_building(&bts).map(|b| {
-                                    b.borrow_mut().boosts.build_bonus += step.clone(); })
+                                    b.borrow_mut().boosts.build_bonus *= step.clone(); })
                             },
                             effects::Area::Quarter(ref qts) => {
                                 self.rand_quarter(&qts).map(|q| {
-                                    q.borrow_mut().boosts.build_bonus += step.clone(); })
+                                    q.borrow_mut().boosts.build_bonus *= step.clone(); })
                             },
                             effects::Area::Sett => {
                                 self.sett.as_ref().map(|s| {
                                     for q in s.qrtrs.iter() {
-                                        q.borrow_mut().boosts.build_bonus += step.clone();
+                                        q.borrow_mut().boosts.build_bonus *= step.clone();
                                     }
                                 })
                             },
@@ -345,22 +346,22 @@ impl Manager {
                         match *area {
                             effects::Area::Building(ref bts) => {
                                 self.rand_building(&bts).map(|b| {
-                                    b.borrow_mut().boosts.grow += step.clone();
-                                    b.borrow_mut().boosts.build += step.clone();
-                                    b.borrow_mut().boosts.gold += step.clone(); })
+                                    b.borrow_mut().boosts.grow *= step.clone();
+                                    b.borrow_mut().boosts.build *= step.clone();
+                                    b.borrow_mut().boosts.gold *= step.clone(); })
                             },
                             effects::Area::Quarter(ref qts) => {
                                 self.rand_quarter(&qts).map(|q| {
-                                    q.borrow_mut().boosts.grow += step.clone();
-                                    q.borrow_mut().boosts.build += step.clone();
-                                    q.borrow_mut().boosts.gold += step.clone(); })
+                                    q.borrow_mut().boosts.grow *= step.clone();
+                                    q.borrow_mut().boosts.build *= step.clone();
+                                    q.borrow_mut().boosts.gold *= step.clone(); })
                             },
                             effects::Area::Sett => {
                                 self.sett.as_ref().map(|s| {
                                     for q in s.qrtrs.iter() {
-                                        q.borrow_mut().boosts.grow += step.clone();
-                                        q.borrow_mut().boosts.build += step.clone();
-                                        q.borrow_mut().boosts.gold += step.clone();
+                                        q.borrow_mut().boosts.grow *= step.clone();
+                                        q.borrow_mut().boosts.build *= step.clone();
+                                        q.borrow_mut().boosts.gold *= step.clone();
                                     }
                                 })
                             },
@@ -370,16 +371,16 @@ impl Manager {
                         match *area {
                             effects::Area::Building(ref bts) => {
                                 self.rand_building(&bts).map(|b| {
-                                    b.borrow_mut().boosts.grow += step.clone(); })
+                                    b.borrow_mut().boosts.grow *= step.clone(); })
                             },
                             effects::Area::Quarter(ref qts) => {
                                 self.rand_quarter(&qts).map(|q| {
-                                    q.borrow_mut().boosts.grow += step.clone(); })
+                                    q.borrow_mut().boosts.grow *= step.clone(); })
                             },
                             effects::Area::Sett => {
                                 self.sett.as_ref().map(|s| {
                                     for q in s.qrtrs.iter() {
-                                        q.borrow_mut().boosts.grow += step.clone();
+                                        q.borrow_mut().boosts.grow *= step.clone();
                                     }
                                 })
                             },
@@ -389,16 +390,16 @@ impl Manager {
                         match *area {
                             effects::Area::Building(ref bts) => {
                                 self.rand_building(&bts).map(|b| {
-                                    b.borrow_mut().boosts.build += step.clone(); })
+                                    b.borrow_mut().boosts.build *= step.clone(); })
                             },
                             effects::Area::Quarter(ref qts) => {
                                 self.rand_quarter(&qts).map(|q| {
-                                    q.borrow_mut().boosts.build += step.clone(); })
+                                    q.borrow_mut().boosts.build *= step.clone(); })
                             },
                             effects::Area::Sett => {
                                 self.sett.as_ref().map(|s| {
                                     for q in s.qrtrs.iter() {
-                                        q.borrow_mut().boosts.build += step.clone();
+                                        q.borrow_mut().boosts.build *= step.clone();
                                     }
                                 })
                             },
@@ -407,7 +408,7 @@ impl Manager {
                     Rolled::Gold(ref step, ref bonus) => {
                         self.sett.as_mut().map(|s| {
                             s.boosts.gold_bonus += bonus.clone();
-                            s.boosts.gold += step.clone(); });
+                            s.boosts.gold *= step.clone(); });
                     },
                     Rolled::Hero(level, ref class, ref area) => {
                         let hero = self.create_hero(level, &class);
@@ -422,9 +423,18 @@ impl Manager {
                             }
                         });
                     },
-                    Rolled::Item(value, ref area) => {
+                    Rolled::Item(value, kind, power, ref area) => {
                         // create item
+                        let item = Rc::new(RefCell::new(items::Item::new("Foo", kind, power, value)));
                         // put in area
+                        match *area {
+                            effects::Area::Building(ref bts) => {
+                                self.rand_building(&bts).and_then(|b| {
+                                    // TODO: loses possible error
+                                    b.borrow_mut().add_item(item).ok() })
+                            },
+                            _ => None,
+                        };
                     },
                 }
             }

@@ -3,7 +3,8 @@ use rand::Rng;
 use rouler::Roller;
 use people;
 //use buildings;
-use quarters;
+use quarters::QType;
+use items;
 use std::str;
 use std::default;
 use std::ops::{Add, Mul, AddAssign, MulAssign};
@@ -16,8 +17,8 @@ use std::ops::{Add, Mul, AddAssign, MulAssign};
 /// TODO: may need to change .json files to specify QType filters
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Area {
-    Building(Vec<quarters::QType>),
-    Quarter(Vec<quarters::QType>),
+    Building(Vec<QType>),
+    Quarter(Vec<QType>),
     Sett,
 }
 
@@ -45,6 +46,7 @@ pub trait Targeted {
 /// to be processed on the next step().
 /// TODO: since all effects are processed on the step(),
 /// TODO: should there be a trait for stepping?
+/// TODO: fix documentation
 pub enum RolledEffect {
     /// Kill $1 people in $2 area
     Kill(EffectStep, Area),
@@ -61,14 +63,14 @@ pub enum RolledEffect {
     /// Add hero $1 to building in $3 area
     Hero(i32, String, Area),
     /// Add item worth $1 to building in $3 area
-    Item(f64, Area),
+    Item(f64, items::ItemType, i32, Area),
 }
 
 impl RolledEffect {
     /// Create a new RolledEffect::Kill from the given arguments.
     fn kill(dead: &str, viralpt: Option<i64>, area: Area) -> RolledEffect {
         let mut ar = area;
-        let mut roll = Roller::new(dead);
+        let roll = Roller::new(dead);
         let x : i64 = roll.total();
         if let Some(v) = viralpt {
             // if roll beats viral, "boost" the area up
@@ -84,7 +86,7 @@ impl RolledEffect {
     /// Create a new RolledEffect::Damage from the given arguments.
     fn damage(crumbled: &str, viralpt: Option<i64>, area: Area) -> RolledEffect {
         let mut ar = area;
-        let mut roll = Roller::new(crumbled);
+        let roll = Roller::new(crumbled);
         let x : i64 = roll.total();
         if let Some(v) = viralpt {
             // if roll beats viral, "boost" the area up
@@ -99,14 +101,14 @@ impl RolledEffect {
 
     /// Create a new RolledEffect::Riot from the given arguments.
     fn riot(steps: &str, prod: f64, area: Area) -> RolledEffect {
-        let mut roll = Roller::new(steps);
+        let roll = Roller::new(steps);
         let x : i64 = roll.total();
         RolledEffect::Riot(EffectStep::new(prod, x as usize), area)
     }
 
     /// Create a new RolledEffect::Grow from the given arguments.
     fn grow(bonus: &str, area: Area) -> RolledEffect {
-        let mut roll = Roller::new(bonus);
+        let roll = Roller::new(bonus);
         let x : i64 = roll.total();
         // divide by 100, add 100% to create boost
         let change = (x as f64 / 100_f64).max(0f64) + 1f64;
@@ -136,24 +138,50 @@ impl RolledEffect {
     fn hero(level: &str, classes: &[String]) -> RolledEffect {
         let roll = Roller::new(level);
         let x : i64 = roll.total();
-        let class = rand::thread_rng().choose(&classes);
+        let class = rand::thread_rng().choose(&classes)
+            .expect("Hero provided without any possible classes!");
         //TODO: replace with proper, class-based building choice
-        let bldgqs = match class.unwrap().as_str() {
-            "Cleric" | "Druid" | "Monk" => vec![quarters::QType::Residential, quarters::QType::Port],
-            "Fighter" | "Assassin" => vec![quarters::QType::Port, quarters::QType::Administrative],
-            "Paladin" | "Ranger" => vec![quarters::QType::Residential, quarters::QType::Port, quarters::QType::Administrative],
-            "Mage" | "Illusionist" => vec![quarters::QType::Academic],
-            "Thief" => vec![quarters::QType::Industrial, quarters::QType::Port, quarters::QType::Administrative],
-            "Bard" => vec![quarters::QType::Residential, quarters::QType::Academic],
-            _ => vec![],
+        let bldgqs = match class.as_str() {
+            "Cleric" | "Druid" | "Monk" => vec![QType::Residential, QType::Port],
+            "Fighter" | "Assassin" => vec![QType::Port, QType::Administrative],
+            "Paladin" | "Ranger" => vec![QType::Residential, QType::Port, QType::Administrative],
+            "Mage" | "Illusionist" => vec![QType::Academic],
+            "Thief" => vec![QType::Industrial, QType::Port, QType::Administrative],
+            "Bard" => vec![QType::Residential, QType::Academic],
+            _ => vec![], //FIXME: dangerous!
         };
-        RolledEffect::Hero(x as i32, class.unwrap().clone(), Area::Building(bldgqs))
+        RolledEffect::Hero(x as i32, class.clone(), Area::Building(bldgqs))
     }
 
     /// Create a new RolledEffect::Item from the given arguments.
     fn item(value: &str, kind: &[String], magical: f64) -> RolledEffect {
-        //TODO
-        RolledEffect::Item(0.0, Area::Building(vec![]))
+        let roll = Roller::new(value);
+        let x : i64 = roll.total();
+        let mut pow = 0i32;
+        if magical < 1.0f64 {
+            // take the inverse of magical and compute a bool with a 1 in 1/magical chance
+            // this is the same as checking if a random number between 1 and 100 is less
+            // than magical.
+            while rand::thread_rng().gen_weighted_bool(magical.recip() as u32) && pow < 6 {
+                // keep increasing the power level as long as the rolls succeed
+                pow += 1;
+            }
+        } else {
+            // if the item is guaranteed magical, set it to the maximum level
+            pow = 6;
+        }
+        let kind = rand::thread_rng().choose(&kind)
+            .expect("Item provided without any possible kinds!");
+        let itemtype : items::ItemType = kind.parse()
+            .expect("Kind of item not a valid choice!");
+        let bldgqs = match itemtype {
+            items::ItemType::Book | items::ItemType::HolyRelic => vec![QType::Academic],
+            items::ItemType::Art => vec![QType::Residential, QType::Academic],
+            items::ItemType::Magic => QType::get_qtypes(true),  // all qtypes as vec
+            //weapons and armour
+            _ => vec![QType::Industrial, QType::Port, QType::Administrative],
+        };
+        RolledEffect::Item(x as f64, itemtype, pow, Area::Building(bldgqs))
     }
 
 }

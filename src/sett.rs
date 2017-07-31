@@ -158,9 +158,10 @@ impl Sett {
     /// 0.01 gold times the optional boost.
     pub fn collect_gold(&mut self) {
         //TODO: placeholder incrementer
-        self.gold += 0.01f64 * self.boosts.gold.next().unwrap_or(1.0) * self.pop;
+        let boost = self.boosts.gold.next().unwrap_or(1.0);
+        self.gold += 0.01f64 * boost * self.pop;
         for q in &self.qrtrs {
-            self.gold += q.borrow_mut().collect_gold();
+            self.gold += q.borrow_mut().collect_gold() * boost;
         }
         self.gold += self.boosts.gold_bonus.next().unwrap_or(0.0);
     }

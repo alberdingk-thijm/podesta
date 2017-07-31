@@ -7,8 +7,33 @@ pub struct Item {
     pub name: String,
     pub age: i32,
     pub kind: ItemType,
+    /// The magical power of the item: 0 if non-magical, up to +6 otherwise.
     pub power: i32,
     pub worth: f64,
+}
+
+impl Item {
+    pub fn new(n: &str, k: ItemType, p: i32, w: f64) -> Item {
+        Item {
+            name: n.to_string(),
+            age: 0,
+            kind: k,
+            power: p,
+            worth: w,
+        }
+    }
+
+    /// Execute a timestep for the item, returning the value in gold
+    /// it generates that step.
+    pub fn step(&mut self) {
+        self.age += 1;
+        //TODO: placeholder increment
+    }
+
+    /// Collect gold. Return a % of the item's worth based on its power.
+    pub fn collect_gold(&self) -> f64 {
+        self.worth * (0.01 * self.power as f64)
+    }
 }
 
 macro_attr! {
