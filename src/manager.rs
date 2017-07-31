@@ -410,11 +410,17 @@ impl Manager {
                             s.boosts.gold += step.clone(); });
                     },
                     Rolled::Hero(level, ref class, ref area) => {
-                        // create a hero
-                        // TODO: implement name generator
-                        let _hero = people::Hero::new("Foo", level, people::Race::Human, class.clone());
-                        // TODO: put in area
-                        // TODO: area should be a particular building specifically?
+                        let hero = self.create_hero(level, &class);
+                        hero.and_then(|h| {
+                            match *area {
+                                effects::Area::Building(ref bts) => {
+                                    self.rand_building(&bts).and_then(|b| {
+                                        // TODO: loses possible error
+                                        b.borrow_mut().add_occupant(h).ok() })
+                                },
+                                _ => None,
+                            }
+                        });
                     },
                     Rolled::Item(value, ref area) => {
                         // create item
@@ -423,6 +429,22 @@ impl Manager {
                 }
             }
         }
+    }
+
+    /// Initialize a new hero with a random name and race.
+    /// Set the hero's level based on the given level integer.
+    /// Select the hero's class based on the given classname string.
+    fn create_hero(&self, lvl: i32, classname: &str) -> Option<Rc<RefCell<people::Hero>>> {
+        // TODO: implement name generator
+        let name = "Foo";
+        let class = self.datafiles.classes.iter()
+            .find(|c| c.name == classname).map(|c| c.clone());
+        let races = people::Race::iter_variants().collect::<Vec<_>>();
+        let race = rand::thread_rng().choose(&races)
+            .expect("Race::iter_variants() did not return multiple entries!");
+        class.map(|c| {
+            Rc::new(RefCell::new(people::Hero::new(name, lvl, *race, c)))
+        })
     }
 
     /// Return a random quarter in the settlement.

@@ -143,12 +143,18 @@ impl Building {
     pub fn add_occupant(&mut self, hero: Rc<RefCell<people::Hero>>) -> Result<(), OccupyError> {
         match self.cond {
             BldgCond::InUse(_) => {
+                self.occupants.push(hero);
+                Ok(())
+                //TODO: only allow buildings specified by hero's class
+                //TODO: would require changes to manager::rand_building()
+                /*
                 if hero.borrow().class.bldgs.contains(&self.name) {
                     self.occupants.push(hero);
                     Ok(())
                 } else {
                     Err(OccupyError::InvalidOccupant)
                 }
+                */
             },
             _ => Err(OccupyError::NotInUse),
         }

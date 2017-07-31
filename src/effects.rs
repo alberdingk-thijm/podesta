@@ -6,7 +6,6 @@ use people;
 use quarters;
 use std::str;
 use std::default;
-use std::rc::Rc;
 use std::ops::{Add, Mul, AddAssign, MulAssign};
 
 /// An enum to determine what part of the settlement the effect should change.
@@ -50,7 +49,7 @@ pub enum RolledEffect {
     /// Boost gold gain $1% each turn for $2 turns with a one-turn $3 boost
     Gold(EffectStep, EffectStep),
     /// Add hero $1 to building in $3 area
-    Hero(i32, Rc<people::Class>, Area),
+    Hero(i32, String, Area),
     /// Add item worth $1 to building in $3 area
     Item(f64, Area),
 }
@@ -244,7 +243,7 @@ impl EventEffect {
             EventEffect::Gold { ref value, bonus, ref steps } =>
                 RolledEffect::Gold(EffectStep::new(1.0, 1), EffectStep::new(bonus, 1)),
             EventEffect::Hero { ref level, ref classes } =>
-                RolledEffect::Hero(1, Rc::new(people::Class::default()), Area::Sett),
+                RolledEffect::Hero(1, String::from("Fighter"), Area::Building(vec![])),
             EventEffect::Item { ref value, ref kind, ref magical } =>
                 RolledEffect::Item(0.0, Area::Sett),
         }
