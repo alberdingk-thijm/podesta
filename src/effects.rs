@@ -21,6 +21,16 @@ pub enum Area {
     Sett,
 }
 
+impl Area {
+    /// Upgrade to a wider-scale Area.
+    fn upgrade(self) -> Area {
+        match self {
+            Area::Building(v) => Area::Quarter(v),
+            _ => Area::Sett,
+        }
+    }
+}
+
 /// A trait for targeting Areas with effects
 pub trait Targeted {
     fn kill(&mut self, num: i64);
@@ -52,6 +62,100 @@ pub enum RolledEffect {
     Hero(i32, String, Area),
     /// Add item worth $1 to building in $3 area
     Item(f64, Area),
+}
+
+impl RolledEffect {
+    /// Create a new RolledEffect::Kill from the given arguments.
+    fn kill(dead: &str, viralpt: Option<i64>, area: Area) -> RolledEffect {
+        let mut ar = area;
+        let mut roll = Roller::new(dead);
+        let x : i64 = roll.total();
+        if let Some(v) = viralpt {
+            // if roll beats viral, "boost" the area up
+            if x >= v {
+                ar = ar.upgrade()
+            }
+        }
+        // EffectStep takes a %, so divide by 100
+        let change = (x as f64 / 100_f64).max(0f64);
+        RolledEffect::Kill(EffectStep::new(change, 1), ar)
+    }
+
+    /// Create a new RolledEffect::Damage from the given arguments.
+    fn damage(crumbled: &str, viralpt: Option<i64>, area: Area) -> RolledEffect {
+        let mut ar = area;
+        let mut roll = Roller::new(crumbled);
+        let x : i64 = roll.total();
+        if let Some(v) = viralpt {
+            // if roll beats viral, "boost" the area up
+            if x >= v {
+                ar = ar.upgrade()
+            }
+        }
+        // EffectStep takes a %, so divide by 100
+        let change = (x as f64 / 100_f64).max(0f64);
+        RolledEffect::Damage(EffectStep::new(change, 1), ar)
+    }
+
+    /// Create a new RolledEffect::Riot from the given arguments.
+    fn riot(steps: &str, prod: f64, area: Area) -> RolledEffect {
+        let mut roll = Roller::new(steps);
+        let x : i64 = roll.total();
+        RolledEffect::Riot(EffectStep::new(prod, x as usize), area)
+    }
+
+    /// Create a new RolledEffect::Grow from the given arguments.
+    fn grow(bonus: &str, area: Area) -> RolledEffect {
+        let mut roll = Roller::new(bonus);
+        let x : i64 = roll.total();
+        // divide by 100, add 100% to create boost
+        let change = (x as f64 / 100_f64).max(0f64) + 1f64;
+        RolledEffect::Grow(EffectStep::new(change, 1), area)
+    }
+
+    /// Create a new RolledEffect::Build from the given arguments.
+    fn build(bonus: &str, area: Area) -> RolledEffect {
+        let roll = Roller::new(bonus);
+        let x : i64 = roll.total();
+        // divide by 100, add 100% to create boost
+        let change = (x as f64 / 100_f64).max(0f64) + 1f64;
+        RolledEffect::Build(EffectStep::new(change, 1), area)
+    }
+
+    /// Create a new RolledEffect::Gold from the given arguments.
+    fn gold(value: &str, bonus: f64, steps: &str) -> RolledEffect {
+        let mut roll = Roller::new(steps);
+        let stepx : i64 = roll.total();
+        roll = Roller::new(value);
+        let valuex : i64 = roll.total();
+        // first param is % bonus over steps, second param is absolute immediate bonus
+        RolledEffect::Gold(EffectStep::new(bonus, stepx as usize), EffectStep::new(valuex as f64, 1))
+    }
+
+    /// Create a new RolledEffect::Hero from the given arguments.
+    fn hero(level: &str, classes: &[String]) -> RolledEffect {
+        let roll = Roller::new(level);
+        let x : i64 = roll.total();
+        let class = rand::thread_rng().choose(&classes);
+        //TODO: replace with proper, class-based building choice
+        let bldgqs = match class.unwrap().as_str() {
+            "Cleric" | "Druid" | "Monk" => vec![quarters::QType::Residential, quarters::QType::Port],
+            "Fighter" | "Assassin" => vec![quarters::QType::Port, quarters::QType::Administrative],
+            "Paladin" | "Ranger" => vec![quarters::QType::Residential, quarters::QType::Port, quarters::QType::Administrative],
+            "Mage" | "Illusionist" => vec![quarters::QType::Academic],
+            "Thief" => vec![quarters::QType::Industrial, quarters::QType::Port, quarters::QType::Administrative],
+            "Bard" => vec![quarters::QType::Residential, quarters::QType::Academic],
+            _ => vec![],
+        };
+        RolledEffect::Hero(x as i32, class.unwrap().clone(), Area::Building(bldgqs))
+    }
+
+    /// Create a new RolledEffect::Item from the given arguments.
+    fn item(value: &str, kind: &[String], magical: f64) -> RolledEffect {
+        //TODO
+        RolledEffect::Item(0.0, Area::Building(vec![]))
+    }
+
 }
 
 /// A struct implementing Iterator to return effect steps.
@@ -215,10 +319,9 @@ pub struct Effect<T: Targeted> {
     pub etype: EventEffect,
 }
 
-#[allow(dead_code, unused_variables)]
+#[allow(unused_variables)]
 impl EventEffect {
     pub fn activate(&self) -> RolledEffect {
-        //let e = Effect::new(caller, self);
         match *self {
             //TODO: replace placeholder values with proper code
             EventEffect::Kill { ref dead, viralpt, ref area } => {
@@ -226,26 +329,26 @@ impl EventEffect {
                 //roll dead and store as f64
                 //if > Some(viralpt), make area larger
                 //else, use given area
-                RolledEffect::Kill(EffectStep::new(1.0, 1), area.clone())
+                RolledEffect::kill(dead, viralpt, area.clone())
             },
             EventEffect::Damage { ref crumbled, viralpt, ref area } => {
-                RolledEffect::Damage(EffectStep::new(1.0, 1), area.clone())
+                RolledEffect::damage(crumbled, viralpt, area.clone())
             },
             EventEffect::Riot { ref steps, prod, ref area } => {
-                RolledEffect::Riot(EffectStep::new(prod, 1), area.clone())
+                RolledEffect::riot(steps, prod, area.clone())
             },
             EventEffect::Grow { ref bonus, ref area } => {
-                RolledEffect::Grow(EffectStep::new(1.0, 1), area.clone())
+                RolledEffect::grow(bonus, area.clone())
             },
             EventEffect::Build { ref bonus, ref area } => {
-                RolledEffect::Build(EffectStep::new(1.0, 1), area.clone())
+                RolledEffect::build(bonus, area.clone())
             },
             EventEffect::Gold { ref value, bonus, ref steps } =>
-                RolledEffect::Gold(EffectStep::new(1.0, 1), EffectStep::new(bonus, 1)),
+                RolledEffect::gold(value, bonus, steps),
             EventEffect::Hero { ref level, ref classes } =>
-                RolledEffect::Hero(1, String::from("Fighter"), Area::Building(vec![])),
-            EventEffect::Item { ref value, ref kind, ref magical } =>
-                RolledEffect::Item(0.0, Area::Sett),
+                RolledEffect::hero(level, classes),
+            EventEffect::Item { ref value, ref kind, magical } =>
+                RolledEffect::item(value, kind, magical),
         }
     }
 }
@@ -256,7 +359,7 @@ impl<T: Targeted> Effect<T> {
         Effect { target: tgt, etype: etype }
     }
 
-    fn event_kill(&mut self, dead: &str, viralpt: Option<i64>) {
+    fn kill(&mut self, dead: &str, viralpt: Option<i64>) {
         // get the roll
         let mut roll = Roller::new(dead);
         let mut x : i64 = roll.total();

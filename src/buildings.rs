@@ -132,6 +132,8 @@ impl Building {
             },
             BldgCond::Ruined => BldgCond::Ruined,
         };
+        //TODO: kill heroes if building has growth subtraction
+        //TODO: destroy items if building has build subtraction
         let mut r = rand::thread_rng();
         for hero in self.occupants.iter() {
             hero.borrow_mut().step(r.gen_range(1, 101));
