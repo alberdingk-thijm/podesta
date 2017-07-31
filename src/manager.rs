@@ -37,6 +37,15 @@ macro_rules! print_opt {
     };
 }
 
+macro_rules! enum_match {
+    ($e:expr, $p: pat) => {
+        match $e {
+            $p => true,
+            _ => false,
+        }
+    };
+}
+
 type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug)]
@@ -421,7 +430,7 @@ impl Manager {
                                 },
                                 _ => None,
                             }
-                        });
+                        }).or(Some(println!("Error adding hero!")));
                     },
                     Rolled::Item(value, kind, power, ref area) => {
                         // create item
@@ -434,7 +443,7 @@ impl Manager {
                                     b.borrow_mut().add_item(item).ok() })
                             },
                             _ => None,
-                        };
+                        }.or(Some(println!("Error adding item!")));
                     },
                 }
             }
@@ -476,7 +485,9 @@ impl Manager {
             Some(ref s) => {
                 let filtered = s.qrtrs.iter()
                     .flat_map(|q| q.borrow().bldgs.clone().into_iter())
-                    .filter(|b| btypes.contains(&b.borrow().plan.btype))
+                    .filter(|b| btypes.contains(&b.borrow().plan.btype)
+                            // make sure building is in use
+                            && enum_match!(b.borrow().cond, buildings::BldgCond::InUse(_)))
                     .map(|b| b.clone()).collect::<Vec<_>>();
                 rand::thread_rng().choose(&filtered).cloned()
             },

@@ -63,7 +63,7 @@ impl fmt::Display for BuildingPlan {
 /// # Improvements
 /// * Add ability to perform repairs for gold.
 /// * Pay gold to remove ruined buildings.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub enum BldgCond {
     /// Building is not yet complete (no bonuses); any damage resets to 0.0.
     InProgress(f64),
