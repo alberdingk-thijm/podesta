@@ -46,6 +46,12 @@ macro_rules! enum_match {
     };
 }
 
+//TODO: code-condensing pattern for activate_event's matching on roll
+/*
+macro_rules! match_roll {
+}
+*/
+
 type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug)]
@@ -307,12 +313,12 @@ impl Manager {
     }
 
     /// Pop an event and perform its effects on the sett.
-    pub fn activate_event(&mut self) {
+    pub fn activate_event(&mut self) -> Result<()> {
         if let Some(e) = self.queue.pop() {
             use effects::RolledEffect as Rolled;
             let rolled = e.activate();
-            for roll in rolled.iter() {
-                match *roll {
+            rolled.iter().map(|r| {
+                match *r {
                     Rolled::Kill(ref step, ref area) => {
                         match *area {
                             effects::Area::Building(ref bts) => {
@@ -330,7 +336,7 @@ impl Manager {
                                     }
                                 })
                             },
-                        };
+                        }
                     },
                     Rolled::Damage(ref step, ref area) => {
                         match *area {
@@ -349,7 +355,7 @@ impl Manager {
                                     }
                                 })
                             },
-                        };
+                        }
                     },
                     Rolled::Riot(ref step, ref area) => {
                         match *area {
@@ -374,7 +380,7 @@ impl Manager {
                                     }
                                 })
                             },
-                        };
+                        }
                     },
                     Rolled::Grow(ref step, ref area) => {
                         match *area {
@@ -393,7 +399,7 @@ impl Manager {
                                     }
                                 })
                             },
-                        };
+                        }
                     },
                     Rolled::Build(ref step, ref area) => {
                         match *area {
@@ -412,12 +418,12 @@ impl Manager {
                                     }
                                 })
                             },
-                        };
+                        }
                     },
                     Rolled::Gold(ref step, ref bonus) => {
                         self.sett.as_mut().map(|s| {
                             s.boosts.gold_bonus += bonus.clone();
-                            s.boosts.gold *= step.clone(); });
+                            s.boosts.gold *= step.clone(); })
                     },
                     Rolled::Hero(level, ref class, ref area) => {
                         let hero = self.create_hero(level, &class);
@@ -430,7 +436,7 @@ impl Manager {
                                 },
                                 _ => None,
                             }
-                        }).or(Some(println!("Error adding hero!")));
+                        })
                     },
                     Rolled::Item(value, kind, power, ref area) => {
                         // create item
@@ -443,10 +449,10 @@ impl Manager {
                                     b.borrow_mut().add_item(item).ok() })
                             },
                             _ => None,
-                        }.or(Some(println!("Error adding item!")));
+                        }
                     },
-                }
-            }
+                }.ok_or(Error::Event)
+            }).collect::<Result<Vec<_>>>()
         }
     }
 
