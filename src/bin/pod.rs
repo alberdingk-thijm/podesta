@@ -66,6 +66,7 @@ fn main() {
                     }
                 },
                 ParseResult::ToggleAuto => man.toggle_auto(),
+                ParseResult::ToggleDev => man.toggle_dev(),
                 ParseResult::Commands => println!("{}", podesta::COMMANDS),
                 ParseResult::Save(file) => man.save(file).unwrap_or_else(|e| {
                     println!("Failed to save the game file! {:?}", e);
@@ -75,7 +76,7 @@ fn main() {
                     Err(e) => println!("Failed to load the game file! {:?}",
                                        e),
                 },
-                ParseResult::Print(s) => man.print(s),
+                ParseResult::Print(s1, s2, s3) => man.print(s1, s2, s3),
                 ParseResult::Unknown(s) => println!("Unknown option \"{}\"", s),
                 ParseResult::Quit => break 'game,
             }

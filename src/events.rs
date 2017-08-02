@@ -70,10 +70,14 @@ impl EventQueue {
     fn is_full(&self) -> bool {
         self.events.capacity() == self.events.len()
     }
+
+    /// Return the length of the queue.
+    pub fn len(&self) -> usize {
+        self.events.len()
+    }
 }
 
 impl Event {
-
     /// Attempt to activate the event's effects.
     pub fn activate(&self) -> Vec<effects::RolledEffect> {
         self.effects.iter().map(|e| e.activate()).collect::<Vec<_>>()

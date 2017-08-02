@@ -1,8 +1,6 @@
 use rand;
 use rand::Rng;
 use rouler::Roller;
-use people;
-//use buildings;
 use quarters::QType;
 use items;
 use std::str;
@@ -342,35 +340,19 @@ pub enum EventEffect {
     Item { value: String, kind: Vec<String>, magical: f64 },
 }
 
-pub struct Effect<T: Targeted> {
-    pub target: T,
-    pub etype: EventEffect,
-}
-
-#[allow(unused_variables)]
 impl EventEffect {
     pub fn activate(&self) -> RolledEffect {
         match *self {
-            //TODO: replace placeholder values with proper code
-            EventEffect::Kill { ref dead, viralpt, ref area } => {
-                //TODO:
-                //roll dead and store as f64
-                //if > Some(viralpt), make area larger
-                //else, use given area
-                RolledEffect::kill(dead, viralpt, area.clone())
-            },
-            EventEffect::Damage { ref crumbled, viralpt, ref area } => {
-                RolledEffect::damage(crumbled, viralpt, area.clone())
-            },
-            EventEffect::Riot { ref steps, prod, ref area } => {
-                RolledEffect::riot(steps, prod, area.clone())
-            },
-            EventEffect::Grow { ref bonus, ref area } => {
-                RolledEffect::grow(bonus, area.clone())
-            },
-            EventEffect::Build { ref bonus, ref area } => {
-                RolledEffect::build(bonus, area.clone())
-            },
+            EventEffect::Kill { ref dead, viralpt, ref area } =>
+                RolledEffect::kill(dead, viralpt, area.clone()),
+            EventEffect::Damage { ref crumbled, viralpt, ref area } =>
+                RolledEffect::damage(crumbled, viralpt, area.clone()),
+            EventEffect::Riot { ref steps, prod, ref area } =>
+                RolledEffect::riot(steps, prod, area.clone()),
+            EventEffect::Grow { ref bonus, ref area } =>
+                RolledEffect::grow(bonus, area.clone()),
+            EventEffect::Build { ref bonus, ref area } =>
+                RolledEffect::build(bonus, area.clone()),
             EventEffect::Gold { ref value, bonus, ref steps } =>
                 RolledEffect::gold(value, bonus, steps),
             EventEffect::Hero { ref level, ref classes } =>
@@ -378,76 +360,5 @@ impl EventEffect {
             EventEffect::Item { ref value, ref kind, magical } =>
                 RolledEffect::item(value, kind, magical),
         }
-    }
-}
-
-#[allow(dead_code, unused_variables)]
-impl<T: Targeted> Effect<T> {
-    pub fn new(tgt: T, etype: EventEffect) -> Effect<T> {
-        Effect { target: tgt, etype: etype }
-    }
-
-    fn kill(&mut self, dead: &str, viralpt: Option<i64>) {
-        // get the roll
-        let mut roll = Roller::new(dead);
-        let mut x : i64 = roll.total();
-        if let Some(v) = viralpt {
-            if x >= v {
-                x += roll.reroll();
-            }
-        }
-        // perform it on the target
-        self.target.kill(x)
-    }
-
-    fn event_damage(&mut self, crumbled: &str, viralpt: Option<i64>) {
-        // get the roll
-        let mut roll = Roller::new(crumbled);
-        let mut x: i64 = roll.total();
-        if let Some(v) = viralpt {
-            if x >= v {
-                x += roll.reroll();
-            }
-        }
-        // perform it on the area
-        self.target.damage(x);
-    }
-
-    fn event_riot(&mut self, steps: &str, prod: f64) {
-        // get the roll
-        let roll = Roller::new(steps);
-        unimplemented!()
-    }
-
-    fn event_grow(&mut self, bonus: &str) {
-        unimplemented!()
-    }
-
-    fn event_build(&mut self, bonus: &str) {
-        unimplemented!()
-    }
-
-    fn event_gold(&mut self, value: &str, bonus: f64, steps: &str) {
-        // get the rolls
-        let valroll = Roller::new(value);
-        let steproll = Roller::new(steps);
-        // sett.gold += valroll
-        // next steproll steps, gold earned * bonus
-        unimplemented!()
-    }
-
-    fn event_hero(&mut self, level: &str, classes: &Vec<people::Class>) {
-        // get the roll
-        let lvlroll = Roller::new(level);
-        // choose the class
-        let r = rand::thread_rng().gen_range(0, classes.len());
-        // let h = people::Hero::new(class: classes[r]);
-        // add new hero to building
-        unimplemented!()
-    }
-
-    fn event_item(&mut self, value: &str, magical: f64) {
-        let roll = Roller::new(value);
-        unimplemented!()
     }
 }

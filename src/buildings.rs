@@ -146,6 +146,7 @@ impl Building {
     /// Add occupant to building.
     /// Return an Error if the building cannot accept the occupant.
     pub fn add_occupant(&mut self, hero: Rc<RefCell<people::Hero>>) -> Result<(), OccupyError> {
+        println!("{:?}", hero);
         match self.cond {
             BldgCond::InUse(_) => {
                 self.occupants.push(hero);
@@ -168,6 +169,7 @@ impl Building {
     /// Add item to building.
     /// Return an Error if the building cannot accept the item.
     pub fn add_item(&mut self, item: Rc<RefCell<items::Item>>) -> Result<(), OccupyError> {
+        println!("{:?}", item);
         match self.cond {
             BldgCond::InUse(_) => {
                 //TODO: add element to building plan specifying
@@ -213,10 +215,11 @@ impl sett::HasName for Building {
 
 impl fmt::Display for Building {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} - {} - {} - hosts {} people",
+        write!(f, "{} - {} - {} - hosts {} people, {} items",
                self.name,
                self.plan.btype,
                self.cond,
-               self.occupants.len())
+               self.occupants.len(),
+               self.items.len())
    }
 }

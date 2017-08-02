@@ -165,6 +165,24 @@ impl Sett {
         }
         self.gold += self.boosts.gold_bonus.next().unwrap_or(0.0);
     }
+
+    /// Return a wrapped Quarter if one by the given name can be found.
+    pub fn find_quarter(&self, name: &str) -> Option<Rc<RefCell<quarters::Quarter>>> {
+        self.qrtrs.iter().find(|&q| q.borrow().name == name).map(|q| q.clone())
+    }
+
+    /// Return a wrapped Building if one by the given name in the given quarter can be found.
+    pub fn find_building(&self, bname: &str, qname: &str) -> Option<Rc<RefCell<buildings::Building>>> {
+        self.find_quarter(qname)
+            .and_then(|q| {
+                q.borrow().bldgs.iter().find(|&b| b.borrow().name == bname).map(|b| b.clone())
+            })
+    }
+
+    /// Return a wrapped Hero if one by the given name can be found.
+    pub fn find_hero(&self, name: &str) -> Option<Rc<RefCell<people::Hero>>> {
+        unimplemented!()
+    }
 }
 
 pub trait HasName {

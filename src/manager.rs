@@ -29,9 +29,9 @@ macro_rules! choose_info {
 }
 
 macro_rules! print_opt {
-    ($opt:expr) => {
+    ($dev:expr, $opt:expr) => {
         match $opt {
-            Some(ref x) => println!("{}", x),
+            Some(ref x) => dev_print!($dev, x),
             None => (),
         }
     };
@@ -42,6 +42,16 @@ macro_rules! enum_match {
         match $e {
             $p => true,
             _ => false,
+        }
+    };
+}
+
+macro_rules! dev_print {
+    ($dev:expr, $e:expr) => {
+        if $dev {
+            println!("{:?}", $e)
+        } else {
+            println!("{}", $e)
         }
     };
 }
@@ -110,6 +120,7 @@ pub struct Manager {
     queue: events::EventQueue,
     automate: bool,
     verbose: bool,
+    dev: bool,
     savefile: String,
 }
 
@@ -125,6 +136,7 @@ impl Manager {
             queue: events::EventQueue::new(32),
             automate: false,
             verbose: verb,
+            dev: false,
             savefile: format!("pod-{}.rbs", time::now().ctime()),
         }
     }
@@ -152,10 +164,17 @@ impl Manager {
         parser::save_rbs(self, &savef)
             .map_err(Error::Data)
     }
+
     /// Toggle automation of build functions.
     pub fn toggle_auto(&mut self) {
         self.automate = !self.automate;
         if self.verbose { println!("Automation set to {}", self.automate) }
+    }
+
+    /// Toggle dev mode. TODO: Make not work in release.
+    pub fn toggle_dev(&mut self) {
+        self.dev = !self.dev;
+        if self.verbose { println!("Dev mode set to {}", self.dev) }
     }
 
     /// Initialize a new settlement and store it in the manager.
@@ -291,7 +310,7 @@ impl Manager {
     /// Execute n settlement steps and perform all events sequentially.
     /// Write any relevant occurrences to the history.
     pub fn step(&mut self, n: i64) {
-        match self.sett {
+        let queue_up = match self.sett {
             Some(ref mut s) => {
                 for _ in 0..n {
                     self.hist.add_entry(s.age, format!("{}", s));
@@ -309,11 +328,24 @@ impl Manager {
                 Ok(())
             },
             None => Err(Error::NoSett),
-        }.unwrap_or_else(|e| println!("Failed to perform step: {}", e))
+        };
+        queue_up.and_then(|_| {
+            // Pop events until queue is empty.
+            let activated = {
+                let mut a = Ok(vec!());
+                while self.queue.len() > 0 {
+                    a = self.activate_event()
+                }
+                a
+            };
+            activated.map(|_| ())
+        }).unwrap_or_else(|e| println!("Failed to perform step: {}", e))
     }
 
     /// Pop an event and perform its effects on the sett.
-    pub fn activate_event(&mut self) -> Result<()> {
+    /// If successful, return a Result<Vec<()>> with len == events executed.
+    /// If a failure occurs, return Error::Event.
+    pub fn activate_event(&mut self) -> Result<Vec<()>> {
         if let Some(e) = self.queue.pop() {
             use effects::RolledEffect as Rolled;
             let rolled = e.activate();
@@ -453,6 +485,8 @@ impl Manager {
                     },
                 }.ok_or(Error::Event)
             }).collect::<Result<Vec<_>>>()
+        } else {
+            Ok(vec!())
         }
     }
 
@@ -464,11 +498,14 @@ impl Manager {
         let name = "Foo";
         let class = self.datafiles.classes.iter()
             .find(|c| c.name == classname).map(|c| c.clone());
-        let races = people::Race::iter_variants().collect::<Vec<_>>();
-        let race = rand::thread_rng().choose(&races)
-            .expect("Race::iter_variants() did not return multiple entries!");
         class.map(|c| {
-            Rc::new(RefCell::new(people::Hero::new(name, lvl, *race, c)))
+            let race = {
+                let racename = rand::thread_rng().choose(&c.races)
+                    .expect("Unable to create hero: the created class has no races listed!");
+                racename.parse::<people::Race>()
+                    .expect("Unable to create hero: one of the class's races is invalid!")
+            };
+            Rc::new(RefCell::new(people::Hero::new(name, lvl, race, c)))
         })
     }
 
@@ -510,23 +547,45 @@ impl Manager {
 
     /// Print information from the named term.
     /// If term is None, print the sett's information.
-    pub fn print(&self, term: Option<String>) {
-        match term {
-            Some(t) => match t.as_str() {
-                "sett" => print_opt!(self.sett),
-                "quarter" => (),
-                "building" => (),
+    pub fn print(&self, term1: Option<String>, term2: Option<String>, term3: Option<String>) {
+        match term1 {
+            Some(t1) => match t1.as_str() {
+                "sett" => print_opt!(self.dev, self.sett),
+                // TODO: allow prompt to choose quarter
+                "quarter" => {
+                    self.sett.as_ref().map(|s| match term2 {
+                        Some(ref t2) => {
+                            s.find_quarter(&t2).map(|q| dev_print!(self.dev, *q.borrow()));
+                        },
+                        None => println!("Please specify a quarter to print!"),
+                    });
+                },
+                // TODO: allow prompt to choose building/quarter
+                "building" => {
+                    self.sett.as_ref().map(|s| match term2 {
+                        Some(ref t2) => match term3 {
+                            Some(ref t3) => {
+                                s.find_building(&t2, &t3).map(|b| dev_print!(self.dev, *b.borrow()));
+                            },
+                            None => println!("Please specify the quarter of the building!"),
+                        },
+                        None => println!("Please specify a building to print!"),
+                    });
+                },
+                "hero" => (),
+                "item" => (),
                 "plans" => {
                     let plannames = self.datafiles.plans
                         .iter().map(|p| format!("{}\n", p.to_string()))
                         .collect::<String>();
                     println!("{}", plannames)
                 },
+                //TODO: allow second term to control history date(s)
                 "history" => println!("{}", self.hist.show(None)),
                 "queue" => println!("{:?}", self.queue),
                 _ => (),
             },
-            None => print_opt!(self.sett),
+            None => print_opt!(self.dev, self.sett),
         }
     }
 }

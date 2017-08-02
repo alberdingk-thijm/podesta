@@ -12,13 +12,15 @@ pub enum ParseResult {
     /// Create a new object based on the vector.
     New(Option<String>, Option<String>, Option<String>),
     /// Print the named object to the screen.
-    Print(Option<String>),
+    Print(Option<String>, Option<String>, Option<String>),
     /// Save the environment to a file.
     Save(Option<String>),
     /// Load a file into the environment.
     Load(Option<String>),
     /// Toggle user prompting.
     ToggleAuto,
+    /// Toggle dev mode.
+    ToggleDev,
     /// Print list of available commands to the screen.
     Commands,
     /// Display a file using the specified program.
@@ -52,12 +54,12 @@ pub fn parse_input(input: &str) -> ParseResult {
             "new" | "add" => ParseResult::New(cmd.next(), cmd.next(), cmd.next()),
             "step" | "n" | "next" =>
                 ParseResult::Step(cmd.next().and_then(|s| s.parse::<i64>().ok()).unwrap_or(1)),
-            "p" | "print" => ParseResult::Print(cmd.next()),
+            "p" | "print" => ParseResult::Print(cmd.next(), cmd.next(), cmd.next()),
             "a" | "auto" => ParseResult::ToggleAuto,
             "q" | "quit" => ParseResult::Quit,
             "sv" | "save" => ParseResult::Save(cmd.next()),
             "ld" | "load" => ParseResult::Load(cmd.next()),
-            "dev" => ParseResult::Success, //TODO: add dev mode
+            "dev" => ParseResult::ToggleDev, //TODO: add dev mode
                                            //TODO: allow normally blocked commands
                                            //TODO: e.g. add building w/o matching quarter or gold,
                                            //TODO: create a hero or perform an event's effects
