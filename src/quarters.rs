@@ -182,6 +182,8 @@ impl Quarter {
         self.pop = newpop + self.boosts.grow.next().unwrap_or(1.0) * (newpop - self.pop).abs();
         for bldg in self.bldgs.iter() {
             // include a boost or bonus for buildings
+            // FIXME: this screws with the building's boosts by continually recloning the build
+            // FIXME: and multiplying it over and over on top of itself.
             bldg.borrow_mut().boosts.build *= self.boosts.build.clone();
             bldg.borrow_mut().step();
         }
