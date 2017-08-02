@@ -9,6 +9,7 @@ extern crate rand;
 #[macro_use] extern crate enum_derive;
 extern crate time;
 extern crate shlex;
+extern crate names;
 
 pub mod parser;
 pub mod regions;

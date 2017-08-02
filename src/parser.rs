@@ -14,6 +14,7 @@
 use serde;
 use serde_json;
 use bincode;
+use names;
 use regions::Region;
 use buildings::BuildingPlan;
 use events::Event;
@@ -190,3 +191,13 @@ pub fn load_rbs(fname: &str) -> Result<manager::Manager, GameDataError> {
         .map_err(GameDataError::Bincode)
 }
 
+#[allow(unused_variables)]
+/// Return a name Generator using the given files' terms.
+pub fn load_namegen<'a>(adjsf: &'a str, nounsf: &'a str) -> names::Generator<'a> {
+    // load adjsf into an array
+    let adjectives = &[adjsf];
+    // load nounsf into an array
+    let nouns = &[nounsf];
+    //names::Generator::new(adjectives, nouns, names::Name::Plain)
+    names::Generator::with_naming(names::Name::Plain)
+}
