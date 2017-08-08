@@ -115,6 +115,7 @@ impl From<parser::GameDataError> for Error {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Manager {
     datafiles: parser::DataFiles,
+    namefiles: parser::NameFiles,
     sett: Option<sett::Sett>,
     hist: history::History,
     queue: events::EventQueue,
@@ -128,9 +129,10 @@ impl Manager {
     /// Create a new Manager with the given data files.
     /// Note that until build_sett() is called, no settlement actually exists.
     pub fn new(reg_path: &str, bldg_path: &str, ev_path: &str, cl_path: &str,
-               verb: bool) -> Self {
+               pep_path: &str, item_path: &str, adj_path: &str, verb: bool) -> Self {
         Manager {
             datafiles: parser::DataFiles::new(reg_path, bldg_path, ev_path, cl_path),
+            namefiles: parser::NameFiles::new(pep_path, item_path, adj_path),
             sett: None,
             hist: history::History::new(),
             queue: events::EventQueue::new(32),

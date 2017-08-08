@@ -23,14 +23,14 @@ use manager;
 use prompts::PromptError;
 
 use std::fs::File;
-use std::io::{self, BufReader, BufWriter};
+use std::io::{self, BufRead, BufReader, BufWriter};
 use std::env;
 use std::path;
 use std::rc::Rc;
 use std::fmt;
 use std::error;
 
-/// A structure for storing game data extracted from files
+/// A structure for storing game data extracted from files (lib/data/)
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DataFiles {
     pub regions: Vec<Rc<Region>>,
@@ -39,9 +39,26 @@ pub struct DataFiles {
     pub classes: Vec<Rc<Class>>,
 }
 
+/// A structure for storing name data extracted from files (lib/names/)
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NameFiles {
+    pub people: Vec<String>,
+    pub items: Vec<String>,
+    pub adjectives: Vec<String>,
+}
+
 macro_rules! load_datafile {
     ($ftype:expr, $path:expr) => {
         get_data($path).and_then(|d| {
+            println!("Loaded {}! {} {} found.", $path, d.len(), $ftype);
+            Ok(d)
+        }).expect("Error parsing JSON!")
+    };
+}
+
+macro_rules! load_namefile {
+    ($ftype:expr, $path:expr) => {
+        get_names($path).and_then(|d| {
             println!("Loaded {}! {} {} found.", $path, d.len(), $ftype);
             Ok(d)
         }).expect("Error parsing JSON!")
@@ -65,6 +82,17 @@ impl DataFiles {
     }
 }
 
+impl NameFiles {
+    pub fn new(people_path: &str, items_path: &str, adj_path: &str)
+        -> NameFiles {
+        NameFiles {
+            people: load_namefile!("people", people_path),
+            items: load_namefile!("items", items_path),
+            adjectives: load_namefile!("adjectives", adj_path)
+        }
+    }
+}
+
 /// Return a Result holding a deserialized vector of podsim data,
 /// where each vector element was stored in a JSON file named by
 /// the **jsonfile** parameter; or an error if the JSON file could
@@ -74,7 +102,7 @@ pub fn get_data<T>(jsonfile: &str) -> Result<Vec<Rc<T>>, serde_json::Error>
 where
     T: serde::Deserialize + serde::Serialize
 {
-    let mut p = get_data_dir();
+    let mut p = get_dir("data");
     p.push(jsonfile);
     let f = File::open(p)
         .expect("Unable to open file");
@@ -83,13 +111,23 @@ where
     Ok(e)
 }
 
+/// Return a vector of strs from the given text file.
+pub fn get_names(fname: &str) -> Result<Vec<String>, GameDataError> {
+    let mut p = get_dir("names");
+    p.push(fname);
+    let f = File::open(p)?;
+    let reader = BufReader::new(f);
+    reader.lines().collect::<io::Result<Vec<String>>>()
+        .map_err(GameDataError::Io)
+}
+
 /// Return the PathBuf to the directory where the data is stored.
 /// This is $CARGO_MANIFEST_DIR/lib/data/.
 /// Will panic if $CARGO_MANIFEST_DIR is not set.
-fn get_data_dir() -> path::PathBuf {
+fn get_dir(sublib: &str) -> path::PathBuf {
     let head = env::var_os("CARGO_MANIFEST_DIR")
         .expect("Must run using Cargo!");
-    let p = path::Path::new(&head).join("lib").join("data");
+    let p = path::Path::new(&head).join("lib").join(sublib);
     p
 }
 

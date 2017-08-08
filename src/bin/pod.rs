@@ -18,6 +18,9 @@ fn main() {
                                "buildings.json",
                                "events.json",
                                "classes.json",
+                               "people.txt",
+                               "items.txt",
+                               "adjectives.txt",
                                true);
     let mut input = String::new();
     'game: loop {
