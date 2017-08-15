@@ -474,7 +474,9 @@ impl Manager {
                     },
                     Rolled::Item(value, kind, power, ref area) => {
                         // create item
-                        let item = Rc::new(RefCell::new(items::Item::new("Foo", kind, power, value)));
+                        let name = self.namefiles.get_item();
+                        let item = Rc::new(RefCell::new(
+                                items::Item::new(&name, kind, power, value)));
                         // put in area
                         match *area {
                             effects::Area::Building(ref bts) => {
@@ -496,8 +498,7 @@ impl Manager {
     /// Set the hero's level based on the given level integer.
     /// Select the hero's class based on the given classname string.
     fn create_hero(&self, lvl: i32, classname: &str) -> Option<Rc<RefCell<people::Hero>>> {
-        // TODO: implement name generator
-        let name = "Foo";
+        let name = self.namefiles.get_hero();
         let class = self.datafiles.classes.iter()
             .find(|c| c.name == classname).map(|c| c.clone());
         class.map(|c| {
@@ -507,7 +508,7 @@ impl Manager {
                 racename.parse::<people::Race>()
                     .expect("Unable to create hero: one of the class's races is invalid!")
             };
-            Rc::new(RefCell::new(people::Hero::new(name, lvl, race, c)))
+            Rc::new(RefCell::new(people::Hero::new(&name, lvl, race, c)))
         })
     }
 
@@ -574,6 +575,7 @@ impl Manager {
                         None => println!("Please specify a building to print!"),
                     });
                 },
+                //TODO: allow prompting...
                 "hero" => (),
                 "item" => (),
                 "plans" => {

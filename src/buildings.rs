@@ -146,7 +146,6 @@ impl Building {
     /// Add occupant to building.
     /// Return an Error if the building cannot accept the occupant.
     pub fn add_occupant(&mut self, hero: Rc<RefCell<people::Hero>>) -> Result<(), OccupyError> {
-        println!("{:?}", hero);
         match self.cond {
             BldgCond::InUse(_) => {
                 self.occupants.push(hero);

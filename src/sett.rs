@@ -180,8 +180,14 @@ impl Sett {
     }
 
     /// Return a wrapped Hero if one by the given name can be found.
-    pub fn find_hero(&self, name: &str) -> Option<Rc<RefCell<people::Hero>>> {
-        unimplemented!()
+    pub fn find_hero(&self, bname: &str, qname: &str, hname: &str)
+        -> Option<Rc<RefCell<people::Hero>>>
+    {
+        self.find_building(bname, qname)
+            .and_then(|b| {
+                b.borrow().occupants.iter().find(|&h| h.borrow().name == hname)
+                    .map(|h| h.clone())
+            })
     }
 }
 

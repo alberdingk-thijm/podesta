@@ -14,13 +14,13 @@
 use serde;
 use serde_json;
 use bincode;
-use names;
 use regions::Region;
 use buildings::BuildingPlan;
 use events::Event;
 use people::Class;
 use manager;
 use prompts::PromptError;
+use rand::{self, Rng};
 
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, BufWriter};
@@ -90,6 +90,24 @@ impl NameFiles {
             items: load_namefile!("items", items_path),
             adjectives: load_namefile!("adjectives", adj_path)
         }
+    }
+
+    /// Get a random item name using a particular style
+    pub fn get_item(&self) -> String {
+        let desc = rand::thread_rng().choose(&self.adjectives)
+            .expect("adjectives namefile has no elements!");
+        let name = rand::thread_rng().choose(&self.people)
+            .expect("people namefile has no elements!");
+        format!("{} {}", desc, name)
+    }
+
+    /// Get a random hero name using a particular style
+    pub fn get_hero(&self) -> String {
+        let name = rand::thread_rng().choose(&self.people)
+            .expect("people namefile has no elements!");
+        let epithet = rand::thread_rng().choose(&self.adjectives)
+            .expect("adjectives namefile has no elements!");
+        format!("{} the {}", name, epithet)
     }
 }
 
@@ -227,15 +245,4 @@ pub fn load_rbs(fname: &str) -> Result<manager::Manager, GameDataError> {
     // deserialize the manager using bincode
     bincode::deserialize_from(&mut reader, bincode::Infinite)
         .map_err(GameDataError::Bincode)
-}
-
-#[allow(unused_variables)]
-/// Return a name Generator using the given files' terms.
-pub fn load_namegen<'a>(adjsf: &'a str, nounsf: &'a str) -> names::Generator<'a> {
-    // load adjsf into an array
-    let adjectives = &[adjsf];
-    // load nounsf into an array
-    let nouns = &[nounsf];
-    //names::Generator::new(adjectives, nouns, names::Name::Plain)
-    names::Generator::with_naming(names::Name::Plain)
 }
