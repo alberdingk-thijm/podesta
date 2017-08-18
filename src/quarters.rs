@@ -104,6 +104,8 @@ pub enum BuildError {
     InlandPort,
     /// Prerequisite buildings missing
     PrereqsMissing,
+    /// No building found for given repairs
+    NoBuildingFound,
 }
 impl fmt::Display for BuildError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -115,13 +117,15 @@ impl fmt::Display for BuildError {
             BuildError::NotEnoughPop =>
                 write!(f, "Population not high enought to build"),
             BuildError::NotEnoughGold =>
-                write!(f, "Gold not high enough to build"),
+                write!(f, "Gold not high enough to build/repair"),
             BuildError::AlreadyExists =>
                 write!(f, "A structure by that name already exists"),
             BuildError::InlandPort =>
                 write!(f, "Cannot add a port quarter to an inland sett"),
             BuildError::PrereqsMissing =>
                 write!(f, "Prerequisite buildings not yet constructed"),
+            BuildError::NoBuildingFound =>
+                write!(f, "No buildings of the given name found"),
         }
     }
 }
@@ -136,6 +140,7 @@ impl error::Error for BuildError {
             BuildError::AlreadyExists => "reused unique name",
             BuildError::InlandPort => "inland port",
             BuildError::PrereqsMissing => "prereqs missing",
+            BuildError::NoBuildingFound => "no valid building found",
         }
     }
 

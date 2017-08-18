@@ -293,7 +293,6 @@ impl Iterator for EffectStep {
 /// Struct is created by an event and then passed to the target.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct EffectFlags {
-    //TODO: consider changing everything to iterators
     pub grow: EffectStep,
     pub build: EffectStep,
     pub gold: EffectStep,

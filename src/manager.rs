@@ -309,6 +309,71 @@ impl Manager {
         }.unwrap_or_else(|e| println!("Failed to construct building: {}", e))
     }
 
+    /// Pay n gold to repair a building.
+    pub fn repair_building(&mut self, name_input: Option<String>, quarter_input: Option<String>) {
+        match self.sett {
+            Some(ref mut s) => {
+                // get quarter
+                // TODO: allow to skip quarter match if only one possible quarter exists for
+                // building?
+                let qrtr = match quarter_input.and_then(|q| s.find_quarter(&q)) {
+                    Some(q) => Ok(q),
+                    None => {
+                        // prompt for a quarter
+                        let qrtrnames = s.qrtrs.iter()
+                            .map(|ref q| q.borrow().name.clone());
+                        let qnamesv = qrtrnames.collect::<Vec<_>>();
+                        prompts::choose(&qnamesv)
+                            .map(|i| s.qrtrs[i].clone())
+                            .map_err(|_| quarters::BuildError::NoQuarterFound)
+                            .map_err(Error::Build)
+                    },
+                };
+                // get building
+                let bldg = qrtr.and_then(|q| {
+                    match name_input {
+                        Some(ref name) => {
+                            // check if building exists
+                            // get quarter
+                            // get building
+                            s.find_building(name, &q.borrow().name.clone())
+                                .ok_or(quarters::BuildError::NoBuildingFound)
+                        },
+                        None => {
+                            // prompt for a building
+                            let ref bldgs = q.borrow().bldgs;
+                            let bnames = bldgs.iter()
+                                .map(|ref b| b.borrow().name.clone());
+                            let bnamesv = bnames.collect::<Vec<_>>();
+                            prompts::choose(&bnamesv)
+                                .map(|i| bldgs[i].clone())
+                                .map_err(|_| quarters::BuildError::NoQuarterFound)
+                        },
+                    }.map_err(Error::Build)
+                });
+                // check that we have enough gold to purchase repairs
+                bldg.and_then(|b| {
+                    let cost = b.borrow().get_rep_cost();
+                    if let Ok(c) = cost {
+                        if s.gold >= c {
+                            s.gold -= c;
+                            //FIXME: queues up repair for next step but caps at 100, allowing
+                            //wasted value
+                            b.borrow_mut().boosts.build_bonus += effects::EffectStep::new(100f64, 1);
+                            Ok(())
+                        } else {
+                            Err(Error::Build(quarters::BuildError::NotEnoughGold))
+                        }
+                    } else {
+                        //TODO: unhelpful as building does exist but is ruined
+                        Err(Error::Build(quarters::BuildError::NoBuildingFound))
+                    }
+                })
+            },
+            None => Err(Error::NoSett),
+        }.unwrap_or_else(|e| println!("Failed to repair building: {}", e))
+    }
+
     /// Execute n settlement steps and perform all events sequentially.
     /// Write any relevant occurrences to the history.
     pub fn step(&mut self, n: i64) {

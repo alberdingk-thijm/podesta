@@ -313,6 +313,7 @@ impl Hero {
             _ => Activity::Dead,
         };
         self.activity = next;
+        self.age += 1;
     }
 
     #[allow(dead_code)]

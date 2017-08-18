@@ -38,6 +38,7 @@ help            -   view help file
 license         -   view license file
 a, auto         -   toggle automatic creation and stepping
 new [term]      -   create a new [term]
+rep [term]      -   repair the building term
 step, n, next   -   execute a step
 p, print [term] -   print [term]
 sv, save [file] -   save the settlement to file

@@ -11,6 +11,8 @@ pub enum ParseResult {
     Step(i64),
     /// Create a new object based on the vector.
     New(Option<String>, Option<String>, Option<String>),
+    /// Repair a building.
+    Repair(Option<String>, Option<String>),
     /// Print the named object to the screen.
     Print(Option<String>, Option<String>, Option<String>),
     /// Save the environment to a file.
@@ -52,6 +54,7 @@ pub fn parse_input(input: &str) -> ParseResult {
             },
             "commands" => ParseResult::Commands,
             "new" | "add" => ParseResult::New(cmd.next(), cmd.next(), cmd.next()),
+            "rep" => ParseResult::Repair(cmd.next(), cmd.next()),
             "step" | "n" | "next" =>
                 ParseResult::Step(cmd.next().and_then(|s| s.parse::<i64>().ok()).unwrap_or(1)),
             "p" | "print" => ParseResult::Print(cmd.next(), cmd.next(), cmd.next()),

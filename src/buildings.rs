@@ -10,6 +10,10 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use rand::{self, Rng};
 
+// Modifier for how much it costs to repair a building
+// Divide the total cost by the mod.
+const REPAIR_MOD: f64 = 10.0;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Building {
     pub name: String,
@@ -140,6 +144,20 @@ impl Building {
         }
         for item in self.items.iter() {
             item.borrow_mut().step();
+        }
+    }
+
+    /// Return the cost to repair the building back to 100% (BldgCond::InUse(100.0)).
+    /// Return an Error if the building is InProgress.
+    pub fn get_rep_cost(&self) -> Result<f64, OccupyError> {
+        match self.cond {
+            BldgCond::InUse(c) => {
+                let base = self.plan.cost / REPAIR_MOD;
+                // take a percentage of the base depending on how destroyed the building is
+                Ok(base * (100.0 - c) / 100.0)
+            },
+            //TODO: allow ruined buildings to be repaired
+            _ => Err(OccupyError::NotInUse)
         }
     }
 

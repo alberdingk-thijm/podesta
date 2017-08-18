@@ -3,7 +3,7 @@
     "name": "Cleric",
     "id": 1,
     "desc": "Clerics are wise spiritual leaders of the community blessed with divine magic.",
-    "races": [ "ALL" ],
+    "races": [ "Dwarf", "Elf", "Gnome", "Halfelf", "Halfling", "Halforc", "Human" ],
     "buildings": [ "Shrine", "Temple", "Garden", "GrandTemple", "ReligiousOrder", "Lazaretto" ],
     "items": [
         "LightArmour", "HeavyArmour", "LightWeapon", "HeavyWeapon", "HolyRelic", "Magic", "Book"
@@ -43,7 +43,7 @@
     "name": "Fighter",
     "id": 3,
     "desc": "Fighters are the traditional, hard-as-nails soldiery of the world.",
-    "races": [ "ALL" ],
+    "races": [ "Dwarf", "Elf", "Gnome", "Halfelf", "Halfling", "Halforc", "Human" ],
     "buildings": [
         "Shipyard", "Walls", "Barracks", "Armoury", "Fortress", "Prison", "Palace"
     ],
@@ -161,7 +161,7 @@
     "name": "Thief",
     "id": 9,
     "desc": "Thieves are cunning criminals who break the rules of society for personal gain.",
-    "races": [ "ALL" ],
+    "races": [ "Dwarf", "Elf", "Gnome", "Halfelf", "Halfling", "Halforc", "Human" ],
     "buildings": [ "Market", "Lighthouse", "Harbour", "Warehouse", "Shipyard", "Prison" ],
     "items": [ "LightArmour", "LightWeapon", "Magic", "Art", "Book" ],
     "age": 0,
@@ -197,8 +197,8 @@
     "name": "Bard",
     "id": 11,
     "desc": "Bards are artists who produce works to teach and entertain their audiences.",
-    "buildings": [ "Theatre", "Society" ],
     "races": [ "Halfelf", "Human" ],
+    "buildings": [ "Theatre", "Society" ],
     "items": [ "LightArmour", "LightWeapon", "Magic", "Art", "Book" ],
     "age": 0,
     "activities": {
@@ -215,7 +215,7 @@
     "name": "Merchant",
     "id": 12,
     "desc": "Merchants are shrewd travellers who achieve success in the complex art of trade.",
-    "races": [ "ALL" ],
+    "races": [ "Dwarf", "Elf", "Gnome", "Halfelf", "Halfling", "Halforc", "Human" ],
     "buildings": [
         "Market", "Forge", "Mint", "Workshop", "GuildHall", "PrintingHouse",
         "Lighthouse", "Harbour", "Warehouse", "Shipyard", "CustomsHouse"

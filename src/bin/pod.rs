@@ -68,6 +68,7 @@ fn main() {
                                           or 'building')!"),
                     }
                 },
+                ParseResult::Repair(bname, qname) => man.repair_building(bname, qname),
                 ParseResult::ToggleAuto => man.toggle_auto(),
                 ParseResult::ToggleDev => man.toggle_dev(),
                 ParseResult::Commands => println!("{}", podesta::COMMANDS),

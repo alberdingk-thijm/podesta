@@ -182,7 +182,7 @@ pub fn choose_or_rand<T: fmt::Display>(a: &[T], maxprompts: i32) -> usize {
 /// assert_eq!(prompts::prechoose(b, None), Ok(0))
 /// ```
 pub fn prechoose<T>(a: &[T], prechoice: Option<T>)
-    -> Result<usize, PromptError> 
+    -> Result<usize, PromptError>
     where T: fmt::Display + cmp::PartialEq
 {
     // get the preidx if possible
@@ -193,6 +193,7 @@ pub fn prechoose<T>(a: &[T], prechoice: Option<T>)
         None => match a.len() {
             // normally undefined?
             0 => Err(PromptError::InvalidNum),
+            // NOTE: if an invalid choice is given, it is essentially ignored (correct behaviour?)
             1 => Ok(0),
             _ => choose(a),
         },
