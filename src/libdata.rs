@@ -24,11 +24,68 @@ use rand::{self, Rng};
 
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, BufWriter};
-use std::env;
-use std::path;
+use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::fmt;
 use std::error;
+
+/// A structure for listing file paths.
+#[derive(Debug)]
+pub struct PathList {
+    /// Regions (data)
+    pub regs: PathBuf,
+    /// Building plans (data)
+    pub bldgs: PathBuf,
+    /// Events (data)
+    pub evs: PathBuf,
+    /// Classes (data)
+    pub cls: PathBuf,
+    /// People (names)
+    pub pep: PathBuf,
+    /// Items (names)
+    pub its: PathBuf,
+    /// Adjectives (names)
+    pub adjs: PathBuf,
+}
+
+impl PathList {
+    /// Create a new PathList.
+    fn new<P: AsRef<Path>>(r: P, b: P, e: P, c: P, p: P, i: P, a: P) -> PathList {
+        PathList {
+            regs: r.as_ref().to_path_buf(),
+            bldgs: b.as_ref().to_path_buf(),
+            evs: e.as_ref().to_path_buf(),
+            cls: c.as_ref().to_path_buf(),
+            pep: p.as_ref().to_path_buf(),
+            its: i.as_ref().to_path_buf(),
+            adjs: a.as_ref().to_path_buf(),
+        }
+    }
+
+    /// Generate a new PathList from the given data and names directories.
+    pub fn from_dirs<P>(data: P, names: P) -> Result<PathList, LibError>
+    where P: AsRef<Path>
+    {
+        // check that data and names are both directories
+        let data : PathBuf = data.as_ref().to_path_buf();
+        let names : PathBuf = names.as_ref().to_path_buf();
+        if !(data.is_dir() && names.is_dir()) {
+            // TODO: add to LibError
+            return Err(LibError::InvalidPath)
+        }
+        // Get all json files in each directory
+        let (regs, bldgs, evs, cls) = {
+            (data.join("regions.json"),
+             data.join("buildings.json"),
+             data.join("events.json"),
+             data.join("classes.json"))};
+        let (pep, its, adjs) = {
+            (names.join("people.txt"),
+             names.join("items.txt"),
+             names.join("adjectives.txt"))};
+        Ok(PathList::new(regs, bldgs, evs, cls, pep, its, adjs))
+    }
+}
 
 /// A structure for storing game data extracted from files (lib/data/)
 #[derive(Debug, Serialize, Deserialize)]
@@ -47,49 +104,39 @@ pub struct NameFiles {
     pub adjectives: Vec<String>,
 }
 
-macro_rules! load_datafile {
-    ($ftype:expr, $path:expr) => {
-        get_data($path).and_then(|d| {
-            println!("Loaded {}! {} {} found.", $path, d.len(), $ftype);
-            Ok(d)
-        }).expect("Error parsing JSON!")
-    };
-}
-
-macro_rules! load_namefile {
-    ($ftype:expr, $path:expr) => {
-        get_names($path).and_then(|d| {
-            println!("Loaded {}! {} {} found.", $path, d.len(), $ftype);
-            Ok(d)
-        }).expect("Error parsing JSON!")
-    };
-}
-
 impl DataFiles {
     /// Create a new DataFiles struct to track regions, buildings, events,
     /// and classes.
     /// NOTE: Be mindful of the order when providing the parameters!
-    pub fn new(region_path: &str,
-               building_path: &str,
-               event_path: &str,
-               class_path: &str) -> DataFiles {
+    pub fn new(region_path: &Path,
+               building_path: &Path,
+               event_path: &Path,
+               class_path: &Path) -> DataFiles {
         DataFiles {
-            regions: load_datafile!("regions", region_path),
-            plans: load_datafile!("buildings", building_path),
-            events: load_datafile!("events", event_path),
-            classes: load_datafile!("classes", class_path)
+            regions: get_data(region_path).unwrap(),
+            plans: get_data(building_path).unwrap(),
+            events: get_data(event_path).unwrap(),
+            classes: get_data(class_path).unwrap()
         }
+    }
+
+    pub fn from_pathlist(pl: &PathList) -> DataFiles {
+        DataFiles::new(&pl.regs, &pl.bldgs, &pl.evs, &pl.cls)
     }
 }
 
 impl NameFiles {
-    pub fn new(people_path: &str, items_path: &str, adj_path: &str)
+    pub fn new(people_path: &Path, items_path: &Path, adj_path: &Path)
         -> NameFiles {
         NameFiles {
-            people: load_namefile!("people", people_path),
-            items: load_namefile!("items", items_path),
-            adjectives: load_namefile!("adjectives", adj_path)
+            people: get_names(people_path).unwrap(),
+            items: get_names(items_path).unwrap(),
+            adjectives: get_names(adj_path).unwrap()
         }
+    }
+
+    pub fn from_pathlist(pl: &PathList) -> NameFiles {
+        NameFiles::new(&pl.pep, &pl.its, &pl.adjs)
     }
 
     /// Get a random item name using a particular style
@@ -116,90 +163,85 @@ impl NameFiles {
 /// the **jsonfile** parameter; or an error if the JSON file could
 /// not be parsed. Each element must itself be deserializable.
 /// Panic! if the file cannot be opened.
-pub fn get_data<T>(jsonfile: &str) -> Result<Vec<Rc<T>>, serde_json::Error>
+pub fn get_data<T>(jsonfile: &Path) -> Result<Vec<Rc<T>>, LibError>
 where
     T: serde::Deserialize + serde::Serialize
 {
+    /*
     let mut p = get_dir("data");
     p.push(jsonfile);
     let f = File::open(p)
         .expect("Unable to open file");
+    */
+    let f = File::open(jsonfile)?;
     let reader = BufReader::new(f);
     let e: Vec<Rc<T>> = serde_json::from_reader(reader)?;
     Ok(e)
 }
 
 /// Return a vector of strs from the given text file.
-pub fn get_names(fname: &str) -> Result<Vec<String>, GameDataError> {
-    let mut p = get_dir("names");
-    p.push(fname);
-    let f = File::open(p)?;
+pub fn get_names(txtfile: &Path) -> Result<Vec<String>, LibError> {
+    let f = File::open(txtfile)?;
     let reader = BufReader::new(f);
     reader.lines().collect::<io::Result<Vec<String>>>()
-        .map_err(GameDataError::Io)
-}
-
-/// Return the PathBuf to the directory where the data is stored.
-/// This is $CARGO_MANIFEST_DIR/lib/data/.
-/// Will panic if $CARGO_MANIFEST_DIR is not set.
-fn get_dir(sublib: &str) -> path::PathBuf {
-    let head = env::var_os("CARGO_MANIFEST_DIR")
-        .expect("Must run using Cargo!");
-    let p = path::Path::new(&head).join("lib").join(sublib);
-    p
+        .map_err(LibError::Io)
 }
 
 #[derive(Debug)]
-pub enum GameDataError {
+pub enum LibError {
     Serde(serde_json::Error),
     Bincode(bincode::Error),
     Io(io::Error),
     Prompt(PromptError),
+    InvalidPath,
 }
 
-impl From<io::Error> for GameDataError {
-    fn from(err: io::Error) -> GameDataError { GameDataError::Io(err) }
+impl From<io::Error> for LibError {
+    fn from(err: io::Error) -> LibError { LibError::Io(err) }
 }
 
-impl From<serde_json::Error> for GameDataError {
-    fn from(err: serde_json::Error) -> GameDataError { GameDataError::Serde(err) }
+impl From<serde_json::Error> for LibError {
+    fn from(err: serde_json::Error) -> LibError { LibError::Serde(err) }
 }
 
-impl From<bincode::Error> for GameDataError {
-    fn from(err: bincode::Error) -> GameDataError { GameDataError::Bincode(err) }
+impl From<bincode::Error> for LibError {
+    fn from(err: bincode::Error) -> LibError { LibError::Bincode(err) }
 }
 
-impl From<PromptError> for GameDataError {
-    fn from(err: PromptError) -> GameDataError { GameDataError::Prompt(err) }
+impl From<PromptError> for LibError {
+    fn from(err: PromptError) -> LibError { LibError::Prompt(err) }
 }
 
-impl fmt::Display for GameDataError {
+impl fmt::Display for LibError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            GameDataError::Serde(ref err) => err.fmt(f),
-            GameDataError::Bincode(ref err) => err.fmt(f),
-            GameDataError::Io(ref err) => err.fmt(f),
-            GameDataError::Prompt(ref err) => err.fmt(f),
+            LibError::Serde(ref err) => err.fmt(f),
+            LibError::Bincode(ref err) => err.fmt(f),
+            LibError::Io(ref err) => err.fmt(f),
+            LibError::Prompt(ref err) => err.fmt(f),
+            LibError::InvalidPath => write!(f, "Invalid path given"),
         }
     }
 }
 
-impl error::Error for GameDataError {
+impl error::Error for LibError {
     fn description(&self) -> &str {
         match *self {
-            GameDataError::Serde(ref err) => err.description(),
-            GameDataError::Bincode(ref err) => err.description(),
-            GameDataError::Io(ref err) => err.description(),
-            GameDataError::Prompt(ref err) => err.description(),
+            LibError::Serde(ref err) => err.description(),
+            LibError::Bincode(ref err) => err.description(),
+            LibError::Io(ref err) => err.description(),
+            LibError::Prompt(ref err) => err.description(),
+            LibError::InvalidPath => "invalid path",
         }
     }
 
     fn cause(&self) -> Option<&error::Error> {
         match *self {
-            GameDataError::Serde(ref err) => err.cause(),
-            GameDataError::Bincode(ref err) => err.cause(),
-            GameDataError::Io(ref err) => err.cause(),
-            GameDataError::Prompt(ref err) => err.cause(),
+            LibError::Serde(ref err) => err.cause(),
+            LibError::Bincode(ref err) => err.cause(),
+            LibError::Io(ref err) => err.cause(),
+            LibError::Prompt(ref err) => err.cause(),
+            LibError::InvalidPath => None,
         }
     }
 }
@@ -215,14 +257,14 @@ impl error::Error for GameDataError {
 ///     "buildings.json", "events.json", false);
 /// parser::save_rbs(&man, "foo.rbs").unwrap()
 /// ```
-pub fn save_rbs(man: &manager::Manager, fname: &str) -> Result<(), GameDataError> {
+pub fn save_rbs(man: &manager::Manager, fname: &str) -> Result<(), LibError> {
     let fullname = format!("{}{}", fname,
                            if !fname.ends_with(".rbs") { ".rbs" } else { "" });
     let f = File::create(fullname)?;
     let mut writer = BufWriter::new(f);
     // serialize the manager using bincode
     bincode::serialize_into(&mut writer, man, bincode::Infinite)
-        .map_err(GameDataError::Bincode)
+        .map_err(LibError::Bincode)
 }
 
 /// Load a manager from a given .rbs file.
@@ -237,12 +279,12 @@ pub fn save_rbs(man: &manager::Manager, fname: &str) -> Result<(), GameDataError
 /// # parser::save_rbs(&man, "foo.rbs").unwrap()
 /// let man = parser::load_rbs("foo.rbs").unwrap();
 /// ```
-pub fn load_rbs(fname: &str) -> Result<manager::Manager, GameDataError> {
+pub fn load_rbs(fname: &str) -> Result<manager::Manager, LibError> {
     let fullname = format!("{}{}", fname,
                            if !fname.ends_with(".rbs") { ".rbs" } else { "" });
     let f = File::open(fullname)?;
     let mut reader = BufReader::new(f);
     // deserialize the manager using bincode
     bincode::deserialize_from(&mut reader, bincode::Infinite)
-        .map_err(GameDataError::Bincode)
+        .map_err(LibError::Bincode)
 }

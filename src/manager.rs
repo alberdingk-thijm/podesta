@@ -2,7 +2,7 @@
 //! Tracks metavariables and manages the event queue and its effects on the
 //! settlement's members.
 
-use parser;
+use libdata;
 use time;
 use sett;
 use quarters;
@@ -17,9 +17,9 @@ use std::fmt;
 use std::error;
 use std::rc::Rc;
 use std::cell::RefCell;
-use rand::Rng;
-use rand;
+use rand::{self, Rng};
 use std::result;
+//use std::io::{self, Read, Write};
 
 macro_rules! choose_info {
     ($printexpr:expr, $auto:expr, $name:expr) => {
@@ -66,7 +66,7 @@ type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
-    Data(parser::GameDataError),
+    Lib(libdata::LibError),
     Build(quarters::BuildError),
     NoSett,
     History,
@@ -76,7 +76,7 @@ pub enum Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Error::Data(ref e) => e.fmt(f),
+            Error::Lib(ref e) => e.fmt(f),
             Error::Build(ref e) => e.fmt(f),
             Error::NoSett => write!(f, "No sett found (first run 'new' or 'load')"),
             Error::History => write!(f, "Failed to update history log"),
@@ -88,7 +88,7 @@ impl fmt::Display for Error {
 impl error::Error for Error {
     fn description(&self) -> &str {
         match *self {
-            Error::Data(ref err) => err.description(),
+            Error::Lib(ref err) => err.description(),
             Error::Build(ref err) => err.description(),
             Error::NoSett => "no sett found",
             Error::History => "unable to write history",
@@ -97,7 +97,7 @@ impl error::Error for Error {
     }
     fn cause(&self) -> Option<&error::Error> {
         match *self {
-            Error::Data(ref err) => Some(err),
+            Error::Lib(ref err) => Some(err),
             Error::Build(ref err) => Some(err),
             _ => None,
         }
@@ -108,31 +108,45 @@ impl From<quarters::BuildError> for Error {
     fn from(err: quarters::BuildError) -> Error { Error::Build(err) }
 }
 
-impl From<parser::GameDataError> for Error {
-    fn from(err: parser::GameDataError) -> Error { Error::Data(err) }
+impl From<libdata::LibError> for Error {
+    fn from(err: libdata::LibError) -> Error { Error::Lib(err) }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Manager {
-    datafiles: parser::DataFiles,
-    namefiles: parser::NameFiles,
+    /// Game data files (stored in lib/data)
+    datafiles: libdata::DataFiles,
+    /// Game name files (stored in lib/names)
+    namefiles: libdata::NameFiles,
+    /// The game settlement
     sett: Option<sett::Sett>,
+    /// The history tracker for game events
     hist: history::History,
+    /// The queue of events in the settlement
     queue: events::EventQueue,
+    /// Whether or not to make random choices automatically
     automate: bool,
+    /// Whether or not to print additional information
     verbose: bool,
+    /// Whether or not we are in dev mode
     dev: bool,
+    /// The name of the game's save file
     savefile: String,
+    /*
+    /// Standard input
+    stdin: R,
+    /// Standard output
+    stdout: W,
+    */
 }
 
 impl Manager {
     /// Create a new Manager with the given data files.
     /// Note that until build_sett() is called, no settlement actually exists.
-    pub fn new(reg_path: &str, bldg_path: &str, ev_path: &str, cl_path: &str,
-               pep_path: &str, item_path: &str, adj_path: &str, verb: bool) -> Self {
+    pub fn new(pl: &libdata::PathList, verb: bool) -> Self {
         Manager {
-            datafiles: parser::DataFiles::new(reg_path, bldg_path, ev_path, cl_path),
-            namefiles: parser::NameFiles::new(pep_path, item_path, adj_path),
+            datafiles: libdata::DataFiles::from_pathlist(pl),
+            namefiles: libdata::NameFiles::from_pathlist(pl),
             sett: None,
             hist: history::History::new(),
             queue: events::EventQueue::new(32),
@@ -149,9 +163,9 @@ impl Manager {
         match file {
             Some(filename) => Ok(filename),
             None => prompts::name_file(" to load: "),
-        }.map_err(parser::GameDataError::Prompt)
-            .and_then(|f| parser::load_rbs(f.as_str()))
-            .map_err(Error::Data)
+        }.map_err(libdata::LibError::Prompt)
+            .and_then(|f| libdata::load_rbs(f.as_str()))
+            .map_err(Error::Lib)
 
     }
 
@@ -163,8 +177,8 @@ impl Manager {
             prompts::name_file(&format!(" to save to (default: {}): ",
                                         self.savefile))
                                .unwrap_or(self.savefile.clone()));
-        parser::save_rbs(self, &savef)
-            .map_err(Error::Data)
+        libdata::save_rbs(self, &savef)
+            .map_err(Error::Lib)
     }
 
     /// Toggle automation of build functions.
@@ -277,9 +291,7 @@ impl Manager {
                             .map(|sx| sx == s).unwrap_or(false)
                     }).ok_or(quarters::BuildError::NoPlanFound),
                     None => { prompts::choose(&plannames.collect::<Vec<_>>())
-                        .map_err(parser::GameDataError::Prompt).map_err(|e| {
-                            quarters::BuildError::NoPlanFound
-                        })
+                        .map_err(|e| { quarters::BuildError::NoPlanFound })
                     },
                 }.map(|i| plans[i].clone()).map_err(Error::Build);
 
@@ -619,17 +631,27 @@ impl Manager {
         match term1 {
             Some(t1) => match t1.as_str() {
                 "sett" => print_opt!(self.dev, self.sett),
-                // TODO: allow prompt to choose quarter
                 "quarter" => {
-                    self.sett.as_ref().map(|s| match term2 {
-                        Some(ref t2) => {
-                            s.find_quarter(&t2).map(|q| dev_print!(self.dev, *q.borrow()));
-                        },
-                        None => println!("Please specify a quarter to print!"),
-                    });
+                    /* Displaying quarters:
+                     * p quarter -> prompt, show all quarters in sett
+                     * p quarter foo -> if foo is found, print it; else report not found
+                     */
+                    self.sett.as_ref().and_then(|s| {
+                        prompts::prechoose_by_name(&s.qrtrs, term2).ok()
+                    }).map(|q| dev_print!(self.dev, *q.borrow()))
+                    .unwrap_or_else(|| println!("Target to print not found."));
                 },
                 // TODO: allow prompt to choose building/quarter
                 "building" => {
+                    /* Displaying buildings:
+                     * p building -> prompt, show all buildings in all quarters in sett
+                     * p building foo -> get all buildings named foo, if none report not found;
+                     *                   if 1 print it; if >1, prompt, show all buildings found
+                     * p building foo bar -> get building foo in quarter bar; if foo is found,
+                     *                       print it; else report not found
+                     */
+                    //TODO: get list of all buildings in sett, filtering if a building name is
+                    //given
                     self.sett.as_ref().map(|s| match term2 {
                         Some(ref t2) => match term3 {
                             Some(ref t3) => {

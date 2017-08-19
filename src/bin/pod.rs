@@ -6,22 +6,20 @@ extern crate rouler;
 extern crate podesta;
 
 use podesta::manager::Manager as Manager;
+use podesta::libdata::PathList as PathList;
 
 use std::io::{self, Write};
-//use std::rc::Rc;
+
+pub const DATA_DIR: &'static str = "lib/data/";
+pub const NAME_DIR: &'static str = "lib/names/";
 
 fn main() {
     // Display the welcome message
     println!("{}", podesta::WELCOME_MINI);
     // Initialize the manager
-    let mut man = Manager::new("regions.json",
-                               "buildings.json",
-                               "events.json",
-                               "classes.json",
-                               "people.txt",
-                               "items.txt",
-                               "adjectives.txt",
-                               true);
+    let pl = PathList::from_dirs(DATA_DIR, NAME_DIR)
+        .expect("Invalid lib dirs!");
+    let mut man = Manager::new(&pl, true);
     let mut input = String::new();
     'game: loop {
         use podesta::interpreter::ParseResult as ParseResult;

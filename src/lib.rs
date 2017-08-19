@@ -11,18 +11,18 @@ extern crate time;
 extern crate shlex;
 extern crate names;
 
-pub mod parser;
-pub mod regions;
-pub mod sett;
-pub mod buildings;
-pub mod quarters;
-pub mod people;
-pub mod items;
+pub mod libdata;
+mod regions;
+mod sett;
+mod buildings;
+mod quarters;
+mod people;
+mod items;
 mod prompts;
-pub mod events;
-pub mod effects;
+mod events;
+mod effects;
 pub mod interpreter;
-pub mod history;
+mod history;
 pub mod manager;
 
 

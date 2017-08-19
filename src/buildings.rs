@@ -2,7 +2,7 @@ use std::default;
 use std::fmt;
 use quarters;
 use people;
-use sett;
+use prompts;
 use effects;
 use items;
 use std::rc::Rc;
@@ -222,11 +222,17 @@ impl Building {
              })
         }).collect::<HashMap<_,_>>()
     }
+
+    /// Find the hero with the given name in the building.
+    pub fn find_hero(&self, hname: &str) -> Option<Rc<RefCell<people::Hero>>> {
+        self.occupants.iter()
+            .find(|&h| h.borrow().name == hname).map(|h| h.clone())
+    }
 }
 
-impl sett::HasName for Building {
-    fn get_name(&self) -> &str {
-        &self.name
+impl prompts::Described for Building {
+    fn name(&self) -> String {
+        self.name.clone()
     }
 }
 

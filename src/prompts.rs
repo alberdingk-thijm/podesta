@@ -6,6 +6,8 @@ use std::num;
 use rand::{self, Rng};
 use std::fmt;
 use std::error;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 /// Possible errors when prompting.
 #[derive(Debug)]
@@ -13,6 +15,7 @@ pub enum PromptError {
     Io(io::Error),
     Parse(num::ParseIntError),
     InvalidNum,
+    NoChoices,
     NameTooShort,
     YesOrNo,
 }
@@ -24,6 +27,7 @@ impl fmt::Display for PromptError {
             PromptError::Parse(ref err) => err.fmt(f),
             PromptError::InvalidNum => write!(f, "number out of bounds"),
             PromptError::NameTooShort => write!(f, "given name too short"),
+            PromptError::NoChoices => write!(f, "cannot choose from empty array"),
             PromptError::YesOrNo => write!(f, "answer out of bounds"),
         }
     }
@@ -36,6 +40,7 @@ impl error::Error for PromptError {
             PromptError::Parse(ref err) => err.description(),
             PromptError::InvalidNum => "invalid number",
             PromptError::NameTooShort => "name too short",
+            PromptError::NoChoices => "no choices",
             PromptError::YesOrNo => "invalid answer",
         }
     }
@@ -185,17 +190,38 @@ pub fn prechoose<T>(a: &[T], prechoice: Option<T>)
     -> Result<usize, PromptError>
     where T: fmt::Display + cmp::PartialEq
 {
-    // get the preidx if possible
-    let preidx = prechoice
-        .and_then(|ref t| a.iter().position(|x| x == t));
-    match preidx {
-        Some(i) => Ok(i),
+    match prechoice {
+        Some(ref t) => a.iter().position(|x| x == t).ok_or(PromptError::InvalidNum),
         None => match a.len() {
             // normally undefined?
             0 => Err(PromptError::InvalidNum),
-            // NOTE: if an invalid choice is given, it is essentially ignored (correct behaviour?)
             1 => Ok(0),
             _ => choose(a),
         },
     }
+}
+
+pub trait Described {
+    fn name(&self) -> String;
+    //fn desc(&self) -> String;
+}
+
+pub fn find_by_name<'a, 'b, T: Described>(v: &'a [T], name: &'b str)
+-> Option<&'a T> {
+    v.iter().find(|&x| &x.name() == name)
+}
+
+pub fn choose_by_name<T>(a: &[Rc<RefCell<T>>]) -> Result<Rc<RefCell<T>>, PromptError>
+where T: Sized + Described
+{
+    let names = a.iter().map(|ref e| e.borrow().name()).collect::<Vec<_>>();
+    choose(&names).map(|i| a[i].clone())
+}
+
+pub fn prechoose_by_name<T>(a: &[Rc<RefCell<T>>], prechoice: Option<String>)
+    -> Result<Rc<RefCell<T>>, PromptError>
+where T: Sized + Described
+{
+    let names = a.iter().map(|ref e| e.borrow().name()).collect::<Vec<_>>();
+    prechoose(&names, prechoice).map(|i| a[i].clone())
 }

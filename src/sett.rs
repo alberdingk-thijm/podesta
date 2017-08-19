@@ -6,6 +6,7 @@ use regions;
 use people;
 use events;
 use effects;
+use prompts;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
@@ -172,11 +173,10 @@ impl Sett {
     }
 
     /// Return a wrapped Building if one by the given name in the given quarter can be found.
-    pub fn find_building(&self, bname: &str, qname: &str) -> Option<Rc<RefCell<buildings::Building>>> {
-        self.find_quarter(qname)
-            .and_then(|q| {
-                q.borrow().bldgs.iter().find(|&b| b.borrow().name == bname).map(|b| b.clone())
-            })
+    pub fn find_building(&self, bname: &str, qname: &str)
+        -> Option<Rc<RefCell<buildings::Building>>>
+    {
+        self.find_quarter(qname).and_then(|q| q.borrow().find_building(bname))
     }
 
     /// Return a wrapped Hero if one by the given name can be found.
@@ -184,25 +184,13 @@ impl Sett {
         -> Option<Rc<RefCell<people::Hero>>>
     {
         self.find_building(bname, qname)
-            .and_then(|b| {
-                b.borrow().occupants.iter().find(|&h| h.borrow().name == hname)
-                    .map(|h| h.clone())
-            })
+            .and_then(|b| b.borrow().find_hero(hname))
     }
 }
 
-pub trait HasName {
-    fn get_name(&self) -> &str;
-}
-
-pub fn find_by_name<'a, 'b, T: HasName>(v: &'a [T], name: &'b str)
--> Option<&'a T> {
-    v.iter().find(|&x| x.get_name() == name)
-}
-
-impl HasName for Sett {
-    fn get_name(&self) -> &str {
-        &self.name
+impl prompts::Described for Sett {
+    fn name(&self) -> String {
+        self.name.clone()
     }
 }
 

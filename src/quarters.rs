@@ -1,7 +1,7 @@
 use buildings;
 use people;
 use effects;
-use sett;
+use prompts;
 use std::fmt;
 use std::error;
 use std::cell::RefCell;
@@ -28,9 +28,9 @@ pub struct Quarter {
     pub boosts: effects::EffectFlags,
 }
 
-impl sett::HasName for Quarter {
-    fn get_name(&self) -> &str {
-        &self.name
+impl prompts::Described for Quarter {
+    fn name(&self) -> String {
+        self.name.clone()
     }
 }
 
@@ -221,8 +221,8 @@ impl Quarter {
     /// Return Some(Rc<RefCell<building>) if one is found,
     /// otherwise None.
     pub fn find_building(&self, bname: &str)
-        -> Option<&Rc<RefCell<buildings::Building>>>
+        -> Option<Rc<RefCell<buildings::Building>>>
     {
-        self.bldgs.iter().find(|ref b| b.borrow().name == bname)
+        self.bldgs.iter().find(|ref b| b.borrow().name == bname).map(|b| b.clone())
     }
 }
