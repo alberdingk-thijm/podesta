@@ -325,6 +325,18 @@ impl Manager {
     pub fn repair_building(&mut self, name_input: Option<String>, quarter_input: Option<String>) {
         match self.sett {
             Some(ref mut s) => {
+                //TODO: rewrite repair_building to use find_buildings
+                /*
+                match name_input {
+                    Some(b) => {
+                        // get all buildings based on the input name
+                        let qbldgs = s.find_buildings(b);
+                    },
+                    None => {
+                        // get all buildings
+                    },
+                }
+                */
                 // get quarter
                 // TODO: allow to skip quarter match if only one possible quarter exists for
                 // building?
@@ -650,8 +662,22 @@ impl Manager {
                      * p building foo bar -> get building foo in quarter bar; if foo is found,
                      *                       print it; else report not found
                      */
-                    //TODO: get list of all buildings in sett, filtering if a building name is
-                    //given
+                    self.sett.as_ref().and_then(|s| match term2 {
+                        Some(ref t2) => {
+                            let qbldgs = s.find_buildings(t2);
+                            // match by possible quarters
+                            let names : Vec<_> = qbldgs.iter()
+                                .map(|&(ref q, _)| q).collect();
+                            prompts::prechoose(&names, term3.as_ref())
+                                .map(|i| qbldgs[i].1.clone()).ok()
+                        },
+                        None => {
+                            //TODO: get all bldgs in tuple form
+                            None
+                        },
+                    }).map(|b| dev_print!(self.dev, *b.borrow()))
+                    .unwrap_or_else(|| println!("Target to print not found."));
+                    /*
                     self.sett.as_ref().map(|s| match term2 {
                         Some(ref t2) => match term3 {
                             Some(ref t3) => {
@@ -661,6 +687,7 @@ impl Manager {
                         },
                         None => println!("Please specify a building to print!"),
                     });
+                    */
                 },
                 //TODO: allow prompting...
                 "hero" => (),

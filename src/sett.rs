@@ -179,12 +179,37 @@ impl Sett {
         self.find_quarter(qname).and_then(|q| q.borrow().find_building(bname))
     }
 
+    /// Return (quarter name, wrapped Building) pairs if any buildings by
+    /// the given name can be found.
+    pub fn find_buildings(&self, bname: &str)
+        -> Vec<(String, Rc<RefCell<buildings::Building>>)>
+    {
+        use prompts::Described;
+        let qrtrs = self.qrtrs.iter();
+        qrtrs.map(|q| (q.borrow().name(),
+                            q.borrow().find_building(bname)))
+            // we now have (String, Option<...> pairs)
+            // so map to Option<(String, ...)> and filter
+             .filter_map(|(q, ob)| match ob {
+                 Some(b) => Some((q, b)),
+                 None => None,
+             }).collect::<Vec<_>>()
+    }
+
     /// Return a wrapped Hero if one by the given name can be found.
     pub fn find_hero(&self, bname: &str, qname: &str, hname: &str)
         -> Option<Rc<RefCell<people::Hero>>>
     {
         self.find_building(bname, qname)
             .and_then(|b| b.borrow().find_hero(hname))
+    }
+
+    pub fn find_heroes(&self, hname: &str)
+        -> Vec<(String, String, Rc<RefCell<people::Hero>>)>
+    {
+        // get all buildings
+        // map (qname, b) to (qname, bname, h)
+        unimplemented!()
     }
 }
 
