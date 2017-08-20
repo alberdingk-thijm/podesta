@@ -653,7 +653,6 @@ impl Manager {
                     }).map(|q| dev_print!(self.dev, *q.borrow()))
                     .unwrap_or_else(|| println!("Target to print not found."));
                 },
-                // TODO: allow prompt to choose building/quarter
                 "building" => {
                     /* Displaying buildings:
                      * p building -> prompt, show all buildings in all quarters in sett
@@ -672,25 +671,29 @@ impl Manager {
                                 .map(|i| qbldgs[i].1.clone()).ok()
                         },
                         None => {
-                            //TODO: get all bldgs in tuple form
-                            None
+                            use prompts::Described;
+                            let qbldgs = s.get_buildings();
+                            let names : Vec<_> = qbldgs.iter()
+                                .map(|&(ref q, ref b)| {
+                                    format!("{} (in {})", b.borrow().name(), q)
+                                }).collect();
+                            prompts::choose(&names)
+                                .map(|i| qbldgs[i].1.clone()).ok()
                         },
                     }).map(|b| dev_print!(self.dev, *b.borrow()))
                     .unwrap_or_else(|| println!("Target to print not found."));
-                    /*
-                    self.sett.as_ref().map(|s| match term2 {
-                        Some(ref t2) => match term3 {
-                            Some(ref t3) => {
-                                s.find_building(&t2, &t3).map(|b| dev_print!(self.dev, *b.borrow()));
-                            },
-                            None => println!("Please specify the quarter of the building!"),
-                        },
-                        None => println!("Please specify a building to print!"),
-                    });
-                    */
                 },
                 //TODO: allow prompting...
-                "hero" => (),
+                "hero" => {
+                    self.sett.as_ref().and_then(|s| match term2 {
+                        Some(ref t2) => {
+                            let qbheroes = s.find_heroes(t2);
+                            None::<Rc<RefCell<people::Hero>>>
+                        },
+                        None => { None },
+                    }).map(|h| dev_print!(self.dev, *h.borrow()))
+                    .unwrap_or_else(|| println!("Target to print not found."));
+                },
                 "item" => (),
                 "plans" => {
                     let plannames = self.datafiles.plans

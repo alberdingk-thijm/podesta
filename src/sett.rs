@@ -179,6 +179,22 @@ impl Sett {
         self.find_quarter(qname).and_then(|q| q.borrow().find_building(bname))
     }
 
+    /// Return a Vec of (quarter name, wrapped Building) pairs for each building
+    /// in the settlement.
+    pub fn get_buildings(&self) -> Vec<(String, Rc<RefCell<buildings::Building>>)> {
+        use prompts::Described;
+        let qrtrs = self.qrtrs.iter();
+        let qbs = qrtrs.map(|q| (q.borrow().name(),
+                                 q.borrow().bldgs.clone()));
+        let mut v = vec![];
+        for (q, bs) in qbs {
+            for b in bs.iter() {
+                v.push((q.clone(), b.clone()))
+            }
+        }
+        v
+    }
+
     /// Return (quarter name, wrapped Building) pairs if any buildings by
     /// the given name can be found.
     pub fn find_buildings(&self, bname: &str)
@@ -207,9 +223,15 @@ impl Sett {
     pub fn find_heroes(&self, hname: &str)
         -> Vec<(String, String, Rc<RefCell<people::Hero>>)>
     {
+        use prompts::Described;
         // get all buildings
+        let bldgs = self.get_buildings();
         // map (qname, b) to (qname, bname, h)
-        unimplemented!()
+        bldgs.iter().map(|&(ref q, ref b)| (q.clone(), b.borrow().name(), b.borrow().find_hero(hname)))
+            .filter_map(|(q, b, oh)| match oh {
+                Some(h) => Some((q, b, h)),
+                None => None,
+            }).collect::<Vec<_>>()
     }
 }
 
