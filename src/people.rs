@@ -1,3 +1,4 @@
+use prompts::Described;
 use std::fmt;
 use std::default;
 use std::rc::Rc;
@@ -52,38 +53,6 @@ impl Race {
         }
     }
 }
-/*
-#[derive(Serialize, Deserialize, Debug)]
-/// The class of a person.
-/// Different classes provide different bonuses.
-/// Class bonuses are TODO.
-pub enum Class {
-    /// Clerics help fight death and sickness and make good governors.
-    Cleric,
-    /// Druids help fight death and sickness and travel for longer.
-    Druid,
-    /// Fighters make good workers and adventurers.
-    Fighter,
-    /// Assassins kill people and make good adventurers.
-    Assassin,
-    /// Paladins are immune to illness and make good governors.
-    Paladin,
-    /// Rangers make strong adventurers and can travel for longer.
-    Ranger,
-    /// Mages help produce magical items and make good governors.
-    Mage,
-    /// Illusionists help produce magical items and make good adventurers.
-    Illusionist,
-    /// Thieves steal gold and make keen adventurers.
-    Thief,
-    /// Monks make good workers and can travel for longer, but cannot govern.
-    Monk,
-    /// Bards help produce magical items and make good workers.
-    Bard,
-    /// Merchants are able to trade.
-    Merchant,
-}
-*/
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Class {
@@ -115,6 +84,12 @@ impl Class {
             act_boosts: ab,
             powers: powers,
         }
+    }
+}
+
+impl fmt::Display for Class {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.name)
     }
 }
 
@@ -150,8 +125,22 @@ pub enum Activity {
     Dead,
 }
 
-impl Activity {
+impl fmt::Display for Activity {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", match *self {
+            Activity::Working => "working",
+            Activity::Governing => "governing",
+            Activity::Trading(_) => "trading",
+            Activity::Adventuring(_) => "adventuring",
+            Activity::Resting(_) => "resting",
+            Activity::Treasure(_) => "gathering treasure",
+            Activity::Dying(_) => "dying",
+            Activity::Dead => "dead",
+        })
+    }
+}
 
+impl Activity {
     /// Return a String describing the cause of death based on the
     /// Activity last performed.
     ///
@@ -175,9 +164,15 @@ impl Activity {
     }
 }
 
+impl Described for Hero {
+    fn name(&self) -> String {
+        self.name.clone()
+    }
+}
+
 impl fmt::Display for Hero {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}, a {}{} level {:?} {:?} - currently {:?}",
+        write!(f, "{}, a {}{} level {} {} - currently {} - age {}",
                self.name, self.level,
                // get level suffix
                match { self.level % 10 } {
@@ -188,7 +183,8 @@ impl fmt::Display for Hero {
                },
                self.race,
                self.class,
-               self.activity)
+               self.activity,
+               self.age)
     }
 }
 
@@ -309,7 +305,7 @@ impl Hero {
                     Activity::Resting(steps - 1)
                 }
             },
-            Activity::Treasure(_) => Activity::Working,
+            Activity::Treasure(_) => Activity::Working, //TODO: add effect
             _ => Activity::Dead,
         };
         self.activity = next;

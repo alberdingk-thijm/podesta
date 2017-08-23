@@ -588,14 +588,20 @@ impl Manager {
     /// Select the hero's class based on the given classname string.
     fn create_hero(&self, lvl: i32, classname: &str) -> Option<Rc<RefCell<people::Hero>>> {
         let name = self.namefiles.get_hero();
+        println!("Class: {}", classname);
         let class = self.datafiles.classes.iter()
             .find(|c| c.name == classname).map(|c| c.clone());
         class.map(|c| {
             let race = {
                 let racename = rand::thread_rng().choose(&c.races)
                     .expect("Unable to create hero: the created class has no races listed!");
+                println!("Race: {}", racename);
                 racename.parse::<people::Race>()
-                    .expect("Unable to create hero: one of the class's races is invalid!")
+                    .unwrap_or_else(|_| {
+                        println!("Unable to create hero: \
+                                 race {} of class {} is invalid!", racename, c.name);
+                        panic!("Invalid race provided!")
+                    })
             };
             Rc::new(RefCell::new(people::Hero::new(&name, lvl, race, c)))
         })
@@ -683,14 +689,27 @@ impl Manager {
                     }).map(|b| dev_print!(self.dev, *b.borrow()))
                     .unwrap_or_else(|| println!("Target to print not found."));
                 },
-                //TODO: allow prompting...
                 "hero" => {
                     self.sett.as_ref().and_then(|s| match term2 {
                         Some(ref t2) => {
                             let qbheroes = s.find_heroes(t2);
-                            None::<Rc<RefCell<people::Hero>>>
+                            let names : Vec<_> = qbheroes.iter()
+                                .map(|&(ref q, ref b, _)| {
+                                    format!("{} (in {})", b, q)
+                                }).collect();
+                            prompts::prechoose(&names, term3)
+                                .map(|i| qbheroes[i].2.clone()).ok()
                         },
-                        None => { None },
+                        None => {
+                            use prompts::Described;
+                            let qbheroes = s.get_heroes();
+                            let names : Vec<_> = qbheroes.iter()
+                                .map(|&(ref q, ref b, ref h)| {
+                                    format!("{} (in {} of {})", h.borrow().name(), b, q)
+                                }).collect();
+                            prompts::choose(&names)
+                                .map(|i| qbheroes[i].2.clone()).ok()
+                        },
                     }).map(|h| dev_print!(self.dev, *h.borrow()))
                     .unwrap_or_else(|| println!("Target to print not found."));
                 },

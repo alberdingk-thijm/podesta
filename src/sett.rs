@@ -6,7 +6,7 @@ use regions;
 use people;
 use events;
 use effects;
-use prompts;
+use prompts::Described;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
@@ -182,7 +182,6 @@ impl Sett {
     /// Return a Vec of (quarter name, wrapped Building) pairs for each building
     /// in the settlement.
     pub fn get_buildings(&self) -> Vec<(String, Rc<RefCell<buildings::Building>>)> {
-        use prompts::Described;
         let qrtrs = self.qrtrs.iter();
         let qbs = qrtrs.map(|q| (q.borrow().name(),
                                  q.borrow().bldgs.clone()));
@@ -200,7 +199,6 @@ impl Sett {
     pub fn find_buildings(&self, bname: &str)
         -> Vec<(String, Rc<RefCell<buildings::Building>>)>
     {
-        use prompts::Described;
         let qrtrs = self.qrtrs.iter();
         qrtrs.map(|q| (q.borrow().name(),
                             q.borrow().find_building(bname)))
@@ -220,10 +218,24 @@ impl Sett {
             .and_then(|b| b.borrow().find_hero(hname))
     }
 
+    pub fn get_heroes(&self) -> Vec<(String, String, Rc<RefCell<people::Hero>>)> {
+        let bldgs = self.get_buildings();
+        let qbhs = bldgs.iter().map(|&(ref q, ref b)| (q.clone(),
+                                                b.borrow().name(),
+                                                b.borrow().occupants.clone())
+                             );
+        let mut v = vec![];
+        for (q, b, hs) in qbhs {
+            for h in hs.iter() {
+                v.push((q.clone(), b.clone(), h.clone()))
+            }
+        }
+        v
+    }
+
     pub fn find_heroes(&self, hname: &str)
         -> Vec<(String, String, Rc<RefCell<people::Hero>>)>
     {
-        use prompts::Described;
         // get all buildings
         let bldgs = self.get_buildings();
         // map (qname, b) to (qname, bname, h)
@@ -235,7 +247,7 @@ impl Sett {
     }
 }
 
-impl prompts::Described for Sett {
+impl Described for Sett {
     fn name(&self) -> String {
         self.name.clone()
     }
