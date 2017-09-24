@@ -36,7 +36,7 @@ pub struct Event {
     pub id: i32,
     pub desc: String,
     pub chance: i32,
-    pub effects: Vec<effects::EventEffect>,
+    pub effects: Vec<effects::Effect>,
 }
 
 /// A ring buffer of events.

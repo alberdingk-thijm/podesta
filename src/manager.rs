@@ -334,6 +334,7 @@ impl Manager {
                     },
                     None => {
                         // get all buildings
+                        let qbldgs = s.get_buildings();
                     },
                 }
                 */
@@ -443,6 +444,7 @@ impl Manager {
             rolled.iter().map(|r| {
                 match *r {
                     Rolled::Kill(ref step, ref area) => {
+                        //TODO: does MulAssign for a bonus boost always leave it at zero?
                         match *area {
                             effects::Area::Building(ref bts) => {
                                 self.rand_building(&bts).map(|b| {
@@ -588,14 +590,14 @@ impl Manager {
     /// Select the hero's class based on the given classname string.
     fn create_hero(&self, lvl: i32, classname: &str) -> Option<Rc<RefCell<people::Hero>>> {
         let name = self.namefiles.get_hero();
-        println!("Class: {}", classname);
+        //println!("Class: {}", classname);
         let class = self.datafiles.classes.iter()
             .find(|c| c.name == classname).map(|c| c.clone());
         class.map(|c| {
             let race = {
                 let racename = rand::thread_rng().choose(&c.races)
                     .expect("Unable to create hero: the created class has no races listed!");
-                println!("Race: {}", racename);
+                //println!("Race: {}", racename);
                 racename.parse::<people::Race>()
                     .unwrap_or_else(|_| {
                         println!("Unable to create hero: \

@@ -1,5 +1,4 @@
-use rand;
-use rand::Rng;
+use rand::{self, Rng};
 use rouler::Roller;
 use quarters::QType;
 use items;
@@ -30,15 +29,6 @@ impl Area {
     }
 }
 
-/// A trait for targeting Areas with effects
-pub trait Targeted {
-    fn kill(&mut self, num: i64);
-    fn damage(&mut self, num: i64);
-    fn riot(&mut self, num: i64);
-    fn grow(&mut self);
-    fn build(&mut self);
-}
-
 /// An enum representing the rolled result of an effect,
 /// which can then be passed to the appropriate area by the manager
 /// to be processed on the next step().
@@ -47,17 +37,17 @@ pub trait Targeted {
 /// TODO: fix documentation
 pub enum RolledEffect {
     /// Kill $1 people in $2 area
-    Kill(EffectStep, Area),
+    Kill(EffectStep, Area), // grow abs (negative)
     /// Damage $1 buildings in $2 area
-    Damage(EffectStep, Area),
+    Damage(EffectStep, Area), // build abs (negative)
     /// Slow tickers $1% each turn for $2 turns in $3 area
-    Riot(EffectStep, Area),
+    Riot(EffectStep, Area), // grow, build, gold per
     /// Boost growth $1% each turn for $2 turns in $3 area
-    Grow(EffectStep, Area),
+    Grow(EffectStep, Area), // grow per
     /// Boost build speed $1% each turn for $2 turns in $3 area
-    Build(EffectStep, Area),
+    Build(EffectStep, Area), // build per
     /// Boost gold gain $1% each turn for $2 turns with a one-turn $3 boost
-    Gold(EffectStep, EffectStep),
+    Gold(EffectStep, EffectStep), // gold per, gold abs
     /// Add hero $1 to building in $3 area
     Hero(i32, String, Area),
     /// Add item worth $1 to building in $3 area
@@ -65,6 +55,15 @@ pub enum RolledEffect {
 }
 
 impl RolledEffect {
+    /// Apply the event
+    /*
+    pub fn apply<E>(&self, t: &E) where E: Effected {
+        match *self {
+            _ => (),
+        }
+    }
+    */
+
     /// Create a new RolledEffect::Kill from the given arguments.
     fn kill(dead: &str, viralpt: Option<i64>, area: Area) -> RolledEffect {
         let mut ar = area;
@@ -328,7 +327,7 @@ impl default::Default for EffectFlags {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub enum EventEffect {
+pub enum Effect {
     Kill { dead: String, viralpt: Option<i64>, area: Area },
     Damage { crumbled: String, viralpt: Option<i64>, area: Area },
     Riot { steps: String, prod: f64, area: Area },
@@ -339,24 +338,24 @@ pub enum EventEffect {
     Item { value: String, kind: Vec<String>, magical: f64 },
 }
 
-impl EventEffect {
+impl Effect {
     pub fn activate(&self) -> RolledEffect {
         match *self {
-            EventEffect::Kill { ref dead, viralpt, ref area } =>
+            Effect::Kill { ref dead, viralpt, ref area } =>
                 RolledEffect::kill(dead, viralpt, area.clone()),
-            EventEffect::Damage { ref crumbled, viralpt, ref area } =>
+            Effect::Damage { ref crumbled, viralpt, ref area } =>
                 RolledEffect::damage(crumbled, viralpt, area.clone()),
-            EventEffect::Riot { ref steps, prod, ref area } =>
+            Effect::Riot { ref steps, prod, ref area } =>
                 RolledEffect::riot(steps, prod, area.clone()),
-            EventEffect::Grow { ref bonus, ref area } =>
+            Effect::Grow { ref bonus, ref area } =>
                 RolledEffect::grow(bonus, area.clone()),
-            EventEffect::Build { ref bonus, ref area } =>
+            Effect::Build { ref bonus, ref area } =>
                 RolledEffect::build(bonus, area.clone()),
-            EventEffect::Gold { ref value, bonus, ref steps } =>
+            Effect::Gold { ref value, bonus, ref steps } =>
                 RolledEffect::gold(value, bonus, steps),
-            EventEffect::Hero { ref level, ref classes } =>
+            Effect::Hero { ref level, ref classes } =>
                 RolledEffect::hero(level, classes),
-            EventEffect::Item { ref value, ref kind, magical } =>
+            Effect::Item { ref value, ref kind, magical } =>
                 RolledEffect::item(value, kind, magical),
         }
     }
